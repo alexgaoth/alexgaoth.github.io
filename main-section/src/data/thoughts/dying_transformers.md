@@ -1,5 +1,11 @@
-export const article = { 
-    content: `
+---
+title: "The Future of AI Agents"
+date: "2024-08-01"
+excerpt: "It is not just going to be transformers, because whenever a technology is only being slightly refined under heavy competition, it suggest the end is near for it (even if it takes 50 years), new paradigms, new technology will emerge eventually and overtake transformers like how they overtook the CNNs and their predecessors."
+image: "/resources/ai_agent.png"
+tags: ["tech", "ML", "DL", "Transformers"]
+---
+
 # The Future of AI Agents
 
 The current AI landscape is dominated by transformers, and everyone seems convinced this architecture will define artificial intelligence for the foreseeable future. But history suggests otherwise. When a technology becomes subject to incremental refinements under intense competition, it often signals that a paradigm shift is approaching—even if that shift takes decades to fully materialize.
@@ -27,7 +33,3 @@ The returns on simply making transformers larger are showing clear signs of dimi
 - Parameter Scaling: GPT-3 to GPT-4 required massive increases in parameters for modest performance gains
 - Compute Costs: Training costs are growing exponentially while improvements are becoming linear
 - Data Limitation*: High-quality training data is becoming scarce, forcing models to train on synthetic or lower-quality data
-
-`
-};
-

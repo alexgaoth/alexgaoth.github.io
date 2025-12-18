@@ -19,10 +19,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "prebuild": "node scripts/generate-thoughts-index.js",
     "build": "react-scripts build",
     "postbuild": "npx copyfiles -u 1 build/**/* .",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate-thoughts": "node scripts/generate-thoughts-index.js"
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +47,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "copyfiles": "^2.4.1",
+    "gray-matter": "^4.0.3",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11"
   }
