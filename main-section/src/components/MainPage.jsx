@@ -6,17 +6,17 @@ import SEO from './SEO';
 const MainPage = ({ content, setCurrentPage }) => (
 
   <>
-    <SEO 
-        title="Alex Gao - Portfolio | Math-CS Student & Developer"
-        description="Explore Alex Gao's portfolio: full-stack projects, technical writings on AI and history, professional resume, and favorite quotes. Math-CS student at UC San Diego."
-        keywords="Alex Gao, Portfolio, UCSD, Math-CS, Full-Stack Developer, React Projects, Python, DevOps, Software Engineer"
+    <SEO
+        title="alex gaoth - Portfolio | Math-CS Student & Developer"
+        description="Explore alex gaoth's portfolio: full-stack projects, technical writings on AI and history, professional resume, and favorite quotes. Math-CS student at UC San Diego."
+        keywords="alex gaoth, alexgaoth, Alex Gao, Portfolio, UCSD, Math-CS, Full-Stack Developer, React Projects, Python, DevOps, Software Engineer"
         url="https://alexgaoth.github.io/main-section/"
       />
     <div className="page-container">
     <NowButton onClick={() => setCurrentPage('now')}/>
       
       <div className="content-wrapper">
-        <h1 class = "title-main">this is alex's directory</h1>
+        <h1 class = "title-main">this is alex gaoth's directory</h1>
         <div class = "title-sub">
           <p>known around also as gao, alexgaoth</p>
           <p>have a look around, there be something that interests u</p>

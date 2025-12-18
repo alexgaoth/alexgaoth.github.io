@@ -8,9 +8,9 @@ import { Helmet } from 'react-helmet-async';
  */
 
 const SEO = ({
-  title = "Alex Gao's Portfolio",
-  description = "Portfolio of Alex Gao: Math-CS student at UCSD, full-stack developer, and DevOps enthusiast.",
-  keywords = "Alex Gao, Portfolio, UCSD, Full-Stack Developer, React, Python",
+  title = "alex gaoth's Portfolio",
+  description = "Portfolio of alex gaoth: Math-CS student at UCSD, full-stack developer, and DevOps enthusiast.",
+  keywords = "alex gaoth, alexgaoth, Alex Gao, Portfolio, UCSD, Full-Stack Developer, React, Python",
   image = "https://alexgaoth.com/main-section/logo.jpg",
   url = "https://alexgaoth.com/main-section/",
   type = "website"

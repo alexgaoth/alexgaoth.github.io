@@ -3,7 +3,7 @@
   <!-- Main Landing Page -->
   <url>
     <loc>https://alexgaoth.com/</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,7 +11,7 @@
   <!-- React Main Section -->
   <url>
     <loc>https://alexgaoth.com/main-section/</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -19,7 +19,7 @@
   <!-- Now Page -->
   <url>
     <loc>https://alexgaoth.com/main-section/#/now</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -27,7 +27,7 @@
   <!-- Resume Page -->
   <url>
     <loc>https://alexgaoth.com/main-section/#/resume</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -35,7 +35,7 @@
   <!-- Projects Page -->
   <url>
     <loc>https://alexgaoth.com/main-section/#/projects</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -43,7 +43,7 @@
   <!-- Thoughts/Blog Page -->
   <url>
     <loc>https://alexgaoth.com/main-section/#/thoughts</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -51,7 +51,7 @@
   <!-- Quotes Page -->
   <url>
     <loc>https://alexgaoth.com/main-section/#/quotes</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -59,14 +59,14 @@
   <!-- Individual Projects -->
   <url>
     <loc>https://alexgaoth.com/JuliaSetFractal/</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://alexgaoth.com/UCSD_Crimes/</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
@@ -74,7 +74,7 @@
   <!-- Resume PDF -->
   <url>
     <loc>https://alexgaoth.com/resume.pdf</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-12-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
