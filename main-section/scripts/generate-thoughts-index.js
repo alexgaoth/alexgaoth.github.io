@@ -26,6 +26,14 @@ function calculateReadTime(content) {
   return `${minutes} min read`;
 }
 
+// Generate URL-friendly slug from title
+function generateSlug(title) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 // Extract title from first # heading
 function extractTitle(content) {
   const match = content.match(/^#\s+(.+)$/m);
@@ -136,6 +144,7 @@ function generateThoughtsIndex() {
       image: data.image,
       tags: data.tags,
       readTime,
+      slug: generateSlug(data.title),
       content
     };
   });
@@ -159,6 +168,7 @@ function generateThoughtsIndex() {
     image: "${article.image}",
     readTime: "${article.readTime}",
     tags: ${tagsStr},
+    slug: "${article.slug}",
     articleFile: { content: \`${escapedContent}\` }
   }`;
   }).join(',\n');

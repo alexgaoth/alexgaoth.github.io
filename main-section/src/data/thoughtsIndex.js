@@ -10,6 +10,7 @@ export const thoughtsIndex = [
     image: "/resources/symbolic_order.jpg",
     readTime: "2 min read",
     tags: ["Philosphoy","Psychoanalysis","Lacan","Zizek"],
+    slug: "submitting-to-the-symbolic-order",
     articleFile: { content: `
 ### When we see through the fictitious part of an order/structure, our soberness makes us more loyal to the lies of this order.
 
@@ -38,6 +39,7 @@ So because exposing the fiction (surface norms are backed by taboo practices) do
     image: "/resources/manzikert.jpg",
     readTime: "5 min read",
     tags: ["History","Alternative History","Byzantium","Seljuks"],
+    slug: "winning-the-battle-of-manzikert",
     articleFile: { content: `
 As many of you who know me, I am a big enjoyer of this game, Europa Universalis 4. With a little shy of 2500 hours of EU4 on the clock, it would be an understatement to say it's my favourite game. As any paradox interactive fan, I also enjoy embracing the alternatives, the "what if" that could happen (Especially those things that really could have turned out either way), that would result history beyond it to be drastically different.
 
@@ -88,6 +90,7 @@ The further implications of this alternative timeline goes far beyond, but now I
     image: "/resources/yatsen.jpg",
     readTime: "2 min read",
     tags: ["chinese","nationalism","colonialism"],
+    slug: "chinese-nationalization-modernization-is-actually-quite-intersting",
     articleFile: { content: `
 # Chinese Nationalization Modernization is Actually Quite Interesting
 
@@ -117,6 +120,7 @@ Chinese intellectuals like Liang Qichao, Yan Fu, and later figures like Chen Dux
     image: "/resources/ai_agent.png",
     readTime: "2 min read",
     tags: ["tech","ML","DL","Transformers"],
+    slug: "the-future-of-ai-agents",
     articleFile: { content: `
 # The Future of AI Agents
 
