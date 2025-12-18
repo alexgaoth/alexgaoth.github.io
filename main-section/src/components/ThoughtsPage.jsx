@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import BackButton from './BackButton';
 import { X, Clock, Tag } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const ThoughtsPage = ({ data, setCurrentPage }) => {
   const [selectedArticle, setSelectedArticle] = useState(null);
@@ -44,86 +46,6 @@ const ThoughtsPage = ({ data, setCurrentPage }) => {
       return () => document.removeEventListener('keydown', handleEscape);
     }
   }, [selectedArticle]);
-
-
-  const parseInlineFormatting = (text) => {
-      const parts = [];
-      let currentIndex = 0;
-      let key = 0;
-      
-      // Regular expression to find bold (*text*) and italic (^text^) patterns
-      const formatRegex = /(\*[^*]+\*|\^[^^]+\^)/g;
-      let match;
-      
-      while ((match = formatRegex.exec(text)) !== null) {
-        // Add text before the match
-        if (match.index > currentIndex) {
-          parts.push(text.slice(currentIndex, match.index));
-        }
-        
-        const matchedText = match[0];
-        const innerText = matchedText.slice(1, -1); // Remove surrounding markers
-        
-        if (matchedText.startsWith('*')) {
-          // Bold text
-          parts.push(<strong key={key++}>{innerText}</strong>);
-        } else if (matchedText.startsWith('^')) {
-          // Italic text
-          parts.push(<em key={key++}>{innerText}</em>);
-        }
-        
-        currentIndex = formatRegex.lastIndex;
-      }
-      
-      // Add remaining text
-      if (currentIndex < text.length) {
-        parts.push(text.slice(currentIndex));
-      }
-      
-      return parts.length > 1 ? parts : text;
-    };
-
-  const formatContent = (content) => {
-    if (!content) return null;
-    
-    return content
-      .split('\n')
-      .map((line, index) => {
-        // Headers
-        if (line.startsWith('# ')) {
-          return <h1 key={index} className="article-h1">{line.slice(2)}</h1>;
-        }
-        if (line.startsWith('## ')) {
-          return <h2 key={index} className="article-h2">{line.slice(3)}</h2>;
-        }
-        if (line.startsWith('### ')) {
-          return <h3 key={index} className="article-h3">{line.slice(4)}</h3>;
-        }
-        
-        // Bold text in lists
-        if (line.startsWith('- **') && line.includes('**:')) {
-          const parts = line.slice(4).split('**:');
-          return (
-            <div key={index} className="article-list-item">
-              <strong>{parts[0]}</strong>: {parts[1]}
-            </div>
-          );
-        }
-        
-        // Regular list items
-        if (line.startsWith('- ')) {
-          return <div key={index} className="article-list-item">{line.slice(2)}</div>;
-        }
-        
-        // Empty lines
-        if (line.trim() === '') {
-          return <br key={index} />;
-        }
-        
-        // Regular paragraphs
-        return <p key={index} className="article-paragraph">{parseInlineFormatting(line)}</p>;
-      });
-  };
 
   return (
     <div className="page-container">
@@ -233,11 +155,26 @@ const ThoughtsPage = ({ data, setCurrentPage }) => {
               )}
               
               {/* Article Content */}
-              <div className="article-body">
+              <div className="article-body markdown-content">
                 {loading ? (
                   <div className="loading-spinner">Loading article...</div>
                 ) : (
-                  formatContent(articleContent)
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h1: ({node, ...props}) => <h1 className="article-h1" {...props} />,
+                      h2: ({node, ...props}) => <h2 className="article-h2" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="article-h3" {...props} />,
+                      p: ({node, ...props}) => <p className="article-paragraph" {...props} />,
+                      li: ({node, ...props}) => <li className="article-list-item" {...props} />,
+                      ul: ({node, ...props}) => <ul className="article-ul" {...props} />,
+                      ol: ({node, ...props}) => <ol className="article-ol" {...props} />,
+                      strong: ({node, ...props}) => <strong {...props} />,
+                      em: ({node, ...props}) => <em {...props} />,
+                    }}
+                  >
+                    {articleContent}
+                  </ReactMarkdown>
                 )}
               </div>
             </div>
