@@ -1,8 +1,16 @@
 import React from 'react';
 import BackButton from './BackButton';
+import SEO from './SEO';
 
 const QuotesPage = ({ data, setCurrentPage }) => (
-  <div className="page-container">
+  <>
+    <SEO
+      title="Quotes - alex gaoth | Curated Wisdom & Inspiration"
+      description="Explore alex gaoth's collection of favorite quotes from philosophers, writers, and thinkers. A curated selection of wisdom and inspiration."
+      keywords="quotes, philosophy quotes, inspirational quotes, wisdom, curated quotes collection"
+      url="https://app.alexgaoth.com/quotes"
+    />
+    <div className="page-container">
     <div className="content-wrapper-narrow">
       <BackButton setCurrentPage={setCurrentPage} />
 
@@ -20,6 +28,7 @@ const QuotesPage = ({ data, setCurrentPage }) => (
       </div>
     </div>
   </div>
+  </>
 );
 
 export default QuotesPage;

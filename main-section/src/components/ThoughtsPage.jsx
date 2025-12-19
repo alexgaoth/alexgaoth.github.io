@@ -1,13 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import BackButton from './BackButton';
+import SEO from './SEO';
 import { Clock, Tag } from 'lucide-react';
 import ThoughtsSidebar from './ThoughtsSidebar';
 
 const ThoughtsPage = ({ data, setCurrentPage }) => {
 
   return (
-    <div className="thoughts-page-layout">
+    <>
+      <SEO
+        title="Thoughts - alex gaoth | Writing on Tech, Philosophy & Ideas"
+        description="Read alex gaoth's articles and essays on technology, AI, history, philosophy, and software development. Explore technical writings and personal reflections from a Math-CS student at UCSD."
+        keywords="alex gaoth blog, tech articles, philosophy essays, AI writing, software development blog, UCSD student blog, programming thoughts"
+        url="https://app.alexgaoth.com/thoughts"
+      />
+      <div className="thoughts-page-layout">
       <ThoughtsSidebar articles={data.content} />
 
       <div className="thoughts-page-content">
@@ -75,6 +83,7 @@ const ThoughtsPage = ({ data, setCurrentPage }) => {
     </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -1,6 +1,14 @@
 {
-  "build": {
-    "env": {},
-    "npmInstallArgs": "--legacy-peer-deps"
-  }
+  "redirects": [
+    {
+      "source": "/main-section",
+      "destination": "https://app.alexgaoth.com",
+      "permanent": true
+    },
+    {
+      "source": "/main-section/:path*",
+      "destination": "https://app.alexgaoth.com/:path*",
+      "permanent": true
+    }
+  ]
 }

@@ -1,8 +1,16 @@
 import React from 'react';
 import BackButton from './BackButton';
+import SEO from './SEO';
 
 const ResumePage = ({ data, setCurrentPage }) => (
-  <div className="page-container">
+  <>
+    <SEO
+      title="Resume - alex gaoth | Math-CS Student & Full-Stack Developer"
+      description="View alex gaoth's professional resume, experience, skills, and education. Math-CS student at UC San Diego with expertise in full-stack development, Python, React, and DevOps."
+      keywords="alex gaoth resume, Alex Gao resume, UCSD student, full-stack developer resume, software engineer, Python developer, React developer"
+      url="https://app.alexgaoth.com/resume"
+    />
+    <div className="page-container">
     <div className="content-wrapper-narrow">
       <BackButton setCurrentPage={setCurrentPage} />
 
@@ -53,6 +61,7 @@ const ResumePage = ({ data, setCurrentPage }) => (
       </div>
     </div>
   </div>
+  </>
 );
 
 export default ResumePage;

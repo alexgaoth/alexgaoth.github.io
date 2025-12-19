@@ -5,15 +5,15 @@ Allow: /
 
 # Block development and build files
 Disallow: /node_modules/
-Disallow: /main-section/node_modules/
-Disallow: /main-section/src/
+Disallow: /main-section/
 Disallow: /.git/
-Disallow: /main-section/build/
 
 # Allow CSS and JS for proper rendering
 Allow: /css/
 Allow: /js/
-Allow: /main-section/static/
 
 # Sitemap location
 Sitemap: https://alexgaoth.com/sitemap.xml
+
+# Note: Portfolio app moved to app.alexgaoth.com
+# See: https://app.alexgaoth.com/robots.txt

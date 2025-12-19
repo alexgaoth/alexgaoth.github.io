@@ -11,8 +11,8 @@ const SEO = ({
   title = "alex gaoth's Portfolio",
   description = "Portfolio of alex gaoth: Math-CS student at UCSD, full-stack developer, and DevOps enthusiast.",
   keywords = "alex gaoth, alexgaoth, Alex Gao, Portfolio, UCSD, Full-Stack Developer, React, Python",
-  image = "https://alexgaoth.com/main-section/logo.jpg",
-  url = "https://alexgaoth.com/main-section/",
+  image = "https://app.alexgaoth.com/logo.jpg",
+  url = "https://app.alexgaoth.com/",
   type = "website"
 }) => {
   return (

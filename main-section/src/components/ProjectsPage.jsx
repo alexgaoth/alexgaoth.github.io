@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BackButton from './BackButton';
+import SEO from './SEO';
 import { ExternalLink, Github, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ProjectsPage = ({ data, setCurrentPage }) => {
@@ -33,7 +34,14 @@ const ProjectsPage = ({ data, setCurrentPage }) => {
   };
 
   return (
-    <div className="page-container">
+    <>
+      <SEO
+        title="Projects - alex gaoth | Full-Stack Development Portfolio"
+        description="Explore alex gaoth's full-stack development projects including web applications, data visualizations, and creative coding experiments. Built with React, Python, JavaScript, and more."
+        keywords="alex gaoth projects, web development projects, React projects, Python projects, full-stack portfolio, software engineering projects"
+        url="https://app.alexgaoth.com/projects"
+      />
+      <div className="page-container">
       <div className="content-wrapper-narrow">
         <BackButton setCurrentPage={setCurrentPage} />
 
@@ -119,6 +127,7 @@ const ProjectsPage = ({ data, setCurrentPage }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 import { thoughtsIndex } from '../data/thoughtsIndex';
 import ThoughtsSidebar from './ThoughtsSidebar';
 import ArticleShareButtons from './ArticleShareButtons';
+import SEO from './SEO';
 
 const ThoughtArticlePage = () => {
   const { slug } = useParams();
@@ -34,7 +35,16 @@ const ThoughtArticlePage = () => {
   }
 
   return (
-    <div className="article-page-layout">
+    <>
+      <SEO
+        title={`${article.title} - alex gaoth`}
+        description={article.excerpt}
+        keywords={article.tags ? article.tags.join(', ') : 'alex gaoth, blog, article'}
+        url={`https://app.alexgaoth.com/thoughts/${article.slug}`}
+        image={article.image ? `https://app.alexgaoth.com${article.image}` : undefined}
+        type="article"
+      />
+      <div className="article-page-layout">
       {/* Sidebar */}
       <ThoughtsSidebar articles={thoughtsIndex} />
 
@@ -114,6 +124,7 @@ const ThoughtArticlePage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

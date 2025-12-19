@@ -10,7 +10,7 @@ const MainPage = ({ content, setCurrentPage }) => (
         title="alex gaoth - Portfolio | Math-CS Student & Developer"
         description="Explore alex gaoth's portfolio: full-stack projects, technical writings on AI and history, professional resume, and favorite quotes. Math-CS student at UC San Diego."
         keywords="alex gaoth, alexgaoth, Alex Gao, Portfolio, UCSD, Math-CS, Full-Stack Developer, React Projects, Python, DevOps, Software Engineer"
-        url="https://alexgaoth.github.io/main-section/"
+        url="https://app.alexgaoth.com/"
       />
     <div className="page-container">
     <NowButton onClick={() => setCurrentPage('now')}/>

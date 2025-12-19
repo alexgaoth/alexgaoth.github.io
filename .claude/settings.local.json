@@ -4,7 +4,8 @@
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
       "Bash(npm run generate-thoughts:*)",
-      "Bash(vercel --force:*)"
+      "Bash(vercel --force:*)",
+      "Bash(ls:*)"
     ]
   }
 }
