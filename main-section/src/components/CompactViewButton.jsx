@@ -1,15 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/compact-view.css';
 
-const CompactViewButton = ({ progress, setProgress }) => {
+const CompactViewButton = ({ progress, setProgress, isProjectsPage = false }) => {
   const [isPressed, setIsPressed] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [pressStartTime, setPressStartTime] = useState(null);
+  const [isFirstTime, setIsFirstTime] = useState(() => {
+    // Check if user has used compact view before (mobile only)
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return !localStorage.getItem('compact-view-used');
+    }
+    return false;
+  });
   const animationFrameRef = useRef(null);
   const startTimeRef = useRef(null);
   const isMobile = window.innerWidth < 768;
 
   const COMPACT_DURATION = 1000; // 1 second to compact
   const EXPAND_DURATION = 800; // 0.8 seconds to expand (faster)
+  const MIN_MOBILE_ANIMATION = 500; // Minimum 0.5s animation on mobile before reversing
 
   useEffect(() => {
     if (isPressed) {
@@ -25,6 +34,11 @@ const CompactViewButton = ({ progress, setProgress }) => {
           animationFrameRef.current = requestAnimationFrame(animate);
         } else {
           setIsAnimating(false);
+          // Mark as used on first complete animation (mobile only)
+          if (isMobile && isFirstTime) {
+            localStorage.setItem('compact-view-used', 'true');
+            setIsFirstTime(false);
+          }
         }
       };
       animationFrameRef.current = requestAnimationFrame(animate);
@@ -68,11 +82,25 @@ const CompactViewButton = ({ progress, setProgress }) => {
     e.preventDefault();
     if (!isAnimating) {
       setIsPressed(true);
+      setPressStartTime(Date.now());
     }
   };
 
   const handlePressEnd = (e) => {
     e.preventDefault();
+
+    // On mobile, enforce minimum animation time
+    if (isMobile && pressStartTime) {
+      const elapsed = Date.now() - pressStartTime;
+      if (elapsed < MIN_MOBILE_ANIMATION) {
+        // Wait for remaining time before releasing
+        setTimeout(() => {
+          setIsPressed(false);
+        }, MIN_MOBILE_ANIMATION - elapsed);
+        return;
+      }
+    }
+
     setIsPressed(false);
   };
 
@@ -82,9 +110,14 @@ const CompactViewButton = ({ progress, setProgress }) => {
   }, [progress]);
 
   if (isMobile) {
+    // Calculate opacity: starts at 0.5, goes to 1 as progress increases (only on first time)
+    const buttonOpacity = isFirstTime ? 0.5 + (progress * 0.5) : 1;
+    const buttonClass = `compact-view-button mobile ${isProjectsPage ? 'projects-position' : ''}`;
+
     return (
       <button
-        className="compact-view-button mobile"
+        className={buttonClass}
+        style={{ opacity: buttonOpacity }}
         onMouseDown={handlePressStart}
         onMouseUp={handlePressEnd}
         onMouseLeave={handlePressEnd}
@@ -108,12 +141,6 @@ const CompactViewButton = ({ progress, setProgress }) => {
           <rect x="3" y="14" width="7" height="7" />
           <rect x="14" y="14" width="7" height="7" />
         </svg>
-        <div
-          className="compact-progress-ring"
-          style={{
-            strokeDashoffset: 176 * (1 - progress)
-          }}
-        />
       </button>
     );
   }

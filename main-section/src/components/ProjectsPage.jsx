@@ -57,7 +57,7 @@ const ProjectsPage = ({ data }) => {
 
         <h1 className="title-page">Things That I've Made</h1>
 
-        <CompactViewButton progress={progress} setProgress={setProgress} />
+        <CompactViewButton progress={progress} setProgress={setProgress} isProjectsPage={true} />
 
         <div
           className={`grid-1col projects-compact-container ${progress > 0 ? 'compacting' : ''}`}

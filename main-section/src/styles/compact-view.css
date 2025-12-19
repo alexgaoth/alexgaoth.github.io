@@ -11,7 +11,7 @@
   font-size: 0.875rem;
   color: rgba(0, 0, 0, 0.5);
   padding: 0.5rem 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
   display: inline-block;
   overflow: hidden;
   transition: color 0.2s ease;
@@ -55,6 +55,11 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* Projects page position (where archive button would be) */
+.compact-view-button.mobile.projects-position {
+  bottom: 2rem;
+}
+
 .compact-view-button.mobile:active {
   transform: scale(0.95);
 }
@@ -73,6 +78,13 @@
   stroke-dashoffset: 176;
   transition: none;
   pointer-events: none;
+}
+
+/* Hide progress ring on mobile */
+@media (max-width: 768px) {
+  .compact-progress-ring {
+    display: none;
+  }
 }
 
 /* Compact Grid Layout for Thoughts */
@@ -236,12 +248,14 @@
 @media (max-width: 768px) {
   .thoughts-compact-container.compacting,
   .projects-compact-container.compacting {
-    /* Keep calculated columns on mobile */
+    /* Reset desktop breakout styles for mobile */
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: calc(1rem * (1 - var(--compact-progress) * 0.5));
+    padding-right: calc(1rem * (1 - var(--compact-progress) * 0.5));
     gap: calc(1rem - var(--compact-progress) * 0.5rem);
-    width: calc(100% + (95vw - 100%) * var(--compact-progress));
-    max-width: calc(95vw * var(--compact-progress) + 100% * (1 - var(--compact-progress)));
-    margin-left: calc(-1 * (95vw - 100%) / 2 * var(--compact-progress));
-    margin-right: calc(-1 * (95vw - 100%) / 2 * var(--compact-progress));
   }
 }
 
