@@ -19,6 +19,7 @@ body {
   background-color: white;
   color: black;
   padding: 1rem;
+  position: relative;
 }
 
 @media (min-width: 768px) {
@@ -30,6 +31,38 @@ body {
 .content-wrapper {
   max-width: 1152px;
   margin: 0 auto;
+}
+
+/* Parallax Styles */
+.parallax-container {
+  position: relative;
+}
+
+.title-section-parallax {
+  will-change: transform, top;
+  width: 100%;
+  /* Position and transform set via inline styles */
+}
+
+.cards-section-parallax {
+  will-change: transform, top;
+  width: 100%;
+  /* Position and transform set via inline styles */
+}
+
+.fade-text {
+  margin-top: 1rem;
+  font-style: italic;
+  opacity: 1;
+  transition: opacity 0.1s linear;
+  will-change: opacity;
+}
+
+/* Mobile adjustments for parallax */
+@media (max-width: 768px) {
+  .fade-text {
+    font-size: 0.75rem;
+  }
 }
 
 .content-wrapper-narrow {
@@ -65,7 +98,10 @@ body {
   font-size: 0.85rem;
   opacity: 60%;
   padding-top: 3rem;
+  padding-bottom: 2rem;
   text-align: center;
+  position: relative;
+  z-index: 5;
 }
 
 @media (min-width: 768px) {
