@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import BackButton from './BackButton';
+import NavigationBar from './NavigationBar';
 import SEO from './SEO';
 import { Clock, Tag } from 'lucide-react';
 import ThoughtsSidebar from './ThoughtsSidebar';
 
-const ThoughtsPage = ({ data, setCurrentPage }) => {
+const ThoughtsPage = ({ data }) => {
 
   return (
     <>
@@ -15,13 +15,13 @@ const ThoughtsPage = ({ data, setCurrentPage }) => {
         keywords="alex gaoth blog, tech articles, philosophy essays, AI writing, software development blog, UCSD student blog, programming thoughts"
         url="https://app.alexgaoth.com/thoughts"
       />
+      <NavigationBar />
       <div className="thoughts-page-layout">
       <ThoughtsSidebar articles={data.content} />
 
       <div className="thoughts-page-content">
         <div className="page-container">
           <div className="content-wrapper-narrow">
-            <BackButton setCurrentPage={setCurrentPage} />
 
         <h1 className="title-page">Thoughts</h1>
 

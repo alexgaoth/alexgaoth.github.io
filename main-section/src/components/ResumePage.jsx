@@ -1,8 +1,8 @@
 import React from 'react';
-import BackButton from './BackButton';
+import NavigationBar from './NavigationBar';
 import SEO from './SEO';
 
-const ResumePage = ({ data, setCurrentPage }) => (
+const ResumePage = ({ data }) => (
   <>
     <SEO
       title="Resume - alex gaoth | Math-CS Student & Full-Stack Developer"
@@ -10,9 +10,9 @@ const ResumePage = ({ data, setCurrentPage }) => (
       keywords="alex gaoth resume, Alex Gao resume, UCSD student, full-stack developer resume, software engineer, Python developer, React developer"
       url="https://app.alexgaoth.com/resume"
     />
+    <NavigationBar />
     <div className="page-container">
     <div className="content-wrapper-narrow">
-      <BackButton setCurrentPage={setCurrentPage} />
 
       <h1 className="title-page">Resume</h1>
       <p className='mb-small'>

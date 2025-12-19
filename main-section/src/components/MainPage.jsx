@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import NowButton  from './NowButton';
 import SEO from './SEO';
 
 
-const MainPage = ({ content, setCurrentPage }) => (
+const MainPage = ({ content }) => (
 
   <>
     <SEO
@@ -13,22 +14,22 @@ const MainPage = ({ content, setCurrentPage }) => (
         url="https://app.alexgaoth.com/"
       />
     <div className="page-container">
-    <NowButton onClick={() => setCurrentPage('now')}/>
-      
+    <NowButton />
+
       <div className="content-wrapper">
         <h1 class = "title-main">this is alex gaoth's directory</h1>
         <div class = "title-sub">
           <p>known around also as gao, alexgaoth</p>
           <p>have a look around, there be something that interests u</p>
-        
+
         <p class = "hidden">since ur on mobile, try holding on the sections to press them. </p>
         </div>
-        
+
         <div className="grid-2col">
           {Object.entries(content).map(([key, data]) => (
-            <div
+            <Link
               key={key}
-              onClick={() => setCurrentPage(key)}
+              to={`/${key}`}
               className="card"
             >
               <div className="card-image">
@@ -44,7 +45,7 @@ const MainPage = ({ content, setCurrentPage }) => (
                 {key === 'thoughts' && "Ideas worth saying - maybe worth reading"}
                 {key === 'quotes' && "The good and the bad"}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

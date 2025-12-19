@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import BackButton from './BackButton';
+import NavigationBar from './NavigationBar';
 import SEO from './SEO';
 import { ExternalLink, Github, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const ProjectsPage = ({ data, setCurrentPage }) => {
+const ProjectsPage = ({ data }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState({});
 
   const nextImage = (projectIndex) => {
@@ -41,9 +41,9 @@ const ProjectsPage = ({ data, setCurrentPage }) => {
         keywords="alex gaoth projects, web development projects, React projects, Python projects, full-stack portfolio, software engineering projects"
         url="https://app.alexgaoth.com/projects"
       />
+      <NavigationBar />
       <div className="page-container">
       <div className="content-wrapper-narrow">
-        <BackButton setCurrentPage={setCurrentPage} />
 
         <h1 className="title-page">Things That I've Made</h1>
 

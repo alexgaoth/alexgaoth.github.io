@@ -1,8 +1,8 @@
 import React from 'react';
-import BackButton from './BackButton';
+import NavigationBar from './NavigationBar';
 import SEO from './SEO';
 
-const QuotesPage = ({ data, setCurrentPage }) => (
+const QuotesPage = ({ data }) => (
   <>
     <SEO
       title="Quotes - alex gaoth | Curated Wisdom & Inspiration"
@@ -10,9 +10,9 @@ const QuotesPage = ({ data, setCurrentPage }) => (
       keywords="quotes, philosophy quotes, inspirational quotes, wisdom, curated quotes collection"
       url="https://app.alexgaoth.com/quotes"
     />
+    <NavigationBar />
     <div className="page-container">
     <div className="content-wrapper-narrow">
-      <BackButton setCurrentPage={setCurrentPage} />
 
       <h1 className="title-page">Quotes</h1>
 
