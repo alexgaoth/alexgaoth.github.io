@@ -4,7 +4,7 @@ import ThoughtArticlePage from './components/ThoughtArticlePage';
 
 function App() {
   return (
-    <Router basename="/main-section">
+    <Router>
       <Routes>
         <Route path="/thoughts/:slug" element={<ThoughtArticlePage />} />
         <Route path="/*" element={<PersonalWebsiteSection />} />

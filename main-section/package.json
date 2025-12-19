@@ -2,7 +2,7 @@
   "name": "main-section",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://alexgaoth.com/main-section",
+  "homepage": "https://app.alexgaoth.com",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.6.4",
@@ -22,7 +22,6 @@
     "start": "react-scripts start",
     "prebuild": "node scripts/generate-thoughts-index.js",
     "build": "react-scripts build",
-    "postbuild": "npx copyfiles -u 1 build/**/* .",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "generate-thoughts": "node scripts/generate-thoughts-index.js"
