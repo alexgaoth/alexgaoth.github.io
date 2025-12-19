@@ -41,7 +41,7 @@ slides[currentSlide].classList.add('active');
 
 function showSlide(slideIndex) {
     if (slideIndex >= slides.length) {
-        location.href = './main-section/';
+        location.href = 'https://app.alexgaoth.com/';
     }
     else if (slideIndex >= 0){
         // Mark slides as seen before transition
