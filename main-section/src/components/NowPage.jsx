@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { getNowData } from '../data/nowData';
-import NavigationBar from './NavigationBar';
 import SEO from './SEO';
 
 const NowPage = () => {
+  const navigate = useNavigate();
   const [nowData, setNowData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -78,17 +78,16 @@ const NowPage = () => {
         keywords="alex gaoth now, current projects, what I'm doing, now page, Derek Sivers"
         url="https://app.alexgaoth.com/now"
       />
-      <NavigationBar />
       <div className="page-container bookshelf-page">
       <div className="bookshelf-wrapper">
         <div className="bookshelf-header">
-          <Link
-            to="/"
+          <button
+            onClick={() => navigate('/')}
             className="btn-back-bookshelf"
           >
             <ArrowLeft size={18} />
             Back
-          </Link>
+          </button>
 
           <div className="bookshelf-title-section">
             <h1 className="bookshelf-title">{nowData.title}</h1>

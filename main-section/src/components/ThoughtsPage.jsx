@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import NavigationBar from './NavigationBar';
 import SEO from './SEO';
 import { Clock, Tag } from 'lucide-react';
 import ThoughtsSidebar from './ThoughtsSidebar';
+import CompactViewButton from './CompactViewButton';
 
 const ThoughtsPage = ({ data }) => {
+  const [progress, setProgress] = useState(0);
+  const totalCards = data.content.length;
+
+  // Calculate optimal grid layout to fit all cards
+  // Assume viewport height of ~800px, header/footer ~250px, leaves ~550px
+  // Each card needs ~200px height in compact mode
+  const availableHeight = 550;
+  const cardHeight = 200;
+  const maxRows = Math.floor(availableHeight / cardHeight);
+  const optimalColumns = Math.ceil(totalCards / maxRows);
+  const actualRows = Math.ceil(totalCards / optimalColumns);
 
   return (
     <>
@@ -25,7 +37,15 @@ const ThoughtsPage = ({ data }) => {
 
         <h1 className="title-page">Thoughts</h1>
 
-        <div className="space-y-medium">
+        <CompactViewButton progress={progress} setProgress={setProgress} />
+
+        <div
+          className={`space-y-medium thoughts-compact-container ${progress > 0 ? 'compacting' : ''}`}
+          style={{
+            '--columns': optimalColumns,
+            '--rows': actualRows
+          }}
+        >
           {data.content.map((thought, index) => (
             <Link
               key={thought.slug || index}

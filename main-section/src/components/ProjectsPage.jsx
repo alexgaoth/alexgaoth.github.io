@@ -2,9 +2,19 @@ import React, { useState } from 'react';
 import NavigationBar from './NavigationBar';
 import SEO from './SEO';
 import { ExternalLink, Github, ChevronLeft, ChevronRight } from 'lucide-react';
+import CompactViewButton from './CompactViewButton';
 
 const ProjectsPage = ({ data }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState({});
+  const [progress, setProgress] = useState(0);
+  const totalCards = data.content.length;
+
+  // Calculate optimal grid layout to fit all cards
+  const availableHeight = 550;
+  const cardHeight = 200;
+  const maxRows = Math.floor(availableHeight / cardHeight);
+  const optimalColumns = Math.ceil(totalCards / maxRows);
+  const actualRows = Math.ceil(totalCards / optimalColumns);
 
   const nextImage = (projectIndex) => {
     const project = data.content[projectIndex];
@@ -47,7 +57,15 @@ const ProjectsPage = ({ data }) => {
 
         <h1 className="title-page">Things That I've Made</h1>
 
-        <div className="grid-1col">
+        <CompactViewButton progress={progress} setProgress={setProgress} />
+
+        <div
+          className={`grid-1col projects-compact-container ${progress > 0 ? 'compacting' : ''}`}
+          style={{
+            '--columns': optimalColumns,
+            '--rows': actualRows
+          }}
+        >
           {data.content.map((project, index) => (
             <div key={index} className="project-card">
               {/* Project Image(s) */}

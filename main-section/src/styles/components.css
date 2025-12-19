@@ -14,13 +14,15 @@
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
-  transition: background 0.3s ease, opacity 0.3s ease;
+  transition: background 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
   opacity: 0.5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .navigation-bar:hover {
   background: rgba(255, 255, 255, 0.95);
   opacity: 1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .nav-back {
@@ -71,6 +73,100 @@
   color: white;
 }
 
+/* Navigation Now Button */
+.nav-now-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid black;
+  background: white;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  font-family: inherit;
+  border-radius: 0;
+  overflow: visible;
+  position: relative;
+  /* Set initial CSS variables to prevent undefined state */
+  --mouse-x: 50vw;
+  --mouse-y: 50vh;
+  --offset-x: 50vw;
+  --offset-y: 50vh;
+}
+
+.nav-now-button::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0.4) 100%);
+  border-radius: 50%;
+  transform: translate(var(--offset-x), var(--offset-y));
+  transition: all 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.nav-now-button:hover::before,
+.nav-now-button.animating::before {
+  width: 300vmax;
+  height: 300vmax;
+  transform: translate(calc(var(--offset-x) - 150vmax), calc(var(--offset-y) - 150vmax));
+}
+
+.nav-now-button.animating::before {
+  transition: all 2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-now-button:hover::after {
+  font-family: "WDXL Lubrifont SC", sans-serif;
+  font-weight: 400;
+  font-size: 3rem;
+  font-style: normal;
+  letter-spacing: 0.5em;
+  content: '近况';
+  position: fixed;
+  top: 50vh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInText 1.5s ease-in-out 0.5s forwards;
+  pointer-events: none;
+}
+
+.nav-now-button.animating::after {
+  font-family: "WDXL Lubrifont SC", sans-serif;
+  font-weight: 400;
+  font-size: 3rem;
+  font-style: normal;
+  letter-spacing: 0.5em;
+  content: '近况';
+  position: fixed;
+  top: 50vh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeInText 2s ease-in-out 0.5s forwards;
+  pointer-events: none;
+}
+
+.nav-now-button:hover,
+.nav-now-button.animating {
+  color: transparent;
+  border-color: transparent;
+  z-index: 999;
+}
+
 /* Mobile Navigation Bar */
 @media (max-width: 768px) {
   .navigation-bar {
@@ -80,6 +176,7 @@
     flex-direction: column;
     gap: 0.75rem;
     align-items: stretch;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .nav-back {
@@ -101,6 +198,11 @@
     font-size: 0.75rem;
     padding: 0.4rem 0.75rem;
   }
+
+  .nav-now-button {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.75rem;
+  }
 }
 
 /* Add spacing to page containers when nav bar is present */
@@ -108,9 +210,18 @@
   padding-top: 80px;
 }
 
+/* NowPage doesn't have navigation bar, so no extra padding */
+.page-container.bookshelf-page {
+  padding-top: 0;
+}
+
 @media (max-width: 768px) {
   .page-container {
     padding-top: 140px;
+  }
+
+  .page-container.bookshelf-page {
+    padding-top: 0;
   }
 }
 

@@ -1,0 +1,266 @@
+/* Compact View Component Styles */
+:root {
+  --compact-progress: 0;
+}
+
+/* Desktop Compact Button */
+.compact-view-button.desktop {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+.compact-view-button.desktop:hover {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.compact-view-button.desktop:active {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.compact-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #000, #666);
+  transition: none;
+  pointer-events: none;
+}
+
+/* Mobile Compact Button */
+.compact-view-button.mobile {
+  position: fixed;
+  right: 2rem;
+  bottom: 6rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.compact-view-button.mobile:active {
+  transform: scale(0.95);
+}
+
+.compact-progress-ring {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: white;
+  transform: rotate(-90deg);
+  stroke-dasharray: 176;
+  stroke-dashoffset: 176;
+  transition: none;
+  pointer-events: none;
+}
+
+/* Compact Grid Layout for Thoughts */
+.thoughts-compact-container {
+  transition: all 0.3s ease;
+}
+
+.thoughts-compact-container.compacting {
+  display: grid;
+  grid-template-columns: repeat(calc(1 + (var(--columns) - 1) * var(--compact-progress)), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+  gap: calc(1.5rem - var(--compact-progress) * 1rem);
+  height: calc(100vh - 250px);
+  align-items: start;
+  overflow: hidden;
+
+  /* Center to middle 80% of screen */
+  position: relative;
+  width: calc(100% + (80vw - 100%) * var(--compact-progress));
+  max-width: calc(80vw * var(--compact-progress) + 100% * (1 - var(--compact-progress)));
+  margin-left: calc(-1 * (80vw - 100%) / 2 * var(--compact-progress));
+  margin-right: calc(-1 * (80vw - 100%) / 2 * var(--compact-progress));
+  padding-left: calc(2rem * var(--compact-progress));
+  padding-right: calc(2rem * var(--compact-progress));
+}
+
+.thoughts-compact-container.compacting .thought-card-link {
+  pointer-events: none;
+  cursor: default;
+  display: block;
+  height: 100%;
+  margin-top: 0 !important; /* Override space-y-medium margin */
+}
+
+.thoughts-compact-container.compacting .thought-card {
+  height: 100%;
+  margin-bottom: 0;
+  transition: none;
+}
+
+.thoughts-compact-container.compacting .thought-image-container {
+  height: calc(200px - var(--compact-progress) * 80px);
+  overflow: hidden;
+}
+
+.thoughts-compact-container.compacting .thought-image {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.thoughts-compact-container.compacting .thought-content {
+  padding: calc(1.5rem - var(--compact-progress) * 0.5rem);
+}
+
+.thoughts-compact-container.compacting .title-article {
+  font-size: calc(1.5rem - var(--compact-progress) * 0.4rem);
+  margin-bottom: calc(0.75rem - var(--compact-progress) * 0.35rem);
+  line-height: 1.3;
+}
+
+.thoughts-compact-container.compacting .article-meta {
+  font-size: calc(0.875rem - var(--compact-progress) * 0.25rem);
+  margin-bottom: calc(0.75rem - var(--compact-progress) * 0.5rem);
+}
+
+.thoughts-compact-container.compacting .text-gray {
+  display: -webkit-box;
+  -webkit-line-clamp: calc(3 - var(--compact-progress) * 1);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: calc(1rem - var(--compact-progress) * 0.3rem);
+  margin-bottom: calc(1rem - var(--compact-progress) * 0.75rem);
+}
+
+.thoughts-compact-container.compacting .read-more-btn,
+.thoughts-compact-container.compacting .article-tags {
+  opacity: calc(1 - var(--compact-progress) * 1.2);
+  height: calc(1.5rem - var(--compact-progress) * 1.5rem);
+  overflow: hidden;
+  margin: 0;
+}
+
+/* Compact Grid Layout for Projects */
+.projects-compact-container {
+  transition: all 0.3s ease;
+}
+
+.projects-compact-container.compacting {
+  display: grid;
+  grid-template-columns: repeat(calc(1 + (var(--columns) - 1) * var(--compact-progress)), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+  gap: calc(1.5rem - var(--compact-progress) * 1rem);
+  height: calc(100vh - 250px);
+  align-items: start;
+  overflow: hidden;
+
+  /* Center to middle 80% of screen */
+  position: relative;
+  width: calc(100% + (80vw - 100%) * var(--compact-progress));
+  max-width: calc(80vw * var(--compact-progress) + 100% * (1 - var(--compact-progress)));
+  margin-left: calc(-1 * (80vw - 100%) / 2 * var(--compact-progress));
+  margin-right: calc(-1 * (80vw - 100%) / 2 * var(--compact-progress));
+  padding-left: calc(2rem * var(--compact-progress));
+  padding-right: calc(2rem * var(--compact-progress));
+}
+
+.projects-compact-container.compacting .project-card {
+  pointer-events: none;
+  cursor: default;
+  height: 100%;
+  margin-bottom: 0;
+  transition: none;
+}
+
+.projects-compact-container.compacting .project-image-container {
+  height: calc(250px - var(--compact-progress) * 120px);
+  overflow: hidden;
+}
+
+.projects-compact-container.compacting .project-image {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.projects-compact-container.compacting .title-card {
+  font-size: calc(1.5rem - var(--compact-progress) * 0.4rem);
+  margin-bottom: calc(0.75rem - var(--compact-progress) * 0.35rem);
+  line-height: 1.3;
+}
+
+.projects-compact-container.compacting .tag {
+  font-size: calc(0.75rem - var(--compact-progress) * 0.2rem);
+  padding: calc(0.25rem - var(--compact-progress) * 0.1rem) calc(0.75rem - var(--compact-progress) * 0.25rem);
+}
+
+.projects-compact-container.compacting .flex {
+  margin-bottom: calc(1rem - var(--compact-progress) * 0.5rem);
+}
+
+.projects-compact-container.compacting .text-gray {
+  display: -webkit-box;
+  -webkit-line-clamp: calc(3 - var(--compact-progress) * 1);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: calc(1rem - var(--compact-progress) * 0.3rem);
+  margin-bottom: calc(1rem - var(--compact-progress) * 0.75rem);
+}
+
+.projects-compact-container.compacting .project-links,
+.projects-compact-container.compacting .image-nav {
+  opacity: calc(1 - var(--compact-progress) * 1.2);
+  height: calc(2.5rem - var(--compact-progress) * 2.5rem);
+  overflow: hidden;
+  margin: 0;
+  pointer-events: none;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .thoughts-compact-container.compacting,
+  .projects-compact-container.compacting {
+    /* Keep calculated columns on mobile */
+    gap: calc(1rem - var(--compact-progress) * 0.5rem);
+    width: calc(100% + (95vw - 100%) * var(--compact-progress));
+    max-width: calc(95vw * var(--compact-progress) + 100% * (1 - var(--compact-progress)));
+    margin-left: calc(-1 * (95vw - 100%) / 2 * var(--compact-progress));
+    margin-right: calc(-1 * (95vw - 100%) / 2 * var(--compact-progress));
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .thoughts-compact-container.compacting .thought-image-container,
+  .projects-compact-container.compacting .project-image-container {
+    height: calc(150px - var(--compact-progress) * 70px);
+  }
+}
+
+/* Ensure smooth transitions */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.compact-view-button.mobile,
+.compact-view-button.desktop {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
