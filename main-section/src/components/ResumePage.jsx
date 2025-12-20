@@ -17,7 +17,7 @@ const ResumePage = ({ data }) => (
       <h1 className="title-page">Resume</h1>
       <p className='mb-small'>
             To view my proper resume here: {" "}
-            <a href = "/resume.pdf" target="_blank" rel="noopener noreferrer"> view resume</a>
+            <a href = "https://alexgaoth.com/resume.pdf" target="_blank" rel="noopener noreferrer"> view resume</a>
           </p>
       <div className="space-y-large">     
         <section>

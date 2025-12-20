@@ -94,6 +94,13 @@ body {
   }
 }
 
+@media (max-width: 769px) {
+  .reverse-hidden{
+    visibility: hidden;
+  }
+}
+
+
 .footer {
   font-size: 0.85rem;
   opacity: 60%;
