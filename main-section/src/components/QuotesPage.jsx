@@ -1,6 +1,7 @@
 import React from 'react';
 import NavigationBar from './NavigationBar';
 import SEO from './SEO';
+import QuoteWheel from './QuoteWheel';
 
 const QuotesPage = ({ data }) => (
   <>
@@ -15,6 +16,8 @@ const QuotesPage = ({ data }) => (
     <div className="content-wrapper-narrow">
 
       <h1 className="title-page">Quotes</h1>
+
+      <QuoteWheel quotes={data.content} />
 
       <div className="space-y-large">
         {data.content.map((item, index) => (

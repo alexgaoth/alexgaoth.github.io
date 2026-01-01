@@ -190,7 +190,7 @@ const MainPage = ({ content }) => {
               <h1 className="title-main">this is alex gaoth's directory</h1>
               <div className="title-sub">
                 <p>I am alex gao, the additional 'th' is for "uniqueness"</p>
-                <p className='reverse-hidden'>it is the initial of my chinese first name, it is here so you can find me easier</p>
+                <p className='reverse-hidden'>it is the initials of my chinese first name, it is here so you can find me easier</p>
                 <p className="hidden">I spy a mobile user - this site is better on desktop </p>
                 <p
                   className="fade-text"
