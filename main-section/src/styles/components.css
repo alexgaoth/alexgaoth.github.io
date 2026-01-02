@@ -912,13 +912,47 @@
 }
 
 .markdown-content a {
-  color: #0066cc;
+  color: #999;
   text-decoration: underline;
   transition: color 0.2s ease;
 }
 
+.markdown-content a:visited {
+  color: #333;
+}
+
 .markdown-content a:hover {
-  color: #004499;
+  color: #666;
+}
+
+/* Footnote reference numbers and return arrows */
+.markdown-content sup a,
+.markdown-content .footnote-backref,
+.markdown-content .footnote-ref a,
+.markdown-content .footnotes a,
+.markdown-content a[href^="#fn"],
+.markdown-content a[href^="#fnref"],
+.markdown-content a.data-footnote-backref {
+  color: #5588bb !important;
+  text-decoration: none !important;
+}
+
+.markdown-content sup a:visited,
+.markdown-content .footnote-backref:visited,
+.markdown-content .footnote-ref a:visited,
+.markdown-content .footnotes a:visited,
+.markdown-content a[href^="#fn"]:visited,
+.markdown-content a[href^="#fnref"]:visited {
+  color: #5588bb !important;
+}
+
+.markdown-content sup a:hover,
+.markdown-content .footnote-backref:hover,
+.markdown-content .footnote-ref a:hover,
+.markdown-content .footnotes a:hover,
+.markdown-content a[href^="#fn"]:hover,
+.markdown-content a[href^="#fnref"]:hover {
+  color: #5588bb !important;
 }
 
 .markdown-content blockquote {
