@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/quote-wheel.css';
 
-const QuoteWheel = ({ quotes }) => {
+const QuoteWheel = ({ quotes, onQuoteClick, onSpinComplete }) => {
   const visibleCount = 5; // Number of visible quotes at a time (2 top, 1 center, 2 bottom)
   const itemHeight = 100 / visibleCount;
 
@@ -17,6 +17,7 @@ const QuoteWheel = ({ quotes }) => {
 
     // Pre-select a random quote (roll the dice!)
     const targetQuoteIndex = Math.floor(Math.random() * quotes.length);
+    const targetQuote = quotes[targetQuoteIndex];
 
     const startRotation = rotation;
     const totalHeight = quotes.length * itemHeight;
@@ -55,6 +56,10 @@ const QuoteWheel = ({ quotes }) => {
         // Ensure we land exactly on target
         setRotation(finalRotation);
         setIsSpinning(false);
+        // Notify parent that spin is complete with the centered quote
+        if (onSpinComplete) {
+          onSpinComplete(targetQuote, targetQuoteIndex);
+        }
       }
     };
 
@@ -120,7 +125,8 @@ const QuoteWheel = ({ quotes }) => {
               <div
                 key={index}
                 className="quote-wheel-item"
-                style={styles.containerStyle}
+                style={{ ...styles.containerStyle, cursor: 'pointer' }}
+                onClick={() => onQuoteClick && onQuoteClick(item)}
               >
                 <p className="wheel-quote-text" style={styles.textStyle}>"{item.quote}"</p>
                 <cite className="wheel-quote-author">— {item.author}</cite>

@@ -132,27 +132,39 @@ export const content = {
     content: [
       {
         quote: "History... is very rarely about what actually happened but more about how events are interpreted.",
-        author: "Paul Markham on De Re Militari"
+        author: "Paul Markham on De Re Militari",
+        description: null,
+        relatedArticles: null
       },
       {
         quote: "Power is a lot like real estate. It's all about location location location. The closer you are to the source, the higher your property value.",
-        author: "Frank Underwood, House of Cards"
+        author: "Frank Underwood, House of Cards",
+        description: null,
+        relatedArticles: null
       },
       {
         quote: "Hell is other people",
-        author: "Sartre, No Exit"
+        author: "Sartre, No Exit",
+        description: null,
+        relatedArticles: null
       },
       {
         quote:"You can't have a revolution without a few heads rolling.",
-        author: "John Paradox (alias), Europe Universalis IV"
+        author: "John Paradox (alias), Europe Universalis IV",
+        description: null,
+        relatedArticles: null
       },
       {
-        quote: "Capital has the ability to subsume all critiques into itself. Even those who would *critique* capital end up *reinforcing* it instead...", 
-        author: "Joyce Messier, from the video game Disco Elysium (Inspired by Herbert Marcuse)" 
+        quote: "Capital has the ability to subsume all critiques into itself. Even those who would *critique* capital end up *reinforcing* it instead...",
+        author: "Joyce Messier, from the video game Disco Elysium (Inspired by Herbert Marcuse)",
+        description: null,
+        relatedArticles: null
       },
       {
-        quote: "I don't see where the realism is..", 
-        author: "sutha" 
+        quote: "I don't see where the realism is..",
+        author: "sutha",
+        description: null,
+        relatedArticles: null
       }
     ],
     previewImage: "/resources/zaporo_cossak.jpg"
