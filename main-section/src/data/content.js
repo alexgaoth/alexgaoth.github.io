@@ -139,20 +139,20 @@ export const content = {
       {
         quote: "Power is a lot like real estate. It's all about location location location. The closer you are to the source, the higher your property value.",
         author: "Frank Underwood, House of Cards",
-        description: null,
+        description: "I need to write a \'thought\' on this",
         relatedArticles: null
       },
       {
         quote: "Hell is other people",
         author: "Sartre, No Exit",
-        description: null,
-        relatedArticles: null
+        description: "Without others, hell has no meaning",
+        relatedArticles: ["submitting-to-the-symbolic-order"]
       },
       {
         quote:"You can't have a revolution without a few heads rolling.",
         author: "John Paradox (alias), Europe Universalis IV",
         description: null,
-        relatedArticles: null
+        relatedArticles: ["winning-the-battle-of-manzikert"]
       },
       {
         quote: "Capital has the ability to subsume all critiques into itself. Even those who would *critique* capital end up *reinforcing* it instead...",
