@@ -1,0 +1,45 @@
+name: Notify New Thought
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'main-section/src/data/thoughts/*.md'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Node dependencies
+        working-directory: ./main-section
+        run: npm install
+
+      - name: Generate thoughts index
+        working-directory: ./main-section
+        run: npm run generate-thoughts
+
+      - name: Send notification
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        working-directory: ./main-section
+        run: python scripts/send-thought-notification.py
