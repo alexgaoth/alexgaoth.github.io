@@ -1,5 +1,5 @@
 ---
-title: An short article to describe this website 2
+title: An short article to describe this website
 date: '2026-01-02'
 excerpt: >-
   This section of the website, the thoughts page, is meant to be documentation
@@ -11,7 +11,7 @@ tags:
   - Knowledge
   - Concept
 ---
-# An short article to describe this website 2
+# An short article to describe this website
 
 This section of the website, the thoughts page, is meant to be documentation of the things that I have thought about (and usually went into deeper research for), so I can inspire others like how I was (and still) inspired.[^1]
 
