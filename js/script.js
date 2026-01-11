@@ -37,6 +37,36 @@ function handleGesture() {
     }
 }
 
+// Mouse wheel and trackpad scroll handling
+let isScrolling = false;
+let scrollTimeout;
+
+document.addEventListener('wheel', (e) => {
+    // Prevent default scrolling behavior
+    e.preventDefault();
+
+    // If already processing a scroll, ignore
+    if (isScrolling) return;
+
+    // Set scrolling flag
+    isScrolling = true;
+
+    // Determine scroll direction
+    if (e.deltaY > 0) {
+        // Scrolling down
+        showSlide(currentSlide + 1);
+    } else if (e.deltaY < 0) {
+        // Scrolling up
+        showSlide(currentSlide - 1);
+    }
+
+    // Reset scrolling flag after a delay to prevent rapid scrolling
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+    }, 800);
+}, { passive: false });
+
 slides[currentSlide].classList.add('active');
 
 function showSlide(slideIndex) {
