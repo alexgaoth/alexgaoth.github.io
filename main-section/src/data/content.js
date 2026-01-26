@@ -78,7 +78,7 @@ export const content = {
           "/resources/julia_set1.png",
           "/resources/julia_set2.png"
         ],
-        liveDemo: "../JuliaSetFractal/",
+        liveDemo: "https://alexgaoth.com/JuliaSetFractal/",
         github: "https://github.com/alexgaoth/JuliaSetFractal"
       },
       { 
@@ -86,7 +86,7 @@ export const content = {
         tech: "Python, React+Vite, Node.js, Selenium", 
         description: "alerting, scraping, hosting Crimes reported in UCSD",
         image:"/resources/ucsd_crimes.png",
-        liveDemo: "../UCSD_Crimes/",
+        liveDemo: "https://alexgaoth.com/UCSD_Crimes/",
         github: "https://github.com/alexgaoth/UCSD_Crimes"
       },
       { 
