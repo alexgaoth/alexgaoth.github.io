@@ -102,9 +102,9 @@ const ThoughtArticlePage = () => {
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                h1: ({node, ...props}) => <h1 className="article-h1" {...props} />,
-                h2: ({node, ...props}) => <h2 className="article-h2" {...props} />,
-                h3: ({node, ...props}) => <h3 className="article-h3" {...props} />,
+                h1: ({node, children, ...props}) => <h1 className="article-h1" {...props}>{children}</h1>,
+                h2: ({node, children, ...props}) => <h2 className="article-h2" {...props}>{children}</h2>,
+                h3: ({node, children, ...props}) => <h3 className="article-h3" {...props}>{children}</h3>,
                 p: ({node, ...props}) => <p className="article-paragraph" {...props} />,
                 li: ({node, ...props}) => <li className="article-list-item" {...props} />,
                 ul: ({node, ...props}) => <ul className="article-ul" {...props} />,

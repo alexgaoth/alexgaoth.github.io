@@ -1,4 +1,4 @@
-import { thoughtsIndex, getLatestThought } from './thoughtsIndex.js';
+import { thoughtsIndex } from './thoughtsIndex.js';
 
 export const content = {
   resume: {
@@ -139,7 +139,7 @@ export const content = {
       {
         quote: "Power is a lot like real estate. It's all about location location location. The closer you are to the source, the higher your property value.",
         author: "Frank Underwood, House of Cards",
-        description: "I need to write a \'thought\' on this",
+        description: "I need to write a 'thought' on this",
         relatedArticles: null
       },
       {

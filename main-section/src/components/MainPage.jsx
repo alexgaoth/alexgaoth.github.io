@@ -146,8 +146,6 @@ const MainPage = ({ content }) => {
   };
 
   const getContainerStyle = () => {
-    const pagePadding = getPagePadding();
-
     if (isParallaxActive) {
       // During parallax: just enough height to complete the animation
       const lil = window.innerWidth >= 768 ? 0 : 10;
