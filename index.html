@@ -45,65 +45,73 @@
     <main id="slide-container" role="main">
         
     <section id="home" class="slide active">
-        <h1>Welcome to my Directory</h1>
+        <h1>This is my personal website</h1>
         <p>scroll or arrows to continue</p>
     </section>
     
     <section id="intro" class="slide">
-        <h2>This is my personal website</h2>
-        <p class="tiny">written fully by me in pure html+js</p>
-        
-        <p>You can learn more about me, find out what I am currently up to, or contact me</p>
-        
+        <div class="hover-reveal">
+            <h2>hi, i'm <span class="name-highlight">alex</span></h2>
+            <p class="tiny reveal-text">I like to think, and make others think</p>
+        </div>
+
+        <p>here follows is a short introduction</p>
+
+    </section>
+
+    <section id="tech-abt" class="slide">
+        <div class="hover-reveal">
+            <p>I am doing Math-CS at UCSD.</p>
+            <p>I am building <a href="https://Signalor.app" class="project-link">Signalor</a></p>
+            <p>I help around <a href="https://sdxucsd.com/" class="project-link">SDx</a></p>
+            
+        </div>
+
     </section>
         
+    <!-- image gallery source preserved -->
+    <!--
+    <div class="gallery-container" id="imageGallery">
+        <div class="gallery-item center" data-index="0"><img src="source/me1.jpg" alt="Alex Gao professional headshot"><div class="image-caption">Professional headshot</div></div>
+        <div class="gallery-item top" data-index="1"><img src="source/me2.jpg" alt="Alex Gao casual outdoor photo"><div class="image-caption">Casual outdoor photo</div></div>
+        <div class="gallery-item bottom" data-index="2"><img src="source/me3.jpg" alt="Alex Gao travel adventure"><div class="image-caption">Travel adventure</div></div>
+        <div class="gallery-item hidden" data-index="3"><img src="source/me4.jpg" alt="Alex Gao with friends"><div class="image-caption">With friends</div></div>
+        <div class="gallery-item hidden-bottom" data-index="4"><img src="source/me5.jpg" alt="Alex Gao hobby activity"><div class="image-caption">Hobby activity</div></div>
+    </div>
+    -->
+
     <section id="about" class="slide">
-        <div class="row">
-            
-            <div class="column left">
-                <h2>some of me</h2>
-                <div class="image-gallery">
-                    <div class="gallery-container" id="imageGallery">
-                        <div class="gallery-item center" data-index="0">
-                            <img src="source/me1.jpg" alt="Alex Gao professional headshot">
-                            <div class="image-caption">Professional headshot</div>
-                        </div>
-                        <div class="gallery-item top" data-index="1">
-                            <img src="source/me2.jpg" alt="Alex Gao casual outdoor photo">
-                            <div class="image-caption">Casual outdoor photo</div>
-                        </div>
-                        <div class="gallery-item bottom" data-index="2">
-                            <img src="source/me3.jpg" alt="Alex Gao travel adventure">
-                            <div class="image-caption">Travel adventure</div>
-                        </div>
-                        <div class="gallery-item hidden" data-index="3">
-                            <img src="source/me4.jpg" alt="Alex Gao with friends">
-                            <div class="image-caption">With friends</div>
-                        </div>
-                        <div class="gallery-item hidden-bottom" data-index="4">
-                            <img src="source/me5.jpg" alt="Alex Gao hobby activity">
-                            <div class="image-caption">Hobby activity</div>
-                        </div>
-                    </div>
+        <div class="id-card">
+            <div class="id-header">
+                <span class="id-issuer">CALIFORNIA</span>
+                <span class="id-type">IDENTIFICATION CARD</span>
+            </div>
+            <div class="id-upper">
+                <div class="id-photo">
+                    <img src="source/id-photo.png" alt="ID photo">
+                </div>
+                <div class="id-name-block">
+                    <div class="id-name">TIANHAO (ALEX) GAO</div>
+                    <div class="id-alias">alexgaoth &nbsp;·&nbsp; haotian &nbsp;·&nbsp; alexis obrenovic</div>
                 </div>
             </div>
-            <div class="column right">
-                <h3>Some basic</h3>
-                <p>
-                    Name: Tianhao (Alex) Gao
-                    <br><br>
-                    Aliases: alexgaoth, haotian, alexis obrenovic
-                    <br><br>
-                    Sex: Male
-                    <br><br>
-                    Age: <span id="age"></span>
-                    <br><br>
-                    Ethnicity: Chinese
-                    <br><br>
-                    Currently: CA, San Diego.
-                    <br><br>
-                    Home: CA, San Jose.
-                </p>
+            <div class="id-lower">
+                <div class="id-cell">
+                    <div class="id-label">SEX</div>
+                    <div class="id-value">Male</div>
+                </div>
+                <div class="id-cell">
+                    <div class="id-label">ETHNICITY</div>
+                    <div class="id-value">Chinese</div>
+                </div>
+                <div class="id-cell">
+                    <div class="id-label">HOME</div>
+                    <div class="id-value">CA, San Jose</div>
+                </div>
+                <div class="id-cell id-cell-full">
+                    <div class="id-label">AGE</div>
+                    <div class="id-value"><span id="age"></span></div>
+                </div>
             </div>
         </div>
     </section>
@@ -114,7 +122,7 @@
         <form action="https://formspree.io/f/xnqkwlpy" method="POST" aria-label="Contact form">
             <p>
                 Your message is anonymous
-                <br>a way to reach me nonchalantly 
+                <br>a way to reach me nonchalantly
             </p>
             <label for="message">
                 Your message:

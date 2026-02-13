@@ -436,3 +436,223 @@ button[type="submit"]:hover {
 button[type="submit"]:active {
     transform: scale(0.98);
 }
+
+/* Hover reveal effect - reusable */
+.hover-reveal {
+    display: inline-block;
+}
+
+.hover-reveal .reveal-text {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    margin: 0;
+    transition: opacity 0.3s ease, max-height 0.3s ease, margin 0.3s ease;
+}
+
+.hover-reveal:hover .reveal-text {
+    opacity: 1;
+    max-height: 4em;
+    margin: revert;
+}
+
+/* Project link with underline and fill effect */
+.project-link {
+    position: relative;
+    background: linear-gradient(to top, #000 0%, #000 100%);
+    background-size: 100% 0%;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s ease, color 0.3s ease;
+    padding: 0 1px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.project-link::after {
+    content: '';
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    bottom: 0;
+    height: 2px;
+    background-color: #000;
+}
+
+.project-link:hover {
+    background-size: 100% 100%;
+    color: #fff;
+}
+
+/* ID card */
+.id-card {
+    font-family: monospace;
+    display: inline-block;
+    border: 1px solid #000;
+    text-align: left;
+    width: 580px;
+}
+
+.id-header {
+    padding: 0.45em 1.4em;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid #000;
+}
+
+.id-issuer {
+    font-size: 0.75em;
+    letter-spacing: 0.3em;
+    font-weight: bold;
+}
+
+.id-type {
+    font-size: 0.65em;
+    letter-spacing: 0.2em;
+    color: #555;
+}
+
+.id-upper {
+    display: flex;
+    border-bottom: 1px solid #000;
+}
+
+.id-photo {
+    padding: 1.2em;
+    border: 1px solid #000;
+    margin: 1.1em 0 1.1em 1.4em;
+    flex-shrink: 0;
+}
+
+.id-photo img {
+    width: 140px;
+    height: 178px;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(100%) contrast(1.05);
+    image-rendering: auto;
+}
+
+.id-name-block {
+    padding: 1.2em 1.6em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.6em;
+}
+
+.id-name {
+    font-size: 1.15em;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+}
+
+.id-alias {
+    font-size: 0.72em;
+    color: #888;
+}
+
+.id-lower {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0.8em 1.4em 1.1em;
+}
+
+.id-cell {
+    padding: 0.5em 0.6em 0.5em 0;
+}
+
+.id-cell-full {
+    grid-column: 1 / -1;
+}
+
+.id-label {
+    font-size: 0.55em;
+    letter-spacing: 0.15em;
+    color: #888;
+    margin-bottom: 0.15em;
+}
+
+.id-value {
+    font-size: 0.75em;
+    color: #000;
+}
+
+
+/* ID card mobile */
+@media screen and (max-width: 620px) {
+    .id-card {
+        width: 92vw;
+        font-size: 0.88em;
+    }
+
+    .id-upper {
+        flex-direction: column;
+        align-items: center;
+        border-bottom: 1px solid #000;
+    }
+
+    .id-photo {
+        margin: 1em auto 0.5em;
+    }
+
+    .id-photo img {
+        width: 110px;
+        height: 140px;
+    }
+
+    .id-name-block {
+        text-align: center;
+        align-items: center;
+        padding: 0.5em 1em 1em;
+    }
+
+    .id-lower {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0.5em 1em 0.8em;
+    }
+
+    .react-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .react-box:nth-child(2n-1) {
+        border-right: none;
+    }
+
+    .react-box:nth-child(-n+2) {
+        border-bottom: none;
+    }
+
+    .react-box:not(:last-child) {
+        border-bottom: 1px solid #000;
+    }
+}
+
+/* Name highlight with underline and fill effect */
+.name-highlight {
+    position: relative;
+    background: linear-gradient(to top, #000 0%, #000 100%);
+    background-size: 100% 0%;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s ease, color 0.3s ease;
+    padding: 0 4px;
+    cursor: pointer;
+}
+
+.name-highlight::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    bottom: 0;
+    height: 2px;
+    background-color: #000;
+}
+
+.hover-reveal:hover .name-highlight {
+    background-size: 100% 100%;
+    color: #fff;
+}

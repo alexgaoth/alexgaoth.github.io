@@ -231,10 +231,30 @@ const MainPage = ({ content }) => {
               </div>
             </div>
 
-            <div className="footer" style={getFooterStyle()}>
-              this page is written with React @2022 (now deprecated)
-              <br></br>
-              No rights reserved – this work by alex is free to use for any purpose.
+            <div style={{ ...getFooterStyle(), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', paddingTop: '5rem' }}>
+              <a
+                href="https://alexgaoth.com/#contact"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  border: '1px solid #000',
+                  padding: '0.6rem 1.2rem',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  fontFamily: 'monospace',
+                  fontSize: '0.85rem',
+                  transition: 'background 0.25s ease, color 0.25s ease',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#000'; e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = ''; e.currentTarget.style.color = 'inherit'; }}
+              >
+                contact me &nbsp;·&nbsp; stay up to date
+              </a>
+              <div className="footer">
+                this page is written with React @2022 (now deprecated)
+                <br></br>
+                No rights reserved – this work by alex is free to use for any purpose.
+              </div>
             </div>
           </div>
         </div>

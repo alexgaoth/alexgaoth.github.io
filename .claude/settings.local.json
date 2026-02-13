@@ -6,7 +6,8 @@
       "Bash(npm run generate-thoughts:*)",
       "Bash(vercel --force:*)",
       "Bash(ls:*)",
-      "Bash(npm start)"
+      "Bash(npm start)",
+      "Bash(copy \"C:\\\\Users\\\\HP1\\\\Documents\\\\GitHub\\\\alexgaoth.github.io\\\\ChatGPT Image Feb 12, 2026, 07_45_06 PM.png\" \"C:\\\\Users\\\\HP1\\\\Documents\\\\GitHub\\\\alexgaoth.github.io\\\\source\\\\id-photo.png\")"
     ]
   }
 }

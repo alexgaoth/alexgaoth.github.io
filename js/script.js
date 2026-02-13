@@ -17,24 +17,29 @@ document.addEventListener('keydown', (e) => {
 
 let touchstartY = 0;
 let touchendY = 0;
+let isSwiping = false;
+const MIN_SWIPE = 50;
 
 document.addEventListener('touchstart', (e) => {
     touchstartY = e.changedTouches[0].screenY;
 });
 
 document.addEventListener('touchend', (e) => {
+    if (isSwiping) return;
     touchendY = e.changedTouches[0].screenY;
     handleGesture();
 });
 
 function handleGesture() {
-    if (touchendY < touchstartY) {
+    const diff = touchstartY - touchendY;
+    if (Math.abs(diff) < MIN_SWIPE) return;
+    isSwiping = true;
+    if (diff > 0) {
         showSlide(currentSlide + 1);
-    }
-
-    if (touchendY > touchstartY) {
+    } else {
         showSlide(currentSlide - 1);
     }
+    setTimeout(() => { isSwiping = false; }, 600);
 }
 
 // Mouse wheel and trackpad scroll handling
@@ -42,35 +47,26 @@ let isScrolling = false;
 let scrollTimeout;
 
 document.addEventListener('wheel', (e) => {
-    // Prevent default scrolling behavior
     e.preventDefault();
-
-    // If already processing a scroll, ignore
     if (isScrolling) return;
-
-    // Set scrolling flag
     isScrolling = true;
-
-    // Determine scroll direction
     if (e.deltaY > 0) {
-        // Scrolling down
         showSlide(currentSlide + 1);
     } else if (e.deltaY < 0) {
-        // Scrolling up
         showSlide(currentSlide - 1);
     }
-
-    // Reset scrolling flag after a delay to prevent rapid scrolling
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
+    setTimeout(() => {
         isScrolling = false;
-    }, 800);
+    }, 650);
 }, { passive: false });
 
+// Jump to slide by URL hash on load (e.g. #contact)
+const hashSlide = [...slides].findIndex(s => s.id === window.location.hash.slice(1));
+if (hashSlide > 0) currentSlide = hashSlide;
 slides[currentSlide].classList.add('active');
 
 function showSlide(slideIndex) {
-    if (slideIndex >= slides.length) {
+    if (slideIndex >= slides.length || (slideIndex > currentSlide && slides[currentSlide].id === 'about')) {
         location.href = 'https://app.alexgaoth.com/';
     }
     else if (slideIndex >= 0){
@@ -206,3 +202,11 @@ setInterval(() => {
 
 setInterval(updateAgeCounter, 1000);
 updateAgeCounter();
+
+
+// Click on name-highlight to go to next slide
+document.querySelectorAll('.name-highlight').forEach(el => {
+    el.addEventListener('click', () => {
+        showSlide(currentSlide + 1);
+    });
+});
