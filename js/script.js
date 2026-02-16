@@ -62,7 +62,10 @@ document.addEventListener('wheel', (e) => {
 
 // Jump to slide by URL hash on load (e.g. #contact)
 const hashSlide = [...slides].findIndex(s => s.id === window.location.hash.slice(1));
-if (hashSlide > 0) currentSlide = hashSlide;
+if (hashSlide > 0) {
+    slides[0].classList.remove('active'); // clear the hardcoded active on #home
+    currentSlide = hashSlide;
+}
 slides[currentSlide].classList.add('active');
 
 function showSlide(slideIndex) {

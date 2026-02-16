@@ -6,6 +6,7 @@ import ThoughtsPage from './components/ThoughtsPage';
 import QuotesPage from './components/QuotesPage';
 import NowPage from './components/NowPage';
 import ThoughtArticlePage from './components/ThoughtArticlePage';
+import RegentsPage from './components/RegentsPage';
 import ScrollToTop from './components/ScrollToTop';
 import { content } from './data/content';
 import { getNowData } from './data/nowData';
@@ -25,6 +26,7 @@ function App() {
         <Route path="/thoughts/:slug" element={<ThoughtArticlePage />} />
         <Route path="/quotes" element={<QuotesPage data={content.quotes} />} />
         <Route path="/now" element={<NowPage data={getNowData} />} />
+        <Route path="/regents" element={<RegentsPage />} />
       </Routes>
     </Router>
   );
