@@ -50,17 +50,47 @@ body {
   /* Position and transform set via inline styles */
 }
 
-.fade-text {
-  margin-top: 1rem;
-  font-style: italic;
-  opacity: 1;
-  transition: opacity 0.1s linear;
-  will-change: opacity;
+.fade-text-block {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 70ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* Mobile adjustments for parallax */
+
+.fade-scroll-hint {
+  font-style: italic;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  opacity: 1;
+  will-change: opacity;
+  transition: opacity 0.08s linear;
+  margin-bottom: 0.4rem;
+}
+
+.fade-para {
+  font-style: italic;
+  font-size: 0.82rem;
+  line-height: 1.75;
+  opacity: 1;
+  will-change: opacity;
+  transition: opacity 0.08s linear;
+}
+
+/* Mobile adjustments */
 @media (max-width: 768px) {
-  .fade-text {
+  .fade-text-block {
+    max-width: 30ch;
+  }
+
+  .fade-scroll-hint {
+    font-size: 0.7rem;
+  }
+
+  .fade-para {
     font-size: 0.75rem;
   }
 }
@@ -84,19 +114,20 @@ body {
 
 .title-sub {
   font-size: 0.85rem;
-  padding-bottom: 3rem;
+  padding-bottom: 1.25rem;
   text-align: center;
 }
 
+/* display:none removes the element from flow entirely (visibility:hidden keeps its space) */
 @media (min-width: 769px) {
-  .hidden{
-    visibility: hidden;
+  .hidden {
+    display: none;
   }
 }
 
 @media (max-width: 769px) {
-  .reverse-hidden{
-    visibility: hidden;
+  .reverse-hidden {
+    display: none;
   }
 }
 
@@ -109,6 +140,10 @@ body {
   text-align: center;
   position: relative;
   z-index: 5;
+}
+
+.footer p + p {
+  margin-top: 0.35rem;
 }
 
 @media (min-width: 768px) {

@@ -82,6 +82,17 @@ export const content = {
         github: "https://github.com/alexgaoth/JuliaSetFractal"
       },
       { 
+        name: "Signalor", 
+        tech: "Python, Typescript, Docker, Node.js, Svelte", 
+        description: "Signalor is Google Analytics for Brands, a transparent holistic tool to understand how your brand is percevied across the internet.",
+        images: [
+          "/resources/signalor.png",
+          "/resources/signalor1.png",
+          "/resources/signalor2.png"
+        ],
+        liveDemo: "https://signalor.app"
+      },
+      { 
         name: "UCSD Crimes log tracker", 
         tech: "Python, React+Vite, Node.js, Selenium", 
         description: "alerting, scraping, hosting Crimes reported in UCSD",
@@ -164,6 +175,12 @@ export const content = {
         quote: "I don't see where the realism is..",
         author: "sutha",
         description: null,
+        relatedArticles: null
+      },
+      {
+        quote: "who controls the past controls the future. who controls the present controls the past",
+        author: "george orwell (1984)",
+        description: "so for a future one want, one need to strangle the present power",
         relatedArticles: null
       }
     ],

@@ -16,7 +16,7 @@ const MainPage = ({ content }) => {
   useEffect(() => {
     const calculateParallaxDistance = () => {
       const viewportHeight = window.innerHeight;
-      const distance = viewportHeight * 1.5;
+      const distance = viewportHeight * 2.5;
       setParallaxDistance(distance);
     };
 
@@ -63,7 +63,6 @@ const MainPage = ({ content }) => {
 
   const getPagePadding = () => window.innerWidth >= 768 ? 32 : 16;
   const getSidePadding = () => window.innerWidth >= 768 ? 64 : 32;
-  const getPagePaddingx = () => window.innerWidth >= 768 ? 40 : 128;
 
   // Get positioning and transform for title section
   const getTitleStyle = () => {
@@ -78,9 +77,11 @@ const MainPage = ({ content }) => {
     }
 
     const progress = Math.min(scrollProgress, 1);
+    // Ease-out cubic: decelerates toward the end so the snap feels smooth
+    const eased = 1 - Math.pow(1 - progress, 3);
     const startTop = (window.innerHeight - titleHeight) * 0.5;
     const endTop = pagePadding;
-    const currentTop = startTop + (endTop - startTop) * progress;
+    const currentTop = startTop + (endTop - startTop) * eased;
 
     return {
       position: 'fixed',
@@ -106,9 +107,10 @@ const MainPage = ({ content }) => {
     }
 
     const progress = Math.min(scrollProgress, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
     const startTop = window.innerHeight * 2.0;
     const endTop = pagePadding + titleHeight;
-    const currentTop = startTop + (endTop - startTop) * progress;
+    const currentTop = startTop + (endTop - startTop) * eased;
 
     return {
       position: 'fixed',
@@ -121,10 +123,12 @@ const MainPage = ({ content }) => {
     };
   };
 
-  const getFadeOpacity = () => {
+  // Returns opacity for an element that fades from 1→0 as progress moves start→end
+  const getTextOpacity = (start, end) => {
     const progress = Math.min(scrollProgress, 1);
-    if (progress >= 0.7) return 0;
-    return 1 - (progress / 0.7);
+    if (progress <= start) return 1;
+    if (progress >= end) return 0;
+    return 1 - (progress - start) / (end - start);
   };
 
   const getFooterStyle = () => {
@@ -157,8 +161,11 @@ const MainPage = ({ content }) => {
     }
 
    
+    // paddingTop = parallaxDistance ensures a seamless snap at the transition point:
+    // title doc-position (pagePadding + paddingTop) minus scrollY (= parallaxDistance)
+    // = pagePadding, which exactly matches the fixed-mode endTop value.
     return {
-      paddingTop: `${parallaxDistance - getPagePaddingx()}px`,
+      paddingTop: `${parallaxDistance}px`,
       position: 'relative'
     };
   };
@@ -187,17 +194,35 @@ const MainPage = ({ content }) => {
             >
               <h1 className="title-main">this is alex gaoth's directory</h1>
               <div className="title-sub">
-                <p>I am alex gao, the additional 'th' is for "uniqueness"</p>
-                <p className='reverse-hidden'>it is the initials of my chinese first name, it is here so you can find me easier</p>
+                <p>I am alex gao, the additional 'th' is here so you can find me easier</p>
+                <p className='reverse-hidden'>'th' is the initials of my chinese first name, and u can find my elsewhere all by alexgaoth</p>
                 <p className="hidden">I spy a mobile user - this site is better on desktop </p>
-                <p
-                  className="fade-text"
-                  style={{ opacity: getFadeOpacity() }}
-                >
-                  scroll to explore
-                  <br></br>
-                  have a look around, there be something that interests u
-                </p>
+                <div className="fade-text-block">
+                  <p
+                    className="fade-scroll-hint"
+                    style={{ opacity: getTextOpacity(0, 0.12) }}
+                  >
+                    scroll to explore
+                  </p>
+                  <p
+                    className="fade-para"
+                    style={{ opacity: getTextOpacity(0.22, 0.48) }}
+                  >
+                    a directory of things I find necessary or interesting to share about me and how I have interacted with the world.
+                  </p>
+                  <p
+                    className="fade-para"
+                    style={{ opacity: getTextOpacity(0.36, 0.62) }}
+                  >
+                    these interactions are largely: learning, thinking and building.
+                  </p>
+                  <p
+                    className="fade-para"
+                    style={{ opacity: getTextOpacity(0.50, 0.76) }}
+                  >
+                    have a look around, there be something that interests you
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -251,9 +276,8 @@ const MainPage = ({ content }) => {
                 contact me &nbsp;·&nbsp; stay up to date
               </a>
               <div className="footer">
-                this page is written with React @2022 (now deprecated)
-                <br></br>
-                No rights reserved – this work by alex is free to use for any purpose.
+                <p>this page is written with React @2022 (now deprecated)</p>
+                <p>No rights reserved – this work by alex is free to use for any purpose.</p>
               </div>
             </div>
           </div>
