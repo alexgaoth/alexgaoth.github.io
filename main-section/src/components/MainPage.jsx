@@ -197,7 +197,7 @@ const MainPage = ({ content }) => {
                 <p>I am alex gao, the additional 'th' is here so you can find me easier</p>
                 <p className='reverse-hidden'>'th' is the initials of my chinese first name, and u can find my elsewhere all by alexgaoth</p>
                 <p className="hidden">I spy a mobile user - this site is better on desktop </p>
-                <div className="fade-text-block">
+                <div className={`fade-text-block${!isParallaxActive ? ' fade-text-block--collapsed' : ''}`}>
                   <p
                     className="fade-scroll-hint"
                     style={{ opacity: getTextOpacity(0, 0.12) }}
