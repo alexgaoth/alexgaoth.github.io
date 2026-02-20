@@ -8,7 +8,12 @@
       "Bash(ls:*)",
       "Bash(npm start)",
       "Bash(copy \"C:\\\\Users\\\\HP1\\\\Documents\\\\GitHub\\\\alexgaoth.github.io\\\\ChatGPT Image Feb 12, 2026, 07_45_06 PM.png\" \"C:\\\\Users\\\\HP1\\\\Documents\\\\GitHub\\\\alexgaoth.github.io\\\\source\\\\id-photo.png\")",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "WebFetch(domain:simpleicons.org)",
+      "WebSearch",
+      "WebFetch(domain:cdn.simpleicons.org)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:cdn.jsdelivr.net)"
     ]
   }
 }

@@ -46,9 +46,9 @@ const ProjectsPage = ({ data }) => {
   return (
     <>
       <SEO
-        title="Projects - alex gaoth | Full-Stack Development Portfolio"
-        description="Explore alex gaoth's full-stack development projects including web applications, data visualizations, and creative coding experiments. Built with React, Python, JavaScript, and more."
-        keywords="alex gaoth projects, web development projects, React projects, Python projects, full-stack portfolio, software engineering projects"
+        title="Projects — Alex Gao"
+        description="Things Alex Gao (alexgaoth) has built."
+        keywords="Alex Gao, alexgaoth, Student Builder, projects"
         url="https://app.alexgaoth.com/projects"
       />
       <NavigationBar />

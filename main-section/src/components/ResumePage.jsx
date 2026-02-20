@@ -5,9 +5,9 @@ import SEO from './SEO';
 const ResumePage = ({ data }) => (
   <>
     <SEO
-      title="Resume - alex gaoth | Math-CS Student & Full-Stack Developer"
-      description="View alex gaoth's professional resume, experience, skills, and education. Math-CS student at UC San Diego with expertise in full-stack development, Python, React, and DevOps."
-      keywords="alex gaoth resume, Alex Gao resume, UCSD student, full-stack developer resume, software engineer, Python developer, React developer"
+      title="Resume — Alex Gao"
+      description="Alex Gao (alexgaoth) resume."
+      keywords="Alex Gao, alexgaoth, resume, UCSD"
       url="https://app.alexgaoth.com/resume"
     />
     <NavigationBar />

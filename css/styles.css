@@ -484,150 +484,307 @@ button[type="submit"]:active {
     color: #fff;
 }
 
-/* ID card */
-.id-card {
-    font-family: monospace;
+/* ===== DRIVER'S LICENSE ===== */
+
+.dl-scene {
+    perspective: 1400px;
     display: inline-block;
-    border: 1px solid #000;
-    text-align: left;
-    width: 580px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
-.id-header {
-    padding: 0.45em 1.4em;
+.dl-card {
+    width: 530px;
+    height: 334px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.42s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.dl-card.hovering:not(.held) {
+    transform: translateY(-10px) scale(1.02);
+}
+
+/* .dl-card.held transform is managed entirely by JS (mouse-tracking tilt) */
+
+.dl-card.flipped:not(.hovering):not(.held) {
+    transform: rotateY(180deg);
+}
+
+.dl-card.flipped.hovering:not(.held) {
+    transform: translateY(-10px) scale(1.02) rotateY(180deg);
+}
+
+/* .dl-card.flipped.held handled by JS */
+
+.dl-card.flipping {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dl-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: 'Roboto Mono', monospace;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    transition: box-shadow 0.35s ease;
+}
+
+.dl-scene.hovering .dl-face { box-shadow: 0 14px 32px rgba(0,0,0,0.30); }
+.dl-scene.held .dl-face     { box-shadow: 0 30px 55px rgba(0,0,0,0.44); }
+
+/* ---- FRONT ---- */
+.dl-front {
+    background: #fff;
+    border: 1px solid #000;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+}
+
+.dl-hdr {
+    padding: 6px 14px 5px;
+    display: flex;
     align-items: baseline;
+    justify-content: space-between;
     border-bottom: 1px solid #000;
-}
-
-.id-issuer {
-    font-size: 0.75em;
-    letter-spacing: 0.3em;
-    font-weight: bold;
-}
-
-.id-type {
-    font-size: 0.65em;
-    letter-spacing: 0.2em;
-    color: #555;
-}
-
-.id-upper {
-    display: flex;
-    border-bottom: 1px solid #000;
-}
-
-.id-photo {
-    padding: 1.2em;
-    border: 1px solid #000;
-    margin: 1.1em 0 1.1em 1.4em;
     flex-shrink: 0;
 }
 
-.id-photo img {
-    width: 140px;
-    height: 178px;
-    object-fit: cover;
-    display: block;
-    filter: grayscale(100%) contrast(1.05);
-    image-rendering: auto;
+.dl-hdr-state {
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
 }
 
-.id-name-block {
-    padding: 1.2em 1.6em;
+.dl-hdr-type {
+    color: #555;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+}
+
+.dl-body {
+    flex: 1;
+    display: flex;
+    border-bottom: 1px solid #000;
+    padding: 12px 14px;
+    gap: 14px;
+    align-items: flex-start;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.dl-photo-col {
+    flex-shrink: 0;
+}
+
+.dl-photo-wrap {
+    border: 1px solid #000;
+    overflow: hidden;
+}
+
+.dl-photo-wrap img {
+    width: 148px;
+    height: 188px;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(100%) contrast(1.1);
+}
+
+.dl-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow: hidden;
+    min-width: 0;
+    text-align: left;
+}
+
+.dl-fields-lower {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    gap: 10px;
+    min-height: 0;
+}
+
+.dl-fields-main {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 56%;
+}
+
+.dl-fields-col2 {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 10px;
+    border-left: 1px solid #ddd;
+}
+
+.dl-alias {
+    font-size: 7.5px;
+    color: #888;
+    letter-spacing: 0.02em;
+}
+
+.dl-fields-divider {
+    height: 1px;
+    background: #000;
+    flex-shrink: 0;
+    margin: 1px 0;
+}
+
+.dl-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.dl-field-row {
+    display: flex;
+    gap: 16px;
+}
+
+.dl-lbl {
+    font-size: 6.5px;
+    letter-spacing: 0.15em;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.dl-val {
+    font-size: 11.5px;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dl-val--name {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.dl-val--age {
+    font-size: 8px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dl-foot {
+    padding: 4px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.dl-foot-num {
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    color: #888;
+}
+
+.dl-foot-meta {
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    color: #555;
+}
+
+/* ---- BACK ---- */
+.dl-back {
+    background: #fff;
+    border: 1px solid #000;
+    transform: rotateY(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dl-social-list {
+    width: 100%;
+    height: 100%;
+    padding: 0 28px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.6em;
+    gap: 18px;
 }
 
-.id-name {
-    font-size: 1.15em;
-    font-weight: bold;
-    letter-spacing: 0.05em;
+.dl-social-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    width: fit-content;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
 }
 
-.id-alias {
-    font-size: 0.72em;
-    color: #888;
-}
-
-.id-lower {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    padding: 0.8em 1.4em 1.1em;
-}
-
-.id-cell {
-    padding: 0.5em 0.6em 0.5em 0;
-}
-
-.id-cell-full {
-    grid-column: 1 / -1;
-}
-
-.id-label {
-    font-size: 0.55em;
-    letter-spacing: 0.15em;
-    color: #888;
-    margin-bottom: 0.15em;
-}
-
-.id-value {
-    font-size: 0.75em;
+.dl-social-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
     color: #000;
 }
 
+.dl-social-lbl {
+    font-size: 7px;
+    letter-spacing: 0.2em;
+    color: #aaa;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
 
-/* ID card mobile */
-@media screen and (max-width: 620px) {
-    .id-card {
-        width: 92vw;
-        font-size: 0.88em;
+.dl-social-handle {
+    font-size: 14px;
+    color: #000;
+    letter-spacing: 0.01em;
+    border-bottom: 1px solid #000;
+    padding-bottom: 1px;
+}
+
+/* Driver's license mobile */
+@media screen and (max-width: 580px) {
+    .dl-card {
+        width: calc(100vw - 36px);
+        max-width: 340px;
+        height: calc(min(100vw - 36px, 340px) * 0.63);
     }
 
-    .id-upper {
-        flex-direction: column;
-        align-items: center;
-        border-bottom: 1px solid #000;
-    }
-
-    .id-photo {
-        margin: 1em auto 0.5em;
-    }
-
-    .id-photo img {
-        width: 110px;
-        height: 140px;
-    }
-
-    .id-name-block {
-        text-align: center;
-        align-items: center;
-        padding: 0.5em 1em 1em;
-    }
-
-    .id-lower {
-        grid-template-columns: repeat(2, 1fr);
-        padding: 0.5em 1em 0.8em;
-    }
-
-    .react-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .react-box:nth-child(2n-1) {
-        border-right: none;
-    }
-
-    .react-box:nth-child(-n+2) {
-        border-bottom: none;
-    }
-
-    .react-box:not(:last-child) {
-        border-bottom: 1px solid #000;
-    }
+    .dl-hdr-state       { font-size: 10px; letter-spacing: 0.22em; }
+    .dl-hdr-type        { font-size: 5.5px; }
+    .dl-body            { padding: 7px 8px; gap: 8px; }
+    .dl-photo-wrap img  { width: 82px; height: 104px; }
+    .dl-fields          { gap: 4px; }
+    .dl-fields-divider  { margin: 1px 0; }
+    .dl-lbl             { font-size: 5.5px; }
+    .dl-val             { font-size: 8.5px; }
+    .dl-val--name       { font-size: 9px; }
+    .dl-val--age        { font-size: 6px; }
+    .dl-alias           { font-size: 6px; }
+    .dl-foot            { padding: 3px 9px; }
+    .dl-foot-num        { font-size: 6px; }
+    .dl-foot-meta       { font-size: 6px; }
+    .dl-fields-lower    { gap: 7px; }
+    .dl-fields-main     { gap: 4px; }
+    .dl-fields-col2     { gap: 5px; padding-left: 7px; }
+    .dl-social-list     { padding: 0 14px; gap: 12px; }
+    .dl-social-icon     { width: 13px; height: 13px; }
+    .dl-social-lbl      { font-size: 5.5px; }
+    .dl-social-handle   { font-size: 10px; }
 }
 
 /* Name highlight with underline and fill effect */

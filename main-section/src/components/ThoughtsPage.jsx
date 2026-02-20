@@ -22,9 +22,9 @@ const ThoughtsPage = ({ data }) => {
   return (
     <>
       <SEO
-        title="Thoughts - alex gaoth | Writing on Tech, Philosophy & Ideas"
-        description="Read alex gaoth's articles and essays on technology, AI, history, philosophy, and software development. Explore technical writings and personal reflections from a Math-CS student at UCSD."
-        keywords="alex gaoth blog, tech articles, philosophy essays, AI writing, software development blog, UCSD student blog, programming thoughts"
+        title="Thoughts — Alex Gao"
+        description="Writing by Alex Gao (alexgaoth)."
+        keywords="Alex Gao, alexgaoth, writing, thoughts"
         url="https://app.alexgaoth.com/thoughts"
       />
       <NavigationBar />

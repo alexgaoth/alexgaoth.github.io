@@ -11,10 +11,24 @@ import SEO from './SEO';
 const REGENTS = [
   {
     name: 'Sun, Yat-Sen',
-    glb: '/regents/statue_of_dr._sun_yat-sen_in_nanjing_china.glb',
+    glb: '/regents/sunyatsen.glb',
     audio: '/regents/yatsen.mp3',
     bio: 'The revolutionary who dared to imagine China reborn — not through dynasty, but through the will of its people. Sun Yat-Sen\'s conviction that a nation could be reshaped by ideas, not blood, is a quiet reminder that the world is more malleable than it appears.',
-  },
+  }
+  ,
+  {
+    name: 'Valery, Sablin',
+    glb: '/regents/sablin.glb',
+    audio: '/regents/sablin.mp3',
+    bio: 'The revolutionary who dared to imagine China reborn — not through dynasty, but through the will of its people. Sun Yat-Sen\'s conviction that a nation could be reshaped by ideas, not blood, is a quiet reminder that the world is more malleable than it appears.',
+  }
+  ,
+  {
+    name: 'Immanuel kant',
+    glb: '/regents/kant.glb',
+    audio: '/regents/kant.mp3',
+    bio: 'The revolutionary who dared to imagine China reborn — not through dynasty, but through the will of its people. Sun Yat-Sen\'s conviction that a nation could be reshaped by ideas, not blood, is a quiet reminder that the world is more malleable than it appears.',
+  }
   // { name: 'First Regent', glb: '/regents/regent_1.glb', audio: '/regents/regent_1.mp3', bio: '...' },
 ];
 

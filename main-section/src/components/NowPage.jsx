@@ -73,9 +73,9 @@ const NowPage = () => {
   return (
     <>
       <SEO
-        title="Now - alex gaoth | What I'm Currently Doing"
-        description="What alex gaoth is currently focused on: current projects, reading list, and activities. Inspired by Derek Sivers' now page movement."
-        keywords="alex gaoth now, current projects, what I'm doing, now page, Derek Sivers"
+        title="Now — Alex Gao"
+        description="What Alex Gao (alexgaoth) is doing now."
+        keywords="Alex Gao, alexgaoth, now"
         url="https://app.alexgaoth.com/now"
       />
       <div className="page-container bookshelf-page">

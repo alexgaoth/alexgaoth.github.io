@@ -34,9 +34,9 @@ const QuotesPage = ({ data }) => {
   return (
     <>
       <SEO
-        title="Quotes - alex gaoth | Curated Wisdom & Inspiration"
-        description="Explore alex gaoth's collection of favorite quotes from philosophers, writers, and thinkers. A curated selection of wisdom and inspiration."
-        keywords="quotes, philosophy quotes, inspirational quotes, wisdom, curated quotes collection"
+        title="Quotes — Alex Gao"
+        description="Quotes collected by Alex Gao (alexgaoth)."
+        keywords="Alex Gao, alexgaoth, quotes"
         url="https://app.alexgaoth.com/quotes"
       />
       <NavigationBar />

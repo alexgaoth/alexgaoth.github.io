@@ -173,9 +173,9 @@ const MainPage = ({ content }) => {
   return (
     <>
       <SEO
-        title="alex gaoth - Portfolio | Math-CS Student & Developer"
-        description="Explore alex gaoth's portfolio: full-stack projects, technical writings on AI and history, professional resume, and favorite quotes. Math-CS student at UC San Diego."
-        keywords="alex gaoth, alexgaoth, Alex Gao, Portfolio, UCSD, Math-CS, Full-Stack Developer, React Projects, Python, DevOps, Software Engineer"
+        title="Alex Gao — Student Builder"
+        description="Alex Gao (alexgaoth). Student builder at UCSD."
+        keywords="Alex Gao, alexgaoth, Student Builder, UCSD"
         url="https://app.alexgaoth.com/"
       />
       <div className="page-container">
