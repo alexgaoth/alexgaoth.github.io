@@ -22,15 +22,26 @@ main {
     top: 0;
     width: 100%;
     height: 100vh;
-    text-align: center;
-    
+    text-align: left;
+    padding: 0 10vw;
+    box-sizing: border-box;
     transition: opacity 0.5s, transform 0.5s;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     opacity: 0;
     transform: translateY(100vh);
+}
+
+/* Slides that stay centered */
+#about,
+#contact,
+#mailing-list,
+#contact-info {
+    align-items: center;
+    text-align: center;
+    padding: 0;
 }
 
 .active {
@@ -67,6 +78,63 @@ p {
     font-size: 16px;
     margin-top: 2px;
     margin-bottom: 2px;
+}
+
+/* ── Viewport-spanning slide typography ── */
+#home h1 {
+    font-size: clamp(28px, 5vw, 78px);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    margin: 0 0 0.6em 0;
+}
+
+#home p {
+    font-size: clamp(11px, 1vw, 14px);
+    letter-spacing: 0.12em;
+    color: #555;
+}
+
+#intro h2 {
+    font-size: clamp(30px, 8vw, 110px);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.2em;
+}
+
+#intro > p {
+    font-size: clamp(13px, 1.2vw, 17px);
+    color: #555;
+    margin-top: 1.2em;
+    letter-spacing: 0.04em;
+}
+
+#tech-abt p {
+    font-size: clamp(16px, 2.4vw, 38px);
+    line-height: 1.3;
+    margin: 0 0 0.12em 0;
+    letter-spacing: -0.01em;
+}
+
+#tech-abt .tech-label {
+    font-size: clamp(9px, 0.9vw, 13px);
+    letter-spacing: 0.2em;
+    color: #999;
+    text-transform: uppercase;
+    margin: 0 0 0.6em 0;
+}
+
+#tech-abt .tech-divider-line {
+    font-size: clamp(10px, 1vw, 15px);
+    color: #ccc;
+    margin: 0.3em 0;
+    letter-spacing: 0.1em;
+}
+
+#tech-abt .tech-sub-links {
+    font-size: clamp(12px, 1.2vw, 18px);
+    color: #555;
+    letter-spacing: 0.02em;
 }
 
 .bold {
@@ -236,22 +304,33 @@ image-gallery {
     }
     
     
-    h2 {
-        font-size: 20px; 
-        margin-bottom: 0.2em;  
-        margin-top: 0.2em;     }
-    
-    h3 {
-        margin-bottom: 1px; 
-        margin-top: 5px; 
-        font-size: 16px; 
+    .slide {
+        padding: 0 6vw;
     }
-    
+
+    #about,
+    #contact,
+    #mailing-list,
+    #contact-info {
+        padding: 0;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 0.2em;
+        margin-top: 0.2em;     }
+
+    h3 {
+        margin-bottom: 1px;
+        margin-top: 5px;
+        font-size: 16px;
+    }
+
     p {
-        font-size: 14px; 
-        margin-top: 0px; 
-        margin-bottom: 0px; 
-        line-height: 1.2; 
+        font-size: 14px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        line-height: 1.2;
     }
     
     .image-gallery {

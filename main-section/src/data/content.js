@@ -87,6 +87,7 @@ export const content = {
         description: "Signalor is Google Analytics for Brands, a transparent holistic tool to understand how your brand is percevied across the internet.",
         images: [
           "/resources/signalor.png",
+          "/resources/signalor1.png",
           "/resources/signalor2.png",
           "/resources/signalor3.png"
         ],
