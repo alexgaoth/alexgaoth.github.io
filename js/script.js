@@ -207,6 +207,106 @@ setInterval(updateAgeCounter, 1000);
 updateAgeCounter();
 
 
+// Interest topic carousel
+(function () {
+    var carousel = document.getElementById('interests-topic-carousel');
+    if (!carousel) return;
+
+    // Read every topic from HTML, then trim DOM down to 3 visible slots
+    var allItems = Array.from(carousel.querySelectorAll('.topic-item'));
+    var topics   = allItems.map(function (el) { return el.textContent.trim(); });
+    allItems.slice(3).forEach(function (el) { el.remove(); });
+
+    if (topics.length === 0) return;
+
+    var ANIM  = 480;   // transition ms
+    var PAUSE = 1500;  // interval between rotations ms
+    var nextIdx = 3 % topics.length; // first topic to cycle in after the initial 3
+    var step = 0;      // fixed row pitch (height + gap), set once in setup
+
+    function setup() {
+        var items = Array.from(carousel.querySelectorAll('.topic-item'));
+        if (!items.length) return;
+
+        // Measure while items are still in normal flow
+        var maxH = 0;
+        items.forEach(function (el) { maxH = Math.max(maxH, el.offsetHeight); });
+        var gap = parseFloat(getComputedStyle(items[0]).fontSize) * 0.12; // 0.12em
+        step = maxH + gap;
+
+        if (step < 5) { setTimeout(setup, 100); return; } // layout not ready yet
+
+        // Fix container height so it doesn't collapse
+        carousel.style.height = (step * 3 - gap) + 'px';
+
+        // Pin items to absolute positions (CSS sets position:absolute, left/right)
+        items.forEach(function (el, i) {
+            el.style.top = (i * step) + 'px';
+        });
+    }
+
+    function rotate() {
+        if (step === 0) return;
+        var items = Array.from(carousel.querySelectorAll('.topic-item'));
+        if (items.length < 2) return;
+
+        // Exit: top item slides right and fades
+        items[0].style.transition =
+            'transform ' + ANIM + 'ms ease-out, opacity ' + Math.round(ANIM * 0.6) + 'ms ease-out';
+        items[0].style.transform = 'translateX(100px)';
+        items[0].style.opacity   = '0';
+
+        // Shift: remaining items rise by one step
+        items.slice(1).forEach(function (item) {
+            item.style.transition = 'transform ' + ANIM + 'ms ease-out';
+            item.style.transform  = 'translateY(-' + step + 'px)';
+        });
+
+        // Enter: new item arrives from one step below the last
+        var incoming = document.createElement('p');
+        incoming.className      = 'topic-item';
+        incoming.textContent    = topics[nextIdx];
+        incoming.style.top      = (items.length * step) + 'px'; // absolute: below stack
+        incoming.style.opacity  = '0';
+        incoming.style.transition = 'none';
+        carousel.appendChild(incoming);
+
+        incoming.getBoundingClientRect(); // force paint so transition kicks in
+
+        incoming.style.transition = 'transform ' + ANIM + 'ms ease-out, opacity ' + ANIM + 'ms ease-in';
+        incoming.style.transform  = 'translateY(-' + step + 'px)';
+        incoming.style.opacity    = '1';
+
+        nextIdx = (nextIdx + 1) % topics.length;
+
+        // Cleanup after animation — safe with absolute positioning:
+        // removing items[0] has zero layout effect on siblings
+        setTimeout(function () {
+            items[0].remove();
+            var survivors = items.slice(1).concat([incoming]);
+            survivors.forEach(function (el, i) {
+                el.style.transition = 'none';
+                el.style.transform  = '';
+                el.style.top        = (i * step) + 'px'; // snap to correct slot
+            });
+            // Re-arm transitions after the snap settles
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    survivors.forEach(function (el) { el.style.transition = ''; });
+                });
+            });
+        }, ANIM + 30);
+    }
+
+    // Wait for layout before measuring
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+            setup();
+            setInterval(rotate, PAUSE);
+        });
+    });
+}());
+
 // Click on name-highlight to go to next slide
 document.querySelectorAll('.name-highlight').forEach(el => {
     el.addEventListener('click', () => {
