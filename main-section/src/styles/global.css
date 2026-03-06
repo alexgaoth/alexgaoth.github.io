@@ -85,6 +85,22 @@ body {
   margin-bottom: 0.4rem;
 }
 
+/* Scroll indicator line for parallax hint */
+.scroll-line-indicator {
+  width: 1px;
+  height: 28px;
+  background: #000;
+  transform-origin: top center;
+  animation: scrollLineGrow 1.8s ease-in-out infinite;
+}
+
+@keyframes scrollLineGrow {
+  0%   { opacity: 0;    transform: scaleY(0); }
+  40%  { opacity: 0.3;  transform: scaleY(1); }
+  80%  { opacity: 0.15; transform: scaleY(1); }
+  100% { opacity: 0;    transform: scaleY(0.3); }
+}
+
 .fade-para {
   font-style: italic;
   font-size: 0.82rem;
