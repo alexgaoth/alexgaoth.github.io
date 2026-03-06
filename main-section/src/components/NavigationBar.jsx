@@ -20,7 +20,7 @@ const NavigationBar = () => {
   return (
     <nav className="navigation-bar">
       <div className="nav-back">
-        <Link to="/" className="nav-back-button">
+        <Link to="/" state={{ skipParallax: true }} className="nav-back-button">
           <ArrowLeft size={20} />
           <span>Home</span>
         </Link>

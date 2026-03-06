@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import NowButton  from './NowButton';
 import SEO from './SEO';
 import ParallaxSideEffects from './ParallaxSideEffects';
@@ -43,6 +43,7 @@ const PHRASES = [
 const MainPage = ({ content }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const location = useLocation();
   const parallaxContainerRef = useRef(null);
   // Measures full title section including subtitle (always rendered, no height shift)
   const titleRef = useRef(null);
@@ -77,6 +78,12 @@ const MainPage = ({ content }) => {
       window.removeEventListener('resize', handleResizeMobile);
     };
   }, []);
+
+  useEffect(() => {
+    if (location.state?.skipParallax && parallaxDistance > 0) {
+      window.scrollTo({ top: parallaxDistance, behavior: 'instant' });
+    }
+  }, [parallaxDistance, location.state]);
 
   useEffect(() => {
     const handleScroll = () => {
