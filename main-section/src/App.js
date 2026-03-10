@@ -7,6 +7,8 @@ import QuotesPage from './components/QuotesPage';
 import NowPage from './components/NowPage';
 import ThoughtArticlePage from './components/ThoughtArticlePage';
 import RegentsPage from './components/RegentsPage';
+import PoetryCollectionPage from './components/PoetryCollectionPage';
+import CiCollectionPage from './components/CiCollectionPage';
 import ScrollToTop from './components/ScrollToTop';
 import { content } from './data/content';
 import { getNowData } from './data/nowData';
@@ -27,6 +29,10 @@ function App() {
         <Route path="/quotes" element={<QuotesPage data={content.quotes} />} />
         <Route path="/now" element={<NowPage data={getNowData} />} />
         <Route path="/regents" element={<RegentsPage />} />
+        <Route path="/poetry" element={<PoetryCollectionPage lang="zh" />} />
+        <Route path="/poetry/en" element={<PoetryCollectionPage lang="en" />} />
+        <Route path="/ci" element={<CiCollectionPage lang="zh" />} />
+        <Route path="/ci/en" element={<CiCollectionPage lang="en" />} />
       </Routes>
     </Router>
   );

@@ -11,6 +11,8 @@ const NavigationBar = () => {
     { path: '/projects', label: 'Things I Made' },
     { path: '/thoughts', label: 'Thoughts' },
     { path: '/quotes', label: 'Quotes' },
+    { path: '/poetry', label: '诗' },
+    { path: '/ci', label: '词' },
     { path: '/now', label: 'Now', isNowButton: true }
   ];
 

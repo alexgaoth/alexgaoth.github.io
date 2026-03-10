@@ -79,23 +79,23 @@ const ProjectsPage = ({ data }) => {
                   
                   {/* Image navigation for multiple images */}
                   {project.images && project.images.length > 1 && (
-                    <div className="image-nav">
-                      <button 
+                    <>
+                      <button
                         onClick={() => prevImage(index)}
-                        className="image-nav-btn"
+                        className="image-nav-btn prev"
                       >
-                        <ChevronLeft size={20} />
+                        <ChevronLeft size={26} strokeWidth={1.5} />
+                      </button>
+                      <button
+                        onClick={() => nextImage(index)}
+                        className="image-nav-btn next"
+                      >
+                        <ChevronRight size={26} strokeWidth={1.5} />
                       </button>
                       <span className="image-counter">
                         {(selectedImageIndex[index] || 0) + 1} / {project.images.length}
                       </span>
-                      <button 
-                        onClick={() => nextImage(index)}
-                        className="image-nav-btn"
-                      >
-                        <ChevronRight size={20} />
-                      </button>
-                    </div>
+                    </>
                   )}
                 </div>
               )}
@@ -114,12 +114,12 @@ const ProjectsPage = ({ data }) => {
               <p className="text-gray mb-medium">{project.description}</p>
 
               {/* Project links */}
-              {(project.liveDemo || project.github) && (
+              {(project.liveDemo || project.github || project.pypi) && (
                 <div className="project-links">
                   {project.liveDemo && (
-                    <a 
-                      href={project.liveDemo} 
-                      target="_blank" 
+                    <a
+                      href={project.liveDemo}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="project-link"
                     >
@@ -128,14 +128,29 @@ const ProjectsPage = ({ data }) => {
                     </a>
                   )}
                   {project.github && (
-                    <a 
-                      href={project.github} 
-                      target="_blank" 
+                    <a
+                      href={project.github}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="project-link"
                     >
                       <Github size={16} />
                       GitHub
+                    </a>
+                  )}
+                  {project.pypi && (
+                    <a
+                      href={project.pypi}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="project-link"
+                    >
+                      <img
+                        src="https://www.google.com/s2/favicons?domain=pypi.org&sz=32"
+                        alt="PyPI"
+                        style={{ width: 16, height: 16, filter: 'invert(1) opacity(0.55)' }}
+                      />
+                      PyPI
                     </a>
                   )}
                 </div>

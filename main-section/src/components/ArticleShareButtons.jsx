@@ -52,7 +52,7 @@ const ArticleShareButtons = ({ title, slug }) => {
     {
       name: 'SMS',
       url: `sms:?body=${encodedTitle}%20${encodedUrl}`,
-      label: '💬'
+      label: 'sms'
     }
   ];
 

@@ -776,46 +776,73 @@
 /* Project Image Styles */
 .project-image-container {
   position: relative;
-  aspect-ratio: 16/9;
   margin-bottom: 1.5rem;
-  overflow: hidden;
   border: 1px solid #ddd;
+  background: #f4f4f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .project-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 
-.image-nav {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 1rem;
-}
-
+/* Side arrow buttons — centered on each edge */
 .image-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
-  color: white;
+  color: #fff;
   cursor: pointer;
-  padding: 0.25rem;
-  transition: opacity 0.3s ease;
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.2s ease;
+  z-index: 2;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.55));
 }
 
-.image-nav-btn:hover {
-  opacity: 0.7;
+.image-nav-btn.prev {
+  left: 0.25rem;
+  transform: translateY(-50%);
+}
+.image-nav-btn.next {
+  right: 0.25rem;
+  transform: translateY(-50%);
+}
+
+.project-image-container:hover .image-nav-btn {
+  opacity: 0.85;
+}
+
+.image-nav-btn.prev:hover {
+  opacity: 1;
+  transform: translateY(-50%) translateX(-2px);
+}
+.image-nav-btn.next:hover {
+  opacity: 1;
+  transform: translateY(-50%) translateX(2px);
 }
 
 .image-counter {
-  font-size: 0.875rem;
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.6rem;
+  font-size: 0.7rem;
+  font-family: 'Space Mono', monospace;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 0.15rem 0.45rem;
+  letter-spacing: 0.06em;
+  pointer-events: none;
 }
 
 /* Project Links */

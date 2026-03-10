@@ -93,10 +93,18 @@ export const content = {
         ],
         liveDemo: "https://signalor.app"
       },
+            { 
+        name: "dont-hallucinate", 
+        tech: "python, powershell, bash", 
+        description: "dont-hallucinate is package that intercepts agent shell failures, classifies what went wrong, suggests fixes when it can, and mocks your coding agent.",
+        image:"/resources/dont_hallucinate.png",
+        liveDemo: "https://x.com/alexgaoth/status/2030922676525805922/",
+        pypi: "https://pypi.org/project/dont-hallucinate/"
+      },
       { 
         name: "UCSD Crimes log tracker", 
         tech: "Python, React+Vite, Node.js, Selenium", 
-        description: "alerting, scraping, hosting Crimes reported in UCSD",
+        description: "alerting, scraping, organizing Crimes reported in UCSD",
         image:"/resources/ucsd_crimes.png",
         liveDemo: "https://alexgaoth.com/UCSD_Crimes/",
         github: "https://github.com/alexgaoth/UCSD_Crimes"
@@ -104,7 +112,7 @@ export const content = {
       { 
         name: "Political Speech Classifier", 
         tech: "Python, Matrices", 
-        description: "Encoder-Only model which classify the enter political speech into the political party in the US.",
+        description: "Encoder-Only model which classify the enter political speech into the political party in the US. It has a 98.9% accuracy when compared against allsides.com ratings.",
         image:"/resources/political_speech.png",
         images: [
           "/resources/political_speech.png",

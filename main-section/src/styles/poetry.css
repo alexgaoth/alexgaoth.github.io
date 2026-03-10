@@ -1,0 +1,355 @@
+/* ─── Poetry Collection Pages ─── */
+
+/* Page header */
+.poetry-page-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid black;
+  padding-bottom: 0.875rem;
+  gap: 1rem;
+}
+
+.poetry-page-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.poetry-lang-toggle {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  color: #000;
+  opacity: 0.3;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.poetry-lang-toggle:hover {
+  opacity: 0.85;
+  border-bottom-color: #000;
+}
+
+/* Poem list */
+.poetry-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Poem card ── */
+.poetry-card {
+  border-top: 1px solid #e8e8e8;
+  transition: background 0.35s ease, border-top-color 0.35s ease;
+}
+
+.poetry-card:last-child {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.poetry-card:hover {
+  background: #f8f8f8;
+  border-top-color: #c0c0c0;
+}
+
+/* flex row: content + icon column */
+.poetry-card-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.75rem 0.25rem 1.75rem 0;
+}
+
+.poetry-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Icon column (right) ── */
+.poetry-card-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  flex-shrink: 0;
+  width: 36px;
+  padding-top: 0.15rem;
+  opacity: 0.1;
+  transition: opacity 0.3s ease;
+}
+
+.poetry-card:hover .poetry-card-actions {
+  opacity: 0.72;
+}
+
+.poetry-actions-sep {
+  width: 18px;
+  height: 1px;
+  background: #999;
+  margin: 0.2rem 0;
+  flex-shrink: 0;
+}
+
+/* Icon buttons */
+.poetry-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  line-height: 1;
+  transition: color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+  border-radius: 0;
+}
+
+.poetry-icon-btn:hover {
+  transform: scale(1.1);
+  background: rgba(0,0,0,0.05);
+}
+
+.poetry-icon-btn.copied {
+  color: #444;
+}
+
+.poetry-ai-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.15s ease;
+  line-height: 1;
+}
+
+.poetry-ai-icon-btn:hover {
+  transform: scale(1.1);
+  background: rgba(0,0,0,0.04);
+}
+
+.poetry-ai-favicon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  filter: grayscale(1) opacity(0.75);
+  transition: filter 0.2s ease;
+}
+
+.poetry-ai-icon-btn:hover .poetry-ai-favicon {
+  filter: grayscale(0) opacity(1);
+}
+
+/* ── Claude analysis (collapsible) ── */
+.poetry-claude {
+  margin-bottom: 1.25rem;
+}
+
+.poetry-claude-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #000;
+  opacity: 0.35;
+  transition: opacity 0.2s ease;
+  user-select: none;
+}
+
+.poetry-claude-toggle:hover {
+  opacity: 0.7;
+}
+
+.poetry-claude-arrow {
+  display: inline-block;
+  font-style: normal;
+  font-size: 0.65em;
+  line-height: 1;
+  transition: transform 0.25s ease;
+  opacity: 0.8;
+}
+
+.poetry-claude-arrow.open {
+  transform: rotate(180deg);
+}
+
+.poetry-claude-body {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
+  opacity: 0;
+}
+
+.poetry-claude-body.open {
+  max-height: 20rem;
+  opacity: 1;
+}
+
+.poetry-claude-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.9;
+  color: #555;
+  font-style: italic;
+  padding: 0.65rem 0 0 0;
+}
+
+/* ── Poem content ── */
+.poetry-index {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  opacity: 0.2;
+  display: block;
+  margin-bottom: 0.5rem;
+  user-select: none;
+}
+
+.poetry-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.1rem;
+  letter-spacing: 0.01em;
+}
+
+.poetry-body {
+  margin-bottom: 1.5rem;
+}
+
+.poetry-line {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 2;
+  color: #1a1a1a;
+}
+
+/* ── Context ── */
+.poetry-context {
+  margin-bottom: 0;
+}
+
+.poetry-context-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  opacity: 0.28;
+  display: block;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+
+.poetry-context-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.85;
+  color: #333;
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed #d8d8d8;
+}
+
+.poetry-context-placeholder {
+  color: #c8c8c8;
+  font-style: italic;
+}
+
+/* ── Toast ── */
+.poetry-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  color: #fff;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  padding: 0.55rem 1.25rem;
+  z-index: 9999;
+  pointer-events: none;
+  animation: poetry-toast-in 0.2s ease;
+}
+
+@keyframes poetry-toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(5px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Empty state ── */
+.poetry-empty {
+  padding: 5rem 0;
+  text-align: center;
+}
+
+.poetry-empty-index {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  opacity: 0.18;
+  margin-bottom: 1.25rem;
+}
+
+.poetry-empty-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.poetry-empty-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  opacity: 0.38;
+  font-style: italic;
+}
+
+/* ── Footer ── */
+.poetry-footer {
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #ebebeb;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  opacity: 0.28;
+  text-align: center;
+  padding-bottom: 3rem;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .poetry-page-title {
+    font-size: 2rem;
+  }
+
+  .poetry-card-inner {
+    padding: 1.5rem 0;
+  }
+
+  .poetry-line {
+    font-size: 0.78rem;
+  }
+
+  .poetry-card-actions {
+    opacity: 0.45;
+  }
+}
