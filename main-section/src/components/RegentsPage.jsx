@@ -16,21 +16,28 @@ const REGENTS = [
     name: 'Sun, Yat-Sen',
     glb: '/regents/sunyatsen_good.glb',
     audio: '/regents/yatsen.mp3',
-    bio: 'The revolutionary who dared to imagine China reborn — not through dynasty, but through the will of its people. Sun Yat-Sen\'s conviction that a nation could be reshaped by ideas, not blood, is a quiet reminder that the world is more malleable than it appears.',
+    bio: '国父 - Father of the nation. Purest form of Chinese Nationalism and the love of the culture',
   }
   ,
   {
     name: 'Valery, Sablin',
     glb: '/regents/sablin_good.glb',
     audio: '/regents/sablin.mp3',
-    bio: 'The revolutionary who dared to imagine China reborn — not through dynasty, but through the will of its people. Sun Yat-Sen\'s conviction that a nation could be reshaped by ideas, not blood, is a quiet reminder that the world is more malleable than it appears.',
+    bio: 'Storozhevoy will sail forward! The biggest idealist in post war USSR',
   }
   ,
   {
     name: 'Immanuel kant',
     glb: '/regents/kant_good.glb',
     audio: '/regents/kant.mp3',
-    bio: 'The revolutionary who dared to imagine China reborn — not through dynasty, but through the will of its people. Sun Yat-Sen\'s conviction that a nation could be reshaped by ideas, not blood, is a quiet reminder that the world is more malleable than it appears.',
+    bio: 'You ought to synthesize rationalism and empiricism - Kant, probably.',
+  }
+  ,
+  {
+    name: 'LI, Zi Cheng',
+    glb: '/regents/lizicheng_good.glb',
+    audio: '/regents/kant.mp3',
+    bio: '闯王 - King of barging/breaking in. Evidently an improper translation, but the energy is there',
   }
   // { name: 'First Regent', glb: '/regents/regent_1.glb', audio: '/regents/regent_1.mp3', bio: '...' },
 ];
