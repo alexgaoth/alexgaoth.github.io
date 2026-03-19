@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect, Component, Suspense } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { Environment } from '@react-three/drei';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as THREE from 'three';
+import { Link } from 'react-router-dom';
 import SEO from './SEO';
 
 // ---------------------------------------------------------------------------
@@ -11,21 +14,21 @@ import SEO from './SEO';
 const REGENTS = [
   {
     name: 'Sun, Yat-Sen',
-    glb: '/regents/sunyatsen.glb',
+    glb: '/regents/sunyatsen_good.glb',
     audio: '/regents/yatsen.mp3',
     bio: 'The revolutionary who dared to imagine China reborn — not through dynasty, but through the will of its people. Sun Yat-Sen\'s conviction that a nation could be reshaped by ideas, not blood, is a quiet reminder that the world is more malleable than it appears.',
   }
   ,
   {
     name: 'Valery, Sablin',
-    glb: '/regents/sablin.glb',
+    glb: '/regents/sablin_good.glb',
     audio: '/regents/sablin.mp3',
     bio: 'The revolutionary who dared to imagine China reborn — not through dynasty, but through the will of its people. Sun Yat-Sen\'s conviction that a nation could be reshaped by ideas, not blood, is a quiet reminder that the world is more malleable than it appears.',
   }
   ,
   {
     name: 'Immanuel kant',
-    glb: '/regents/kant.glb',
+    glb: '/regents/kant_good.glb',
     audio: '/regents/kant.mp3',
     bio: 'The revolutionary who dared to imagine China reborn — not through dynasty, but through the will of its people. Sun Yat-Sen\'s conviction that a nation could be reshaped by ideas, not blood, is a quiet reminder that the world is more malleable than it appears.',
   }
@@ -39,7 +42,9 @@ const toAbsolute = (path) =>
   `${process.env.PUBLIC_URL}/${path.replace(/^\//, '')}`;
 
 function Model({ url, rotationRef }) {
-  const gltf = useLoader(GLTFLoader, url);
+  const gltf = useLoader(GLTFLoader, url, (loader) => {
+    loader.setMeshoptDecoder(MeshoptDecoder);
+  });
   const groupRef = useRef();
   const normalised = useRef(false);
 
@@ -270,13 +275,9 @@ const RegentsPage = () => {
       />
 
       <div className="regents-page">
-        <button
-          className="regents-back-btn"
-          onClick={() => window.history.back()}
-          aria-label="Go back"
-        >
-          <span style={{ fontSize: '0.85em' }}>←</span> back
-        </button>
+        <Link to="/art" className="regents-back-btn" aria-label="Back to art">
+          <span style={{ fontSize: '0.85em' }}>←</span> art
+        </Link>
 
         <div className="regents-inner">
           <h1 className="regents-title">Regents of My Mind</h1>
@@ -296,12 +297,18 @@ const RegentsPage = () => {
                 >
                   <Canvas
                     camera={{ position: [0, 0.4, 3.5], fov: 42 }}
-                    gl={{ alpha: true, antialias: true }}
+                    gl={{
+                      alpha: true,
+                      antialias: true,
+                      toneMapping: THREE.ACESFilmicToneMapping,
+                      toneMappingExposure: 1.0,
+                      outputColorSpace: THREE.SRGBColorSpace,
+                    }}
                     style={{ width: '100%', height: '100%', display: 'block' }}
                   >
-                    <ambientLight intensity={0.9} />
-                    <directionalLight position={[3, 5, 3]} intensity={1.2} />
-                    <directionalLight position={[-3, 2, -2]} intensity={0.3} />
+                    <ambientLight intensity={0.5} />
+                    <directionalLight position={[3, 5, 3]} intensity={1.0} />
+                    <Environment preset="park" />
                     <ModelErrorBoundary key={currentIndex}>
                       <Suspense fallback={<LoadingMesh />}>
                         <Model url={toAbsolute(current.glb)} rotationRef={rotationRef} />

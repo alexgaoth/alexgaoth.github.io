@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=IBM+Plex+Mono:wght@300;400&display=swap');
+
+/* ── Page shell ────────────────────────────────────────────────────────────── */
+.art-page {
+  min-height: 100vh;
+  background: #F4F1EA;
+  color: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Paper grain — embedded SVG turbulence, no external asset needed */
+.art-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.048;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* ── Back link ─────────────────────────────────────────────────────────────── */
+.art-back {
+  position: fixed;
+  top: 2rem;
+  left: 2.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  font-family: 'IBM Plex Mono', 'Roboto Mono', monospace;
+  font-size: 0.63rem;
+  letter-spacing: 0.18em;
+  text-transform: lowercase;
+  color: #1A1A1A;
+  text-decoration: none;
+  opacity: 0.32;
+  transition: opacity 0.25s ease;
+  z-index: 10;
+}
+.art-back:hover { opacity: 0.8; }
+
+/* ── Ghost watermark ───────────────────────────────────────────────────────── */
+.art-watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Noto Serif SC', 'Source Han Serif CN', serif;
+  font-size: clamp(12rem, 36vw, 28rem);
+  font-weight: 300;
+  line-height: 1;
+  color: #1A1A1A;
+  opacity: 0.022;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Portal list ───────────────────────────────────────────────────────────── */
+.art-portals {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: clamp(280px, 44vw, 540px);
+}
+
+/* Each row */
+.art-portal {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 1.8rem;
+  padding: 2.4rem 0;
+  border-top: 1px solid rgba(26, 26, 26, 0.12);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.art-portal:last-child {
+  border-bottom: 1px solid rgba(26, 26, 26, 0.12);
+}
+
+/* Ordinal */
+.art-num {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.6rem;
+  font-weight: 300;
+  opacity: 0.28;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  align-self: center;
+  letter-spacing: 0.04em;
+}
+
+/* Main character */
+.art-zh {
+  font-family: 'Noto Serif SC', 'Source Han Serif CN', serif;
+  font-size: clamp(2.8rem, 4.8vw, 4.2rem);
+  font-weight: 300;
+  line-height: 1;
+  grid-column: 2;
+  grid-row: 1;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.3s ease;
+  transform-origin: left center;
+  will-change: transform;
+}
+.art-portal:hover .art-zh {
+  transform: scale(1.07);
+}
+
+/* English label */
+.art-label {
+  font-family: 'IBM Plex Mono', 'Roboto Mono', monospace;
+  font-size: 0.57rem;
+  letter-spacing: 0.22em;
+  text-transform: lowercase;
+  color: #1A1A1A;
+  opacity: 0.35;
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 0.38rem;
+  transition: opacity 0.25s ease;
+}
+.art-portal:hover .art-label { opacity: 0.6; }
+
+/* Arrow — slides in on hover */
+.art-arrow {
+  font-family: 'IBM Plex Mono', 'Roboto Mono', monospace;
+  font-size: 0.8rem;
+  grid-column: 3;
+  grid-row: 1 / 3;
+  align-self: center;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.art-portal:hover .art-arrow {
+  opacity: 0.3;
+  transform: translateX(0);
+}
+
+/* ── Mobile ────────────────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .art-portals { width: calc(100vw - 4rem); }
+  .art-portal  { padding: 1.9rem 0; column-gap: 1.2rem; }
+  .art-back    { top: 1.4rem; left: 1.5rem; }
+}
