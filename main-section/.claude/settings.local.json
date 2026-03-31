@@ -3,7 +3,17 @@
     "allow": [
       "WebFetch(domain:unifiersofjapan.framer.website)",
       "Bash(npm run:*)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:webflow.com)",
+      "WebFetch(domain:aigoodies.beehiiv.com)",
+      "WebFetch(domain:orbit2x.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:alexharri.com)",
+      "WebFetch(domain:www.morphstudio.com)",
+      "WebFetch(domain:community.vercel.com)",
+      "WebFetch(domain:www.reactbits.dev)",
+      "WebFetch(domain:paulbourke.net)"
     ]
   }
 }
