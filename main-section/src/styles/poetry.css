@@ -298,26 +298,25 @@
 .poetry-context {
   position: relative;
   z-index: 1;
+  margin-top: 0.6rem;
 }
 
 .poetry-context-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-  color: #c0bbb3;
-  display: block;
-  margin-bottom: 0.55rem;
-  text-transform: uppercase;
+  display: none;
 }
 
 .poetry-context-text {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.88rem;
-  line-height: 1.85;
-  color: #7a7570;
-  padding: 0.85rem 1.1rem;
-  border-left: 2px solid #dedad3;
-  background: rgba(26, 24, 22, 0.02);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.975rem;
+  line-height: 1.8;
+  color: #a09890;
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+.poetry-context-text::before {
+  content: '— ';
+  letter-spacing: 0;
 }
 
 .poetry-context-placeholder {
@@ -494,6 +493,6 @@
   }
 
   .poetry-context-text {
-    font-size: 0.82rem;
+    font-size: 0.93rem;
   }
 }

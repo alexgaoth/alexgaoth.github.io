@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import SEO from './SEO';
+import ArtBackground from './ArtBackground';
 import '../styles/art.css';
 
 const PORTALS = [
@@ -19,7 +20,10 @@ const ArtPage = () => (
     />
 
     <div className="art-page">
-      {/* paper grain */}
+      {/* ink flow canvas */}
+      <ArtBackground />
+
+      {/* paper grain over canvas */}
       <div className="art-grain" aria-hidden="true" />
 
       {/* back */}
@@ -27,9 +31,6 @@ const ArtPage = () => (
         <ArrowLeft size={13} strokeWidth={1} />
         <span>back</span>
       </Link>
-
-      {/* ghost watermark */}
-      <span className="art-watermark" aria-hidden="true">文</span>
 
       {/* portals */}
       <main className="art-portals">

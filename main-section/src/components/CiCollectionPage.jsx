@@ -49,7 +49,7 @@ const TEXT = {
     seoUrl: 'https://app.alexgaoth.com/ci/en',
     langToggle: '中文 →',
     langTogglePath: '/ci',
-    abstract: 'Ci is a classical Chinese form with varying line lengths, historically composed to music. This collection spans philosophical argument, dynastic panorama, and wuxia narrative — different in register, unified by the rhythm of the language.',
+    abstract: 'Ci is a classical Chinese form with varying line lengths, historically composed to music. This collection spans philosophical argument, dynastic panorama, and wuxia narrative. It is also mostly written around when I am 15, it carries generally a more nuanced message compared to the poems.',
     transCallout: 'Each line is divided at its natural pauses. Click any dotted-underlined phrase to reveal its English translation inline — one phrase at a time, or the whole line at once.',
     contextLabel: 'Context & Notes',
     contextPlaceholder: 'To be written…',
@@ -195,13 +195,6 @@ const CiCollectionPage = ({ lang = 'zh' }) => {
             </div>
 
             <p className="poetry-abstract">{t.abstract}</p>
-
-            {lang === 'en' && (
-              <div className="poetry-trans-callout">
-                <span className="poetry-trans-callout-dot">· · ·</span>
-                <p className="poetry-trans-callout-text">{t.transCallout}</p>
-              </div>
-            )}
 
             {ciPieces.length === 0 ? (
               <div className="poetry-empty">

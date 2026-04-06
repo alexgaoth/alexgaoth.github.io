@@ -43,22 +43,6 @@
 }
 .art-back:hover { opacity: 0.8; }
 
-/* ── Ghost watermark ───────────────────────────────────────────────────────── */
-.art-watermark {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: 'Noto Serif SC', 'Source Han Serif CN', serif;
-  font-size: clamp(12rem, 36vw, 28rem);
-  font-weight: 300;
-  line-height: 1;
-  color: #1A1A1A;
-  opacity: 0.022;
-  user-select: none;
-  pointer-events: none;
-  z-index: 0;
-}
 
 /* ── Portal list ───────────────────────────────────────────────────────────── */
 .art-portals {
