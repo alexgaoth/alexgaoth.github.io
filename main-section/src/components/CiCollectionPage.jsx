@@ -57,6 +57,17 @@ const TEXT = {
     aiToastMsg: 'Prompt copied. Opening AI…',
     footerNote: 'Clicking an AI icon copies a translation & commentary prompt to your clipboard. Paste it after the tab opens.',
     emptyTitle: 'No Content Yet',
+
+
+
+
+
+
+
+
+
+
+    
     emptyText: 'Ci pieces are being compiled. Check back soon.',
     translateHint: 'tap a phrase to translate',
   },
