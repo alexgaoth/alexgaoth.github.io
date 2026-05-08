@@ -34,14 +34,16 @@ main {
     transform: translateY(100vh);
 }
 
-/* Slides that stay centered */
-#about,
-#contact,
-#mailing-list,
-#contact-info {
+/* ID card slide — centered */
+#about {
     align-items: center;
     text-align: center;
     padding: 0;
+}
+
+/* Contact slides — left-aligned, matches rest of site */
+.contact-slide {
+    padding: 0 10vw;
 }
 
 .active {
@@ -337,11 +339,12 @@ image-gallery {
         padding: 0 6vw;
     }
 
-    #about,
-    #contact,
-    #mailing-list,
-    #contact-info {
+    #about {
         padding: 0;
+    }
+
+    .contact-slide {
+        padding: 0 6vw;
     }
 
     h2 {
@@ -918,4 +921,121 @@ button[type="submit"]:active {
 .hover-reveal:hover .name-highlight {
     background-size: 100% 100%;
     color: #fff;
+}
+
+/* ===== CONTACT SECTIONS ===== */
+
+.contact-heading {
+    font-size: clamp(28px, 5vw, 72px);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    margin: 0.15em 0 0 0;
+}
+
+.contact-sub {
+    font-size: clamp(11px, 1vw, 14px);
+    letter-spacing: 0.06em;
+    color: #555;
+    margin-top: 0.6em;
+    margin-bottom: 0;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 480px;
+    padding: 0;
+    border: none;
+    margin: 1.8em 0 0 0;
+    background: transparent;
+}
+
+.contact-form textarea,
+.contact-form input[type="email"] {
+    border: none;
+    border-bottom: 1px solid #000;
+    padding: 0.5rem 0;
+    background: transparent;
+    font-family: 'Roboto Mono', monospace;
+    font-size: clamp(13px, 1.2vw, 16px);
+    outline: none;
+    resize: none;
+    min-height: 72px;
+    color: #000;
+    box-shadow: none;
+    border-radius: 0;
+    margin-bottom: 1.2rem;
+}
+
+.contact-form input[type="email"] {
+    min-height: unset;
+    height: auto;
+}
+
+.contact-form textarea::placeholder,
+.contact-form input[type="email"]::placeholder {
+    color: #bbb;
+}
+
+.contact-form button[type="submit"] {
+    border: none;
+    border-bottom: none;
+    background: transparent;
+    padding: 0;
+    text-align: left;
+    font-family: 'Roboto Mono', monospace;
+    font-size: clamp(10px, 0.9vw, 13px);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    width: fit-content;
+    transform: none;
+}
+
+.contact-form button[type="submit"]:hover {
+    color: #000;
+    background: transparent;
+}
+
+.contact-form button[type="submit"]:active {
+    transform: none;
+}
+
+.contact-info-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    margin-top: 1.8em;
+}
+
+.contact-info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.18em;
+}
+
+.contact-block-label {
+    font-size: clamp(9px, 0.85vw, 12px);
+    letter-spacing: 0.2em;
+    color: #999;
+    text-transform: uppercase;
+    margin: 0 0 0.4em 0;
+}
+
+.contact-info-block p {
+    font-size: clamp(13px, 1.4vw, 18px);
+    margin: 0;
+    color: #000;
+    line-height: 1.5;
+}
+
+.contact-encoded-note {
+    font-size: clamp(9px, 0.8vw, 11px) !important;
+    color: #bbb !important;
+    letter-spacing: 0.06em;
+    margin-top: 0.3em !important;
 }

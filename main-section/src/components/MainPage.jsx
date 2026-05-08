@@ -15,28 +15,29 @@ const SUB_FADE_START   = 0.85;  // subtitle opacity begins
 const PHRASES = [
   {
     id: 0,
+    label: '// 01',
     start: 0.13, peak: 0.22, end: 0.38,
-    fontFamily: "'Cormorant Garamond', Georgia, serif",
-    fontSize: 'clamp(1.38rem, 2.0vw, 1.9rem)',
-    mobileFontSize: '1.2rem',
-    weight: 500,
-    style: 'italic',
-    spacing: '0.02em',
-    lineHeight: 1.75,
-    mobileLineHeight: 1.65,
+    fontFamily: "'Space Mono', monospace",
+    fontSize: '0.82rem',
+    mobileFontSize: '0.72rem',
+    weight: 400,
+    style: 'normal',
+    spacing: '0.01em',
+    lineHeight: 1.85,
+    mobileLineHeight: 1.8,
   },
   {
     id: 1,
+    label: '// 02',
     start: 0.36, peak: 0.47, end: 0.60,
-    fontFamily: "'Cormorant Garamond', Georgia, serif",
-    fontSize: 'clamp(1.32rem, 1.05vw, 0.9rem)',
-    mobileFontSize: '0.8rem',
-    weight: 450,
-    style: 'italic',
-    spacing: '0.18em',
-    mobileSpacing: '0.05em',
-    lineHeight: 1.65,
-    mobileLineHeight: 1.75,
+    fontFamily: "'Space Mono', monospace",
+    fontSize: '0.82rem',
+    mobileFontSize: '0.72rem',
+    weight: 400,
+    style: 'normal',
+    spacing: '0.01em',
+    lineHeight: 1.85,
+    mobileLineHeight: 1.8,
   },
 ];
 
@@ -54,7 +55,7 @@ const MainPage = ({ content }) => {
 
   useEffect(() => {
     const calculateParallaxDistance = () => {
-      setParallaxDistance(window.innerHeight * 5);
+      setParallaxDistance(window.innerHeight * 2.5);
     };
 
     const measureTitleHeight = () => {
@@ -212,7 +213,24 @@ const MainPage = ({ content }) => {
     ? Math.max(0, Math.min(1, (scrollProgress - SUB_FADE_START) / (1 - SUB_FADE_START)))
     : 1;
 
-  const hintOpacity = scrollProgress <= 0.07 ? 1 - scrollProgress / 0.07 : 0;
+  // Scroll hint only appears after 5s of no scrolling; hides immediately on scroll
+  const [scrollHintVisible, setScrollHintVisible] = useState(false);
+  useEffect(() => {
+    let idleTimer = null;
+    const arm = () => {
+      clearTimeout(idleTimer);
+      setScrollHintVisible(false);
+      idleTimer = setTimeout(() => setScrollHintVisible(true), 5000);
+    };
+    arm();
+    window.addEventListener('scroll', arm, { passive: true });
+    return () => {
+      clearTimeout(idleTimer);
+      window.removeEventListener('scroll', arm);
+    };
+  }, []);
+
+  const hintOpacity = scrollProgress <= 0.10 ? 1 - scrollProgress / 0.10 : 0;
 
   return (
     <>
@@ -232,70 +250,82 @@ const MainPage = ({ content }) => {
         {isParallaxActive && (
           <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 8 }}>
 
-            {/* Scroll hint */}
-            <div style={{
-              position: 'absolute',
-              bottom: '2.5rem',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '0.6rem',
-              opacity: hintOpacity,
-            }}>
-              <span style={{
-                fontFamily: "'Space Mono', monospace",
-                fontSize: '0.6rem',
-                letterSpacing: '0.28em',
-                textTransform: 'uppercase',
-                color: '#000',
-                opacity: 0.38,
-              }}>scroll</span>
-              <div className="scroll-line-indicator" />
-            </div>
+            {/* Scroll hint — only after 5s idle, fades with scroll progress */}
+            {scrollHintVisible && (
+              <div style={{
+                position: 'absolute',
+                bottom: '2.5rem',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '0.6rem',
+                opacity: hintOpacity,
+              }}>
+                <span style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '0.6rem',
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase',
+                  color: '#000',
+                  opacity: 0.38,
+                }}>scroll</span>
+                <div className="scroll-line-indicator" />
+              </div>
+            )}
 
-            {/* Phrases — end by PHRASE_CUTOFF so they never overlap the rising cards */}
+            {/* Phrases — scroll-progress based crossfade, always active during parallax */}
             {PHRASES.map(phrase => {
               const opacity = getPhraseOpacity(phrase);
-              const fontSize    = isMobile && phrase.mobileFontSize    ? phrase.mobileFontSize    : phrase.fontSize;
-              const spacing     = isMobile && phrase.mobileSpacing     ? phrase.mobileSpacing     : phrase.spacing;
-              const lineHeight  = isMobile && phrase.mobileLineHeight  ? phrase.mobileLineHeight  : phrase.lineHeight;
+              const fontSize   = isMobile && phrase.mobileFontSize   ? phrase.mobileFontSize   : phrase.fontSize;
+              const lineHeight = isMobile && phrase.mobileLineHeight ? phrase.mobileLineHeight : phrase.lineHeight;
               return (
                 <div
                   key={phrase.id}
                   style={{
                     position: 'absolute',
-                    top: '54%',
+                    top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    textAlign: 'center',
-                    width: 'calc(100vw - 6rem)',
-                    maxWidth: '960px',
+                    width: 'min(480px, calc(100vw - 4rem))',
                     opacity,
+                    borderLeft: '1px solid rgba(0,0,0,0.18)',
+                    paddingLeft: '1.25rem',
                   }}
                 >
+                  <span style={{
+                    display: 'block',
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.08em',
+                    color: 'rgba(0,0,0,0.35)',
+                    marginBottom: '0.6rem',
+                  }}>{phrase.label}</span>
                   <p style={{
                     fontFamily: phrase.fontFamily,
                     fontSize,
                     fontWeight: phrase.weight,
                     fontStyle: phrase.style,
-                    letterSpacing: spacing,
+                    letterSpacing: phrase.spacing,
                     lineHeight,
                     margin: 0,
                     color: '#000',
                   }}>
-                    {phrase.id === 0 && "this a directory of things I find necessary or interesting to share about myself and how I've interacted with the world."}
+                    {phrase.id === 0 && "this site is an index of things i find worth sharing. look through around the site, there might just be something that inerest you. "}
                     {phrase.id === 1 && <>
-                      Please look through around the site, there might just be something that inerest you. If that is the case, you very much should contact me via{' '}
+                      if you found things here interesting then i will interesting as well <br></br>
+                      reach me {' '}
                       <a
-                        href="https://alexgaoth.com/#contact"
+                        href="https://alexgaoth.com/?flip=1#about"
                         style={{
                           color: 'inherit',
                           textDecoration: 'underline',
+                          textUnderlineOffset: '3px',
                           pointerEvents: 'auto',
                         }}
-                      >all these methods</a>
+                      >in all these different ways</a>
+                      {' '} 
                     </>}
                   </p>
                 </div>
@@ -367,7 +397,7 @@ const MainPage = ({ content }) => {
 
             <div style={{ ...getFooterStyle(), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', paddingTop: '5rem' }}>
               <a
-                href="https://alexgaoth.com/#contact"
+                href="https://alexgaoth.com/?flip=1#about"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',

@@ -13,7 +13,8 @@
       "WebSearch",
       "WebFetch(domain:cdn.simpleicons.org)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:cdn.jsdelivr.net)"
+      "WebFetch(domain:cdn.jsdelivr.net)",
+      "Bash(npx skills *)"
     ]
   }
 }

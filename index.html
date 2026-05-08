@@ -199,53 +199,42 @@
         </div>
     </section>
     
-    <section id="contact" class="slide">
-        <h2>Send me a quick message</h2>
-
-        <form action="https://formspree.io/f/xnqkwlpy" method="POST" aria-label="Contact form">
-            <p>
-                Your message is anonymous
-                <br>a way to reach me nonchalantly
-            </p>
-            <label for="message">
-                Your message:
-                <textarea id="message" name="message" required></textarea>
-            </label>
-            <br>
-            <button type="submit">Send</button>
+    <section id="contact" class="slide contact-slide">
+        <p class="tech-label">// message</p>
+        <h2 class="contact-heading">say something</h2>
+        <p class="contact-sub">anonymous — just whatever is on your mind</p>
+        <form action="https://formspree.io/f/xnqkwlpy" method="POST" aria-label="Contact form" class="contact-form">
+            <textarea id="message" name="message" required placeholder="your message"></textarea>
+            <button type="submit">send →</button>
         </form>
     </section>
 
-    <section id="mailing-list" class="slide">
-        <h2>Join my mailing list</h2>
-
-        <form action="https://buttondown.com/api/emails/embed-subscribe/alexgaoth" method="post" class="embeddable-buttondown-form" aria-label="Mailing list subscription form">
-            <p>
-                Get notified about major updates
-                <br>new projects, writings, and other things of interest
-            </p>
-            <label for="bd-email">
-                Your email:
-                <input type="email" id="bd-email" name="email" required placeholder="you@example.com">
-            </label>
-            <br>
-            <button type="submit">Subscribe</button>
+    <section id="mailing-list" class="slide contact-slide">
+        <p class="tech-label">// mailing list</p>
+        <h2 class="contact-heading">stay in the loop</h2>
+        <p class="contact-sub">major updates — new projects, writings, things of interest</p>
+        <form action="https://buttondown.com/api/emails/embed-subscribe/alexgaoth" method="post" class="contact-form embeddable-buttondown-form" aria-label="Mailing list subscription form">
+            <input type="email" id="bd-email" name="email" required placeholder="you@example.com">
+            <button type="submit">subscribe →</button>
         </form>
     </section>
 
-    <section id="contact-info" class="slide">
-        <h2>Contact Me</h2>
-        <p>informal matters: haotian_@outlook.com
-            <br>
-            +44 07529216897
-        </p>
-        <br>
-        <p>formal matters: alexisobrenovic@gmail.com
-            <br>
-            (408)-[my birth month]1[day of birth]-6145
-            <br>
-            (Encoded to anti-scrape)
-        </p>
+    <section id="contact-info" class="slide contact-slide">
+        <p class="tech-label">// reach me</p>
+        <h2 class="contact-heading">contact info</h2>
+        <div class="contact-info-blocks">
+            <div class="contact-info-block">
+                <p class="contact-block-label">informal</p>
+                <p>haotian_@outlook.com</p>
+                <p>+44 07529216897</p>
+            </div>
+            <div class="contact-info-block">
+                <p class="contact-block-label">formal</p>
+                <p>alexisobrenovic@gmail.com</p>
+                <p>(408)-[birth month]1[birth day]-6145</p>
+                <p class="contact-encoded-note">encoded to anti-scrape</p>
+            </div>
+        </div>
     </section>
     </main>
     

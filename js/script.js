@@ -43,24 +43,29 @@ function handleGesture() {
 }
 
 // Mouse wheel and trackpad scroll handling
+// Lock resets only after wheel events fully stop — prevents momentum skipping slides
 let isScrolling = false;
-let scrollTimeout;
+let scrollCooldown = null;
 
 document.addEventListener('wheel', (e) => {
     e.preventDefault();
     if (isScrolling) return;
     isScrolling = true;
+
     if (e.deltaY > 0) {
         showSlide(currentSlide + 1);
     } else if (e.deltaY < 0) {
         showSlide(currentSlide - 1);
     }
-    setTimeout(() => {
+
+    // Cancel any pending unlock and restart — keeps the lock alive while events keep firing
+    clearTimeout(scrollCooldown);
+    scrollCooldown = setTimeout(() => {
         isScrolling = false;
-    }, 650);
+    }, 900);
 }, { passive: false });
 
-// Jump to slide by URL hash on load (e.g. #contact)
+// Jump to slide by URL hash on load (e.g. #about)
 const hashSlide = [...slides].findIndex(s => s.id === window.location.hash.slice(1));
 if (hashSlide > 0) {
     slides[0].classList.remove('active'); // clear the hardcoded active on #home
@@ -68,8 +73,19 @@ if (hashSlide > 0) {
 }
 slides[currentSlide].classList.add('active');
 
+// Auto-flip the ID card when navigating via contact link (?flip=1#about)
+if (window.location.search.includes('flip') && slides[currentSlide].id === 'about') {
+    const dlCard = document.getElementById('dl-card');
+    if (dlCard) dlCard.classList.add('flipped');
+}
+
+const contactFlow = window.location.search.includes('flip');
+
 function showSlide(slideIndex) {
-    if (slideIndex >= slides.length || (slideIndex > currentSlide && slides[currentSlide].id === 'about')) {
+    if (slideIndex >= slides.length) {
+        location.href = 'https://app.alexgaoth.com/';
+    }
+    else if (slideIndex > currentSlide && slides[currentSlide].id === 'about' && !contactFlow) {
         location.href = 'https://app.alexgaoth.com/';
     }
     else if (slideIndex >= 0){
