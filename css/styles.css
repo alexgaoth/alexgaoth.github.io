@@ -46,6 +46,17 @@ main {
     padding: 0 10vw;
 }
 
+/* Mailing list — right-aligned for variety */
+#mailing-list {
+    align-items: flex-end;
+    text-align: right;
+}
+
+#mailing-list .contact-form input[type="email"],
+#mailing-list .contact-form button[type="submit"] {
+    text-align: right;
+}
+
 .active {
     opacity: 1;
     transform: translateY(0);

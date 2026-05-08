@@ -393,26 +393,26 @@ const MainPage = ({ content }) => {
                   </Link>
                 ))}
               </div>
+
+              {/* ── /art strip ── */}
+              <Link
+                to="/art"
+                className="art-strip"
+              >
+                <span className="art-strip-label">/art</span>
+                <span className="art-strip-desc">the other side of the directory</span>
+                <span className="art-strip-arrow">→</span>
+              </Link>
             </div>
 
-            <div style={{ ...getFooterStyle(), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', paddingTop: '5rem' }}>
+            <div style={{ ...getFooterStyle(), paddingTop: '3rem' }}>
               <a
                 href="https://alexgaoth.com/?flip=1#about"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  border: '1px solid #000',
-                  padding: '0.6rem 1.2rem',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  fontFamily: 'monospace',
-                  fontSize: '0.85rem',
-                  transition: 'background 0.25s ease, color 0.25s ease',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#000'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = ''; e.currentTarget.style.color = 'inherit'; }}
+                className="art-strip"
               >
-                contact me &nbsp;·&nbsp; stay up to date
+                <span className="art-strip-label">#contact</span>
+                <span className="art-strip-desc">reach out || stay up to date</span>
+                <span className="art-strip-arrow">→</span>
               </a>
               <div className="footer">
                 <p>this page is written with React @2022 (now deprecated)</p>

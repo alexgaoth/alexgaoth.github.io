@@ -331,3 +331,56 @@ body {
 .leading-relaxed {
   line-height: 1.225;
 }
+
+/* /art strip — below the 2×2 card grid */
+.art-strip {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 3rem;
+  padding: 1rem 0;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  text-decoration: none;
+  color: inherit;
+  font-family: 'Space Mono', monospace;
+  transition: background 0.2s ease, color 0.2s ease, padding 0.2s ease;
+}
+
+.art-strip:hover {
+  background: #000;
+  color: #fff;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.art-strip-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.art-strip-desc {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  opacity: 0.45;
+  flex: 1;
+}
+
+.art-strip-arrow {
+  font-size: 0.82rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.art-strip:hover .art-strip-arrow {
+  transform: translateX(4px);
+  opacity: 1;
+}
+
+.art-strip:hover .art-strip-desc {
+  opacity: 0.7;
+}
