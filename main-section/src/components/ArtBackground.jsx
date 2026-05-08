@@ -227,7 +227,8 @@ function crabClaw(cx, base, h, n, tone = 0.76) {
 }
 
 /* Bare winter tree — trunk + radiating skeleton branches */
-function _bareTree(cx, base, h, n, tone = 0.68) {
+// eslint-disable-next-line no-unused-vars
+function bareTree(cx, base, h, n, tone = 0.68) {
   const pts = [];
   const trk = Math.floor(n * 0.30);
   for (let k = 0; k < trk; k++)
@@ -246,7 +247,8 @@ function _bareTree(cx, base, h, n, tone = 0.68) {
 }
 
 /* Evenly-spaced points along a polyline; pts entries can be [x, y] or [x, y, tone] */
-function _polyLine(pts, n, j = 0.003) {
+// eslint-disable-next-line no-unused-vars
+function polyLine(pts, n, j = 0.003) {
   const lens = [0];
   for (let i = 1; i < pts.length; i++) {
     const dx = pts[i][0] - pts[i-1][0], dy = pts[i][1] - pts[i-1][1];
