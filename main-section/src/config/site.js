@@ -18,6 +18,7 @@ export const SITE = {
 
 export const APP_ROUTES = {
   home: '/',
+  about: '/about',
   resume: '/resume',
   projects: '/projects',
   thoughts: '/thoughts',

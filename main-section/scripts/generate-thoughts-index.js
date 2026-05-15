@@ -5,6 +5,9 @@ const matter = require('gray-matter');
 // Paths
 const THOUGHTS_DIR = path.join(__dirname, '../src/data/thoughts');
 const OUTPUT_FILE = path.join(__dirname, '../src/data/thoughtsIndex.js');
+const SITEMAP_FILE = path.join(__dirname, '../public/sitemap.xml');
+const STATIC_ROUTES = require('../src/data/sitemapRoutes.json');
+const APP_BASE_URL = 'https://app.alexgaoth.com';
 
 // Common stopwords to filter out from tags
 const STOPWORDS = new Set([
@@ -24,6 +27,16 @@ function generateSlug(title) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+function normaliseDateString(dateString) {
+  const match = `${dateString}`.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (!match) {
+    return `${dateString}`;
+  }
+
+  const [, year, month, day] = match;
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
 
 // Extract title from first # heading
@@ -131,7 +144,7 @@ function generateThoughtsIndex() {
       filename,
       varName,
       title: data.title,
-      date: data.date,
+      date: normaliseDateString(data.date),
       excerpt: data.excerpt,
       image: data.image,
       tags: data.tags,
@@ -185,6 +198,41 @@ export const getLatestThought = () => {
   console.log('✅ Successfully generated thoughtsIndex.js');
   console.log(`   - ${articles.length} article(s) indexed`);
   console.log(`   - Latest: "${articles[0].title}" (${articles[0].date})`);
+
+  generateSitemap(articles);
+}
+
+function buildAbsoluteUrl(routePath) {
+  return routePath === '/' ? `${APP_BASE_URL}/` : `${APP_BASE_URL}${routePath}`;
+}
+
+function generateSitemap(staticArticles) {
+  const today = new Date().toISOString().split('T')[0];
+
+  const staticEntries = STATIC_ROUTES.map((route) => `  <url>
+    <loc>${buildAbsoluteUrl(route.path)}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${route.changefreq}</changefreq>
+    <priority>${route.priority}</priority>
+  </url>`);
+
+  const thoughtEntries = staticArticles.map((article) => `  <url>
+    <loc>${buildAbsoluteUrl(`/thoughts/${article.slug}`)}</loc>
+    <lastmod>${normaliseDateString(article.date)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`);
+
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${[...staticEntries, ...thoughtEntries].join('\n\n')}
+</urlset>
+`;
+
+  fs.writeFileSync(SITEMAP_FILE, sitemap, 'utf-8');
+  console.log(`✅ Successfully generated sitemap.xml`);
+  console.log(`   - ${STATIC_ROUTES.length} static route(s)`);
+  console.log(`   - ${staticArticles.length} thought route(s)`);
 }
 
 // Run the generator

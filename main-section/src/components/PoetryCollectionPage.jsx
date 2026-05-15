@@ -1,39 +1,12 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Clipboard, Check, ArrowLeft } from 'lucide-react';
-import SEO from './SEO';
-import '../styles/art.css';
-import { poems } from '../data/poetryData';
-import '../styles/poetry.css';
+import React from 'react';
+import LiteraryCollectionPage from './literary/LiteraryCollectionPage';
 import { APP_ROUTES, buildAppUrl } from '../config/site';
-
-const AI_SERVICES = [
-  {
-    id: 'chatgpt',
-    label: 'ChatGPT',
-    urlTemplate: (p) => `https://chatgpt.com/?q=${encodeURIComponent(p)}`,
-    favicon: 'https://www.google.com/s2/favicons?domain=chatgpt.com&sz=32',
-  },
-  {
-    id: 'gemini',
-    label: 'Gemini',
-    urlTemplate: (p) => `https://gemini.google.com/app?q=${encodeURIComponent(p)}`,
-    favicon: 'https://www.google.com/s2/favicons?domain=gemini.google.com&sz=32',
-  },
-  {
-    id: 'claude',
-    label: 'Claude',
-    urlTemplate: (p) => `https://claude.ai/new?q=${encodeURIComponent(p)}`,
-    favicon: 'https://www.google.com/s2/favicons?domain=claude.ai&sz=32',
-  },
-];
+import { poems } from '../data/poetryData';
 
 const TEXT = {
   zh: {
     pageTitle: '诗',
-    seoTitle: '诗 — Alex Gao',
     langToggle: 'English →',
-    langTogglePath: '/poetry/en',
     abstract: '诗者，心之声也；今者，尘之扰也。以声涤尘，可得片刻真我。此辑主要收录我舞勺之年前后所作。 拙作待正。',
     contextLabel: '背景与感想',
     claudeLabel: 'Claude 评',
@@ -42,9 +15,7 @@ const TEXT = {
   },
   en: {
     pageTitle: 'Poetry',
-    seoTitle: 'Poetry — Alex Gao',
     langToggle: '中文 →',
-    langTogglePath: '/poetry',
     abstract: 'Most of these Poems I wrote around age 15, the overarching context is mostly: covid, abroad in the UK, has way too much free time on my hands.',
     contextLabel: 'Context & Notes',
     claudeLabel: 'What Claude thinks',
@@ -54,227 +25,52 @@ const TEXT = {
   },
 };
 
-// Split a Chinese line on ，, filter empty strings
-const splitSegments = (line) => line.split('，').filter(s => s.trim());
+function getContextText(poem, lang) {
+  return lang === 'zh' ? poem.context : poem.contextEn;
+}
 
-const PoetryCollectionPage = ({ lang = 'zh' }) => {
-  const t = TEXT[lang];
-  const [copiedId, setCopiedId] = useState(null);
-  const [aiToast, setAiToast] = useState(false);
-  const [expandedIds, setExpandedIds] = useState(() => {
-    const first = poems.find(p => lang === 'zh' ? p.claudeZh : p.claudeEn);
-    return first ? new Set([first.id]) : new Set();
-  });
-  const [revealedSegs, setRevealedSegs] = useState(new Set());
+function getClaudeText(poem, lang) {
+  return lang === 'zh' ? poem.claudeZh : poem.claudeEn;
+}
 
-  const toggleClause = (id) => {
-    setExpandedIds(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
+function buildCopyText(poem) {
+  return `《${poem.title}》\n${poem.lines.join('\n')}`;
+}
 
-  const toggleSeg = (poemId, lineIdx, segIdx) => {
-    const key = `${poemId}-${lineIdx}-${segIdx}`;
-    setRevealedSegs(prev => {
-      const next = new Set(prev);
-      next.has(key) ? next.delete(key) : next.add(key);
-      return next;
-    });
-  };
+function buildAiPrompt(poem, lang) {
+  return lang === 'zh'
+    ? `请翻译以下这首诗，并对其进行详细赏析，涵盖主题、情感基调、艺术手法、文化背景等方面：\n\n《${poem.title}》\n${poem.lines.join('\n')}`
+    : `Please translate this Chinese poem into English and provide a detailed commentary, covering themes, emotional tone, literary techniques, and cultural context:\n\n《${poem.title}》\n${poem.lines.join('\n')}`;
+}
 
-  const isSegRevealed = (poemId, lineIdx, segIdx) =>
-    revealedSegs.has(`${poemId}-${lineIdx}-${segIdx}`);
+function renderPoetryTitle(poem) {
+  return <>《{poem.title}》</>;
+}
 
-  const handleCopy = async (poem) => {
-    const text = `《${poem.title}》\n${poem.lines.join('\n')}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedId(poem.id);
-      setTimeout(() => setCopiedId(null), 2000);
-    } catch (_) {}
-  };
-
-  const handleAi = async (poem, service) => {
-    const prompt =
-      lang === 'zh'
-        ? `请翻译以下这首诗，并对其进行详细赏析，涵盖主题、情感基调、艺术手法、文化背景等方面：\n\n《${poem.title}》\n${poem.lines.join('\n')}`
-        : `Please translate this Chinese poem into English and provide a detailed commentary, covering themes, emotional tone, literary techniques, and cultural context:\n\n《${poem.title}》\n${poem.lines.join('\n')}`;
-    try {
-      await navigator.clipboard.writeText(prompt);
-    } catch (_) {}
-    setAiToast(true);
-    setTimeout(() => setAiToast(false), 3000);
-    window.open(service.urlTemplate(prompt), '_blank');
-  };
-
-  const renderLines = (poem) => {
-    if (lang !== 'en') {
-      return poem.lines.map((line, li) => (
-        <p key={li} className="poetry-line">{line}</p>
-      ));
-    }
-
-    return poem.lines.map((line, li) => {
-      const segments = splitSegments(line);
-      const segTrans = poem.linesEn?.[li] || [];
-      const anyRevealed = segments.some((_, si) => isSegRevealed(poem.id, li, si));
-
-      return (
-        <div key={li} className="poetry-line-group">
-          <p className="poetry-line poetry-line-translatable">
-            {segments.map((seg, si) => {
-              const revealed = isSegRevealed(poem.id, li, si);
-              return (
-                <React.Fragment key={si}>
-                  <span
-                    className={`poetry-seg${revealed ? ' poetry-seg-active' : ''}`}
-                    onClick={() => toggleSeg(poem.id, li, si)}
-                    title="tap to translate"
-                  >
-                    {seg}
-                  </span>
-                  {si < segments.length - 1 && (
-                    <span className="poetry-seg-comma">，</span>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </p>
-          {anyRevealed && (
-            <div className="poetry-line-trans">
-              {segments.map((_, si) => {
-                if (!isSegRevealed(poem.id, li, si)) return null;
-                const t = segTrans[si] ?? segTrans.join(' ');
-                return (
-                  <span key={si} className="poetry-seg-en">{t}</span>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      );
-    });
-  };
-
-  return (
-    <>
-      <SEO
-        title={t.seoTitle}
-        description="Poetry by Alex Gao (alexgaoth)."
-        keywords={['Alex Gao', 'alexgaoth', 'poetry', '诗', 'Chinese poetry']}
-        path={lang === 'zh' ? APP_ROUTES.poetry : APP_ROUTES.poetryEn}
-        alternates={[
-          { hrefLang: 'zh', href: buildAppUrl(APP_ROUTES.poetry) },
-          { hrefLang: 'en', href: buildAppUrl(APP_ROUTES.poetryEn) },
-          { hrefLang: 'x-default', href: buildAppUrl(APP_ROUTES.poetry) },
-        ]}
-      />
-      <Link to={APP_ROUTES.art} className="art-back">
-        <ArrowLeft size={13} strokeWidth={1} />
-        <span>art</span>
-      </Link>
-      <div className="poetry-page">
-        <div className="page-container">
-          <div className="content-wrapper-narrow">
-
-            <div className="poetry-page-header">
-              <h1 className="poetry-page-title">{t.pageTitle}</h1>
-              <Link to={t.langTogglePath} className="poetry-lang-toggle">
-                {t.langToggle}
-              </Link>
-            </div>
-
-            <p className="poetry-abstract">{t.abstract}</p>
-
-            <div className="poetry-list">
-              {poems.map((poem, index) => {
-                const isCopied = copiedId === poem.id;
-                const isExpanded = expandedIds.has(poem.id);
-                const contextText = lang === 'zh' ? poem.context : poem.contextEn;
-                const claudeText = lang === 'zh' ? poem.claudeZh : poem.claudeEn;
-
-                return (
-                  <article key={poem.id} className="poetry-card">
-
-                    <div className="poetry-card-header">
-                      <div>
-                        <h2 className="poetry-title">《{poem.title}》</h2>
-                        {lang === 'en' && (
-                          <span className="poetry-translate-hint">{t.translateHint}</span>
-                        )}
-                      </div>
-                      <div className="poetry-card-actions">
-                        <button
-                          className={`poetry-icon-btn${isCopied ? ' copied' : ''}`}
-                          onClick={() => handleCopy(poem)}
-                          title="Copy poem"
-                        >
-                          {isCopied
-                            ? <Check size={15} strokeWidth={1.5} />
-                            : <Clipboard size={15} strokeWidth={1.5} />}
-                        </button>
-                        <span className="poetry-actions-sep" />
-                        {AI_SERVICES.map((service) => (
-                          <button
-                            key={service.id}
-                            className="poetry-ai-icon-btn"
-                            onClick={() => handleAi(poem, service)}
-                            title={service.label}
-                          >
-                            <img
-                              src={service.favicon}
-                              alt={service.label}
-                              className="poetry-ai-favicon"
-                            />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="poetry-body">
-                      {renderLines(poem)}
-                    </div>
-
-                    {claudeText && (
-                      <div className="poetry-claude">
-                        <button
-                          className="poetry-claude-toggle"
-                          onClick={() => toggleClause(poem.id)}
-                        >
-                          {t.claudeLabel}
-                          <span className={`poetry-claude-arrow${isExpanded ? ' open' : ''}`}>▾</span>
-                        </button>
-                        <div className={`poetry-claude-body${isExpanded ? ' open' : ''}`}>
-                          <p className="poetry-claude-text">{claudeText}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {contextText && (
-                      <div className="poetry-context">
-                        <span className="poetry-context-label">{t.contextLabel}</span>
-                        <p className="poetry-context-text">{contextText}</p>
-                      </div>
-                    )}
-
-                  </article>
-                );
-              })}
-            </div>
-
-            <p className="poetry-footer">{t.footerNote}</p>
-
-          </div>
-        </div>
-      </div>
-
-      {aiToast && (
-        <div className="poetry-toast">{t.aiToastMsg}</div>
-      )}
-    </>
-  );
-};
+const PoetryCollectionPage = ({ lang = 'zh' }) => (
+  <LiteraryCollectionPage
+    buildAiPrompt={buildAiPrompt}
+    buildCopyText={buildCopyText}
+    getClaudeText={getClaudeText}
+    getContextText={getContextText}
+    items={poems}
+    lang={lang}
+    renderTitle={renderPoetryTitle}
+    seo={{
+      title: lang === 'zh' ? '诗 — Alex Gao' : 'Poetry — Alex Gao',
+      description: 'Poetry by Alex Gao (alexgaoth).',
+      keywords: ['Alex Gao', 'alexgaoth', 'poetry', '诗', 'Chinese poetry'],
+      path: lang === 'zh' ? APP_ROUTES.poetry : APP_ROUTES.poetryEn,
+      backPath: APP_ROUTES.art,
+      alternates: [
+        { hrefLang: 'zh', href: buildAppUrl(APP_ROUTES.poetry) },
+        { hrefLang: 'en', href: buildAppUrl(APP_ROUTES.poetryEn) },
+        { hrefLang: 'x-default', href: buildAppUrl(APP_ROUTES.poetry) },
+      ],
+    }}
+    text={TEXT[lang]}
+    togglePath={lang === 'zh' ? APP_ROUTES.poetryEn : APP_ROUTES.poetry}
+  />
+);
 
 export default PoetryCollectionPage;

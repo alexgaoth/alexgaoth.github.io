@@ -6,6 +6,7 @@ import ThoughtsPage from './components/ThoughtsPage';
 import QuotesPage from './components/QuotesPage';
 import NowPage from './components/NowPage';
 import ThoughtArticlePage from './components/ThoughtArticlePage';
+import ProfilePage from './components/profile/ProfilePage';
 import RegentsPage from './components/RegentsPage';
 import PoetryCollectionPage from './components/PoetryCollectionPage';
 import CiCollectionPage from './components/CiCollectionPage';
@@ -23,6 +24,7 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path={APP_ROUTES.home} element={<MainPage content={content} />} />
+        <Route path={APP_ROUTES.about} element={<ProfilePage />} />
         <Route path={APP_ROUTES.resume} element={<ResumePage data={content.resume} />} />
         <Route path={APP_ROUTES.projects} element={<ProjectsPage data={content.projects} />} />
         <Route path={APP_ROUTES.thoughts} element={<ThoughtsPage data={content.thoughts} />} />

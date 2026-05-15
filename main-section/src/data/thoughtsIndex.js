@@ -70,7 +70,7 @@ Because a thorough context is what intrinsically differs us from AIs, or specifi
   },
   {
     title: "Submitting to the Symbolic Order",
-    date: "2025-11-1",
+    date: "2025-11-01",
     excerpt: "Attempt at deconstructing Lacan's theory of symbolic_order",
     image: "/resources/symbolic_order.jpg",
     readTime: "2 min read",
