@@ -1,12 +1,3 @@
----
-title: "Chinese nationalization modernization is actually quite intersting"
-slug: "chinese-nationalization-modernization-is-actually-quite-intersting"
-date: "2024-09-03"
-excerpt: "Chinese intellectuals simultaneously had to invent the concept of China as a modern nation-state while defending it against foreign encroachment, essentially creating and protecting a national identity in the same historical moment. This type of attempts to speedrun modernization is so chaotic, and thus interesting. Similiar situation can be seen with the Ottoman Empire before WW1"
-image: "/resources/yatsen.jpg"
-tags: ["chinese", "nationalism", "colonialism"]
----
-
 # Chinese Nationalization Modernization is Actually Quite Interesting
 
 The story of Chinese modernization presents one of history's most fascinating paradoxes: how do you simultaneously invent and defend a national identity? Chinese intellectuals of the late 19th and early 20th centuries found themselves in this exact predicament, forced to conceptualize China as a modern nation-state while desperately protecting it from foreign encroachment.

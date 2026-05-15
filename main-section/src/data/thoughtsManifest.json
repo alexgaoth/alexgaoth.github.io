@@ -1,0 +1,75 @@
+[
+  {
+    "title": "An short article to describe this website",
+    "date": "2026-01-02",
+    "excerpt": "This section of the website, the thoughts page, is meant to be documentation of the things that I have thought about (and usually went into deeper research for), so I can inspire others like how I was",
+    "image": "/resources/default.jpg",
+    "readTime": "4 min read",
+    "tags": [
+      "Learning",
+      "Knowledge",
+      "Concept"
+    ],
+    "slug": "an-short-article-to-describe-this-website",
+    "contentPath": "/content/thoughts/an-short-article-to-describe-this-website.md"
+  },
+  {
+    "title": "Submitting to the Symbolic Order",
+    "date": "2025-11-01",
+    "excerpt": "Attempt at deconstructing Lacan's theory of symbolic_order",
+    "image": "/resources/symbolic_order.jpg",
+    "readTime": "2 min read",
+    "tags": [
+      "Philosphoy",
+      "Psychoanalysis",
+      "Lacan",
+      "Zizek"
+    ],
+    "slug": "submitting-to-the-symbolic-order",
+    "contentPath": "/content/thoughts/submitting-to-the-symbolic-order.md"
+  },
+  {
+    "title": "Winning the battle of Manzikert",
+    "date": "2025-08-12",
+    "excerpt": "The alternative history where Byzantium wins the battle of Manzikurt, (containing of a semi-detailed first personal narrative of a Turkish Mercenary) and how different our timeline would stretch from it.",
+    "image": "/resources/manzikert.jpg",
+    "readTime": "5 min read",
+    "tags": [
+      "History",
+      "Alternative History",
+      "Byzantium",
+      "Seljuks"
+    ],
+    "slug": "winning-the-battle-of-manzikert",
+    "contentPath": "/content/thoughts/winning-the-battle-of-manzikert.md"
+  },
+  {
+    "title": "Chinese nationalization modernization is actually quite intersting",
+    "date": "2024-09-03",
+    "excerpt": "Chinese intellectuals simultaneously had to invent the concept of China as a modern nation-state while defending it against foreign encroachment, essentially creating and protecting a national identity in the same historical moment. This type of attempts to speedrun modernization is so chaotic, and thus interesting. Similiar situation can be seen with the Ottoman Empire before WW1",
+    "image": "/resources/yatsen.jpg",
+    "readTime": "2 min read",
+    "tags": [
+      "chinese",
+      "nationalism",
+      "colonialism"
+    ],
+    "slug": "chinese-nationalization-modernization-is-actually-quite-intersting",
+    "contentPath": "/content/thoughts/chinese-nationalization-modernization-is-actually-quite-intersting.md"
+  },
+  {
+    "title": "The Future of AI Agents",
+    "date": "2024-08-01",
+    "excerpt": "It is not just going to be transformers, because whenever a technology is only being slightly refined under heavy competition, it suggest the end is near for it (even if it takes 50 years), new paradigms, new technology will emerge eventually and overtake transformers like how they overtook the CNNs and their predecessors.",
+    "image": "/resources/ai_agent.png",
+    "readTime": "2 min read",
+    "tags": [
+      "tech",
+      "ML",
+      "DL",
+      "Transformers"
+    ],
+    "slug": "the-future-of-ai-agents",
+    "contentPath": "/content/thoughts/the-future-of-ai-agents.md"
+  }
+]

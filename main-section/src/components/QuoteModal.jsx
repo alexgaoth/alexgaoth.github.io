@@ -1,15 +1,16 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { thoughtsIndex } from '../data/thoughtsIndex';
+import thoughtsManifest from '../data/thoughtsManifest.json';
+import { APP_ROUTES } from '../config/site';
 
 const QuoteModal = ({ quote, author, description, relatedArticles, onClose }) => {
   // Find article details from slugs
   const getArticleDetails = (slugs) => {
     if (!slugs || !Array.isArray(slugs)) return [];
     return slugs
-      .map(slug => thoughtsIndex.find(article => article.slug === slug))
-      .filter(article => article !== undefined);
+      .map((slug) => thoughtsManifest.find((article) => article.slug === slug))
+      .filter((article) => article !== undefined);
   };
 
   const articles = getArticleDetails(relatedArticles);
@@ -49,14 +50,14 @@ const QuoteModal = ({ quote, author, description, relatedArticles, onClose }) =>
                 {articles.map((article) => (
                   <Link
                     key={article.slug}
-                    to={`/thoughts/${article.slug}`}
+                    to={`${APP_ROUTES.thoughts}/${article.slug}`}
                     className="quote-modal-article-link"
                     onClick={onClose}
                   >
                     <div className="quote-modal-article">
                       {article.image && (
                         <img
-                          src={article.image}
+                          src={process.env.PUBLIC_URL + article.image}
                           alt={article.title}
                           className="quote-modal-article-image"
                         />

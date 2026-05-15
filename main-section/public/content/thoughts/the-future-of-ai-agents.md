@@ -1,12 +1,3 @@
----
-title: "The Future of AI Agents"
-slug: "the-future-of-ai-agents"
-date: "2024-08-01"
-excerpt: "It is not just going to be transformers, because whenever a technology is only being slightly refined under heavy competition, it suggest the end is near for it (even if it takes 50 years), new paradigms, new technology will emerge eventually and overtake transformers like how they overtook the CNNs and their predecessors."
-image: "/resources/ai_agent.png"
-tags: ["tech", "ML", "DL", "Transformers"]
----
-
 # The Future of AI Agents
 
 The current AI landscape is dominated by transformers, and everyone seems convinced this architecture will define artificial intelligence for the foreseeable future. But history suggests otherwise. When a technology becomes subject to incremental refinements under intense competition, it often signals that a paradigm shift is approaching—even if that shift takes decades to fully materialize.

@@ -1,12 +1,3 @@
----
-title: "Submitting to the Symbolic Order"
-slug: "submitting-to-the-symbolic-order"
-date: "2025-11-01"
-excerpt: "Attempt at deconstructing Lacan's theory of symbolic_order"
-image: "/resources/symbolic_order.jpg"
-tags: ["Philosphoy", "Psychoanalysis", "Lacan", "Zizek"]
----
-
 ### When we see through the fictitious part of an order/structure, our soberness makes us more loyal to the lies of this order.
 
 Symbolic order, according to Lacan, is a system consistent by languages, law and societal norms, reinforced by oppression to build order and meaning. Though this is a simplification of his theory, this system he describes could be vividly explain the reasons behind our modern action.

@@ -1,12 +1,3 @@
----
-title: "Winning the battle of Manzikert"
-slug: "winning-the-battle-of-manzikert"
-date: "2025-08-12"
-excerpt: "The alternative history where Byzantium wins the battle of Manzikurt, (containing of a semi-detailed first personal narrative of a Turkish Mercenary) and how different our timeline would stretch from it."
-image: "/resources/manzikert.jpg"
-tags: ["History", "Alternative History", "Byzantium", "Seljuks"]
----
-
 As many of you who know me, I am a big enjoyer of this game, Europa Universalis 4. With a little shy of 2500 hours of EU4 on the clock, it would be an understatement to say it's my favourite game. As any paradox interactive fan, I also enjoy embracing the alternatives, the "what if" that could happen (Especially those things that really could have turned out either way), that would result history beyond it to be drastically different.
 
 Now I want to bring to you one of these scenarios, picture yourself going back almost 1000 years, and land in modern day Turkey. You are Umut Çelik, a mercenary employed by the Byzantium Empire himself.

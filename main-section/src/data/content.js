@@ -1,4 +1,4 @@
-import { thoughtsIndex } from './thoughtsIndex.js';
+import thoughtsManifest from './thoughtsManifest.json';
 
 export const content = {
   resume: {
@@ -143,9 +143,8 @@ export const content = {
   },
   thoughts: {
     title: "Thoughts",
-    content: thoughtsIndex,
+    content: thoughtsManifest,
     previewImage: "/resources/yatsen.jpg"
-    //getLatestThought().image
   },
   quotes: {
     title: "Quotes",
