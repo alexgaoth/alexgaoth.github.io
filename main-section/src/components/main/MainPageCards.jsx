@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { APP_ROUTES } from '../../config/site';
 
 const CARD_DESCRIPTIONS = {
   resume: 'My professional experience and skills',
@@ -31,15 +30,6 @@ const MainPageCards = ({ content, style }) => (
         </Link>
       ))}
     </div>
-
-    <Link
-      to={APP_ROUTES.art}
-      className="art-strip"
-    >
-      <span className="art-strip-label">/art</span>
-      <span className="art-strip-desc">the other side of the directory</span>
-      <span className="art-strip-arrow">→</span>
-    </Link>
   </div>
 );
 
