@@ -9,7 +9,7 @@ const SITEMAP_FILE = path.join(__dirname, '../public/sitemap.xml');
 const RSS_FILE = path.join(__dirname, '../public/rss.xml');
 const PUBLIC_THOUGHTS_DIR = path.join(__dirname, '../public/content/thoughts');
 const STATIC_ROUTES = require('../src/data/sitemapRoutes.json');
-const APP_BASE_URL = 'https://app.alexgaoth.com';
+const APP_BASE_URL = 'https://alexgaoth.com';
 
 function normaliseDateString(dateString) {
   const match = `${dateString}`.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);

@@ -17,23 +17,23 @@
     <meta name="robots" content="index, follow">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://app.alexgaoth.com/">
+    <link rel="canonical" href="https://alexgaoth.com/">
     <link rel="alternate" type="application/rss+xml" title="Alex Gao Thoughts RSS" href="%PUBLIC_URL%/rss.xml">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alex Gao">
-    <meta property="og:url" content="https://app.alexgaoth.com/">
+    <meta property="og:url" content="https://alexgaoth.com/">
     <meta property="og:title" content="Alex Gao — Student Builder">
     <meta property="og:description" content="Alex Gao (alexgaoth). Student builder at UCSD.">
-    <meta property="og:image" content="https://app.alexgaoth.com/logo.jpg">
+    <meta property="og:image" content="https://alexgaoth.com/logo.jpg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://app.alexgaoth.com/">
+    <meta property="twitter:url" content="https://alexgaoth.com/">
     <meta property="twitter:title" content="Alex Gao — Student Builder">
     <meta property="twitter:description" content="Alex Gao (alexgaoth). Student builder at UCSD.">
-    <meta property="twitter:image" content="https://app.alexgaoth.com/logo.jpg">
+    <meta property="twitter:image" content="https://alexgaoth.com/logo.jpg">
     <meta property="twitter:creator" content="@alexgaoth">
 
     <link rel="me" href="https://github.com/alexgaoth">
@@ -68,13 +68,35 @@
       "@type": "WebSite",
       "name": "Alex Gao",
       "alternateName": "alexgaoth",
-      "url": "https://app.alexgaoth.com",
+      "url": "https://alexgaoth.com",
       "author": {
         "@type": "Person",
         "name": "Alex Gao"
       }
     }
     </script>
+
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true,
+          processEnvironments: true
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        startup: {
+          typeset: false,
+          ready() {
+            MathJax.startup.defaultReady();
+            window.dispatchEvent(new Event('mathjax-ready'));
+          }
+        }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
     <script>window.scrollTo(0, 0);</script>
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.jpg" />

@@ -2,12 +2,12 @@
   "redirects": [
     {
       "source": "/main-section",
-      "destination": "https://app.alexgaoth.com",
+      "destination": "https://alexgaoth.com",
       "permanent": true
     },
     {
       "source": "/main-section/:path*",
-      "destination": "https://app.alexgaoth.com/:path*",
+      "destination": "https://alexgaoth.com/:path*",
       "permanent": true
     }
   ]

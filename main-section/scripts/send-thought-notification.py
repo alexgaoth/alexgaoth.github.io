@@ -14,7 +14,7 @@ from pathlib import Path
 BUTTONDOWN_API_KEY = os.environ.get('BUTTONDOWN_API_KEY')
 BUTTONDOWN_API_URL = "https://api.buttondown.com/v1/emails"
 THOUGHTS_MANIFEST_PATH = Path(__file__).parent.parent / 'src' / 'data' / 'thoughtsManifest.json'
-WEBSITE_URL = "https://app.alexgaoth.com"  # Update with your actual website URL
+WEBSITE_URL = "https://alexgaoth.com"  # Update with your actual website URL
 
 def extract_latest_thought():
     """Extract the latest thought from the generated thoughts manifest."""

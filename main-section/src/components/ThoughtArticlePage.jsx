@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -9,11 +9,13 @@ import ArticleShareButtons from './ArticleShareButtons';
 import SEO from './SEO';
 import { APP_ROUTES } from '../config/site';
 import { toIsoDateString } from '../utils/articleDates';
+import { preprocessThoughtMarkdown } from '../utils/markdownMath';
 
 const ThoughtArticlePage = () => {
   const { slug } = useParams();
   const [markdownContent, setMarkdownContent] = useState('');
   const [loadError, setLoadError] = useState(false);
+  const articleBodyRef = useRef(null);
 
   // Find the article by slug
   const article = thoughtsManifest.find((entry) => entry.slug === slug);
@@ -46,7 +48,7 @@ const ThoughtArticlePage = () => {
       })
       .then((content) => {
         if (!ignore) {
-          setMarkdownContent(content);
+          setMarkdownContent(preprocessThoughtMarkdown(content));
         }
       })
       .catch(() => {
@@ -59,6 +61,42 @@ const ThoughtArticlePage = () => {
       ignore = true;
     };
   }, [article]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    if (!markdownContent || loadError || !articleBodyRef.current) {
+      return undefined;
+    }
+
+    const typesetMath = () => {
+      if (ignore || !articleBodyRef.current || !window.MathJax?.typesetPromise) {
+        return;
+      }
+
+      if (window.MathJax.typesetClear) {
+        window.MathJax.typesetClear([articleBodyRef.current]);
+      }
+
+      window.MathJax.typesetPromise([articleBodyRef.current]).catch(() => {});
+    };
+
+    if (window.MathJax?.typesetPromise) {
+      typesetMath();
+      return undefined;
+    }
+
+    const handleReady = () => {
+      typesetMath();
+    };
+
+    window.addEventListener('mathjax-ready', handleReady);
+
+    return () => {
+      ignore = true;
+      window.removeEventListener('mathjax-ready', handleReady);
+    };
+  }, [loadError, markdownContent]);
 
   if (!article) {
     return (
@@ -141,7 +179,7 @@ const ThoughtArticlePage = () => {
           <ArticleShareButtons title={article.title} slug={article.slug} />
 
           {/* Article Content */}
-          <article className="article-body markdown-content">
+          <article ref={articleBodyRef} className="article-body markdown-content">
             {loadError ? (
               <p className="article-paragraph">Unable to load this article right now.</p>
             ) : markdownContent ? (

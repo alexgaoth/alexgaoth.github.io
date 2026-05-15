@@ -6,7 +6,9 @@ export const SITE = {
   description: 'Alex Gao (alexgaoth). Student builder at UCSD.',
   keywords: ['Alex Gao', 'alexgaoth', 'Student Builder', 'UCSD'],
   rootUrl: 'https://alexgaoth.com',
-  appUrl: 'https://app.alexgaoth.com',
+  appUrl: 'https://alexgaoth.com',
+  legacyAppUrl: 'https://app.alexgaoth.com',
+  personalUrl: 'https://personal.alexgaoth.com',
   defaultImagePath: '/logo.jpg',
   socialProfiles: [
     'https://github.com/alexgaoth',

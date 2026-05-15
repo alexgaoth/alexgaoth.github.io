@@ -1,7 +1,7 @@
-# robots.txt for app.alexgaoth.com
+# robots.txt for alexgaoth.com
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://app.alexgaoth.com/sitemap.xml
+Sitemap: https://alexgaoth.com/sitemap.xml

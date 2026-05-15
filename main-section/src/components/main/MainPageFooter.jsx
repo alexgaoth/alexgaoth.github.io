@@ -1,7 +1,7 @@
 const MainPageFooter = ({ style }) => (
   <div style={{ ...style, paddingTop: '3rem' }}>
     <a
-      href="https://alexgaoth.com/?flip=1#about"
+      href="/about"
       className="art-strip"
     >
       <span className="art-strip-label">#contact</span>

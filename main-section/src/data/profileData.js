@@ -2,7 +2,7 @@ export const profileData = {
   title: 'About',
   intro: [
     'I am Alex Gao. Across most of the internet I use alexgaoth.',
-    'This app is the structured version of that identity: projects, writing, quotes, poetry, and the things I am doing now.',
+    'This site is the structured version of that identity: projects, writing, quotes, poetry, and the things I am doing now.',
   ],
   aliases: [
     'Alex Gao',
@@ -18,12 +18,13 @@ export const profileData = {
   facts: [
     { label: 'Primary name', value: 'Alex Gao' },
     { label: 'Primary handle', value: 'alexgaoth' },
-    { label: 'Website', value: 'alexgaoth.com / app.alexgaoth.com' },
+    { label: 'Website', value: 'alexgaoth.com' },
     { label: 'Current focus', value: 'Software, writing, and mathematical thinking' },
   ],
   links: [
     { label: 'Main site', href: 'https://alexgaoth.com/' },
-    { label: 'React app', href: 'https://app.alexgaoth.com/' },
+    { label: 'Legacy app redirect', href: 'https://app.alexgaoth.com/' },
+    { label: 'Personal site', href: 'https://personal.alexgaoth.com/' },
     { label: 'GitHub', href: 'https://github.com/alexgaoth' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/alexgaoth' },
     { label: 'X / Twitter', href: 'https://twitter.com/alexgaoth' },

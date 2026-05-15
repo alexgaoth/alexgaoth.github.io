@@ -123,7 +123,7 @@ const MainPageOverlay = ({
                   if you found things here interesting then i will interesting as well <br />
                   reach me{' '}
                   <a
-                    href="https://alexgaoth.com/?flip=1#about"
+                    href="/about"
                     style={{
                       color: 'inherit',
                       textDecoration: 'underline',
