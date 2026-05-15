@@ -176,6 +176,21 @@ body {
   margin-top: 0.35rem;
 }
 
+.mainpage-footer {
+  transform: translateX(0.65rem);
+}
+
+.mainpage-footer-strip {
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    padding 0.3s ease;
+}
+
+.mainpage-footer-strip .art-strip-arrow {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
 @media (min-width: 768px) {
   .title-main {
     font-size: 3.75rem;

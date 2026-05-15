@@ -2,15 +2,15 @@ import { Link } from "react-router-dom";
 import { APP_ROUTES, SITE } from "../../config/site";
 
 const MainPageFooter = ({ style }) => (
-  <div style={style}>
-    <Link to={APP_ROUTES.art} className="art-strip">
+  <div className="mainpage-footer" style={style}>
+    <Link to={APP_ROUTES.art} className="art-strip mainpage-footer-strip">
       <span className="art-strip-label">/art</span>
       <span className="art-strip-desc">the other side of the directory</span>
       <span className="art-strip-arrow">→</span>
     </Link>
     <Link
       to={APP_ROUTES.about}
-      className="art-strip"
+      className="art-strip mainpage-footer-strip"
       style={{ marginTop: "0.5rem" }}
     >
       <span className="art-strip-label">/about</span>
@@ -19,7 +19,7 @@ const MainPageFooter = ({ style }) => (
     </Link>
     <a
       href={SITE.personalUrl}
-      className="art-strip"
+      className="art-strip mainpage-footer-strip"
       style={{ marginTop: "0.5rem" }}
     >
       <span className="art-strip-label">#contact</span>
