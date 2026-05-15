@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import SEO from './SEO';
-import CompactViewButton from './CompactViewButton';
-import ContentPage from './layout/ContentPage';
-import ProjectCard from './projects/ProjectCard';
+import CompactViewButton from '../components/CompactViewButton';
+import SEO from '../components/SEO';
+import ContentPage from '../components/layout/ContentPage';
+import ProjectCard from '../components/projects/ProjectCard';
 import { APP_ROUTES } from '../config/site';
 import { getCompactGridDimensions } from '../utils/compactGrid';
 

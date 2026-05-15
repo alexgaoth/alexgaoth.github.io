@@ -1,5 +1,5 @@
 import React from 'react';
-import LiteraryCollectionPage from './literary/LiteraryCollectionPage';
+import LiteraryCollectionPage from '../components/literary/LiteraryCollectionPage';
 import { APP_ROUTES, buildAppUrl } from '../config/site';
 import { poems } from '../data/poetryData';
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import SEO from '../components/SEO';
 import { getNowData } from '../data/nowData';
-import SEO from './SEO';
 import { APP_ROUTES } from '../config/site';
 
 const NowPage = () => {

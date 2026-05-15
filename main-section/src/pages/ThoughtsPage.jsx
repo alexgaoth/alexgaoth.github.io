@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import SEO from './SEO';
-import ThoughtsSidebar from './ThoughtsSidebar';
-import CompactViewButton from './CompactViewButton';
-import NavigationBar from './NavigationBar';
-import ThoughtCard from './thoughts/ThoughtCard';
+import CompactViewButton from '../components/CompactViewButton';
+import NavigationBar from '../components/NavigationBar';
+import SEO from '../components/SEO';
+import ThoughtsSidebar from '../components/ThoughtsSidebar';
+import ThoughtCard from '../components/thoughts/ThoughtCard';
 import { APP_ROUTES } from '../config/site';
 import { getCompactGridDimensions } from '../utils/compactGrid';
 

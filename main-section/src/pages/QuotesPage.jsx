@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
-import SEO from './SEO';
-import QuoteWheel from './QuoteWheel';
-import QuoteModal from './QuoteModal';
-import ContentPage from './layout/ContentPage';
+import ContentPage from '../components/layout/ContentPage';
+import QuoteModal from '../components/QuoteModal';
+import QuoteWheel from '../components/QuoteWheel';
+import SEO from '../components/SEO';
 import { APP_ROUTES } from '../config/site';
 
 const QuotesPage = ({ data }) => {

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import SEO from './SEO';
-import ArtBackground from './ArtBackground';
+import ArtBackground from '../components/ArtBackground';
+import SEO from '../components/SEO';
 import '../styles/art.css';
 import { APP_ROUTES } from '../config/site';
 

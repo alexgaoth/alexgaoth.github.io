@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as THREE from 'three';
 import { Link } from 'react-router-dom';
-import SEO from './SEO';
+import SEO from '../components/SEO';
 import { APP_ROUTES } from '../config/site';
 
 // ---------------------------------------------------------------------------

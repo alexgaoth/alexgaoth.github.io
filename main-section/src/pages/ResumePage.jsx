@@ -1,6 +1,6 @@
 import React from 'react';
-import SEO from './SEO';
-import ContentPage from './layout/ContentPage';
+import SEO from '../components/SEO';
+import ContentPage from '../components/layout/ContentPage';
 import { APP_ROUTES } from '../config/site';
 
 const ResumePage = ({ data }) => (

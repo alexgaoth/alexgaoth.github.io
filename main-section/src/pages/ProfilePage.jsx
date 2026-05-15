@@ -1,7 +1,7 @@
-import SEO from '../SEO';
-import ContentPage from '../layout/ContentPage';
-import { APP_ROUTES, SITE, buildAppUrl } from '../../config/site';
-import { profileData } from '../../data/profileData';
+import SEO from '../components/SEO';
+import ContentPage from '../components/layout/ContentPage';
+import { APP_ROUTES, SITE, buildAppUrl } from '../config/site';
+import { profileData } from '../data/profileData';
 
 const profileStructuredData = [
   {

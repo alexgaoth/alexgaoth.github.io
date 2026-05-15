@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import NowButton from './NowButton';
-import SEO from './SEO';
-import ParallaxSideEffects from './ParallaxSideEffects';
-import MainPageCards from './main/MainPageCards';
-import MainPageFooter from './main/MainPageFooter';
-import MainPageOverlay from './main/MainPageOverlay';
-import MainPageTitle from './main/MainPageTitle';
+import NowButton from '../components/NowButton';
+import ParallaxSideEffects from '../components/ParallaxSideEffects';
+import SEO from '../components/SEO';
+import MainPageCards from '../components/main/MainPageCards';
+import MainPageFooter from '../components/main/MainPageFooter';
+import MainPageOverlay from '../components/main/MainPageOverlay';
+import MainPageTitle from '../components/main/MainPageTitle';
 import { APP_ROUTES, SITE } from '../config/site';
 
 const TITLE_RISE_END = 0.25;
