@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
-import NavigationBar from './NavigationBar';
 import SEO from './SEO';
 import QuoteWheel from './QuoteWheel';
 import QuoteModal from './QuoteModal';
+import ContentPage from './layout/ContentPage';
+import { APP_ROUTES } from '../config/site';
 
 const QuotesPage = ({ data }) => {
   const [selectedQuote, setSelectedQuote] = useState(null);
@@ -36,39 +37,36 @@ const QuotesPage = ({ data }) => {
       <SEO
         title="Quotes — Alex Gao"
         description="Quotes collected by Alex Gao (alexgaoth)."
-        keywords="Alex Gao, alexgaoth, quotes"
-        url="https://app.alexgaoth.com/quotes"
+        keywords={['Alex Gao', 'alexgaoth', 'quotes']}
+        path={APP_ROUTES.quotes}
       />
-      <NavigationBar />
-      <div className="page-container">
-        <div className="content-wrapper-narrow">
+      <ContentPage>
 
-          <h1 className="title-page">Quotes</h1>
+        <h1 className="title-page">Quotes</h1>
 
-          <QuoteWheel
-            quotes={data.content}
-            onQuoteClick={handleQuoteClick}
-            onSpinComplete={handleSpinComplete}
-          />
+        <QuoteWheel
+          quotes={data.content}
+          onQuoteClick={handleQuoteClick}
+          onSpinComplete={handleSpinComplete}
+        />
 
-          <div className="space-y-large">
-            {data.content.map((item, index) => (
-              <blockquote
-                key={index}
-                ref={(el) => (quoteRefs.current[index] = el)}
-                className="quote-block"
-                onClick={() => handleQuoteClick(item)}
-                style={{ cursor: 'pointer' }}
-              >
-                <p className="quote-text">
-                  "{item.quote}"
-                </p>
-                <cite className="quote-author">— {item.author}</cite>
-              </blockquote>
-            ))}
-          </div>
+        <div className="space-y-large">
+          {data.content.map((item, index) => (
+            <blockquote
+              key={index}
+              ref={(el) => (quoteRefs.current[index] = el)}
+              className="quote-block"
+              onClick={() => handleQuoteClick(item)}
+              style={{ cursor: 'pointer' }}
+            >
+              <p className="quote-text">
+                "{item.quote}"
+              </p>
+              <cite className="quote-author">— {item.author}</cite>
+            </blockquote>
+          ))}
         </div>
-      </div>
+      </ContentPage>
 
       {selectedQuote && (
         <QuoteModal

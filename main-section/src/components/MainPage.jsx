@@ -1,54 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import NowButton  from './NowButton';
+import { useLocation } from 'react-router-dom';
+import NowButton from './NowButton';
 import SEO from './SEO';
 import ParallaxSideEffects from './ParallaxSideEffects';
+import MainPageCards from './main/MainPageCards';
+import MainPageFooter from './main/MainPageFooter';
+import MainPageOverlay from './main/MainPageOverlay';
+import MainPageTitle from './main/MainPageTitle';
+import { APP_ROUTES, SITE } from '../config/site';
 
-// ─── Scroll timeline (progress 0 → 1 over 5× viewport height) ──────────────
-const TITLE_RISE_END   = 0.25;  // title reaches top position (slow, deliberate rise)
-const CARDS_RISE_START = 0.63;  // cards begin their slow crawl (still off-screen)
-const PHRASE_CUTOFF    = 0.73;  // ALL phrases gone; cards accelerate from here
-const CARDS_SLOW_FRAC  = 0.06;  // during slow phase, cover only 6% of journey
-const SUB_FADE_START   = 0.85;  // subtitle opacity begins
-// ─────────────────────────────────────────────────────────────────────────────
-
-const PHRASES = [
-  {
-    id: 0,
-    label: '// 01',
-    start: 0.13, peak: 0.22, end: 0.38,
-    fontFamily: "'Space Mono', monospace",
-    fontSize: '0.82rem',
-    mobileFontSize: '0.72rem',
-    weight: 400,
-    style: 'normal',
-    spacing: '0.01em',
-    lineHeight: 1.85,
-    mobileLineHeight: 1.8,
-  },
-  {
-    id: 1,
-    label: '// 02',
-    start: 0.36, peak: 0.47, end: 0.60,
-    fontFamily: "'Space Mono', monospace",
-    fontSize: '0.82rem',
-    mobileFontSize: '0.72rem',
-    weight: 400,
-    style: 'normal',
-    spacing: '0.01em',
-    lineHeight: 1.85,
-    mobileLineHeight: 1.8,
-  },
-];
+const TITLE_RISE_END = 0.25;
+const CARDS_RISE_START = 0.63;
+const PHRASE_CUTOFF = 0.73;
+const CARDS_SLOW_FRAC = 0.06;
+const SUB_FADE_START = 0.85;
 
 const MainPage = ({ content }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const location = useLocation();
-  const parallaxContainerRef = useRef(null);
-  // Measures full title section including subtitle (always rendered, no height shift)
   const titleRef = useRef(null);
-  const cardsRef = useRef(null);
   const [parallaxDistance, setParallaxDistance] = useState(0);
   const [isParallaxActive, setIsParallaxActive] = useState(true);
   const [titleHeight, setTitleHeight] = useState(130);
@@ -201,14 +172,6 @@ const MainPage = ({ content }) => {
     };
   };
 
-  const getPhraseOpacity = (phrase) => {
-    const p = scrollProgress;
-    if (p <= phrase.start || p >= phrase.end) return 0;
-    if (p <= phrase.peak) return (p - phrase.start) / (phrase.peak - phrase.start);
-    return 1 - (p - phrase.peak) / (phrase.end - phrase.peak);
-  };
-
-  // Subtitle: always at natural height (no layout shift), only opacity changes
   const subtitleOpacity = isParallaxActive
     ? Math.max(0, Math.min(1, (scrollProgress - SUB_FADE_START) / (1 - SUB_FADE_START)))
     : 1;
@@ -235,190 +198,42 @@ const MainPage = ({ content }) => {
   return (
     <>
       <SEO
-        title="Alex Gao — Student Builder"
-        description="Alex Gao (alexgaoth). Student builder at UCSD."
-        keywords="Alex Gao, alexgaoth, Student Builder, UCSD"
-        url="https://app.alexgaoth.com/"
+        title={SITE.title}
+        description={SITE.description}
+        keywords={SITE.keywords}
+        path={APP_ROUTES.home}
       />
       <div className="page-container">
         <NowButton />
 
-        {/* ── Side effects — independent component ── */}
         <ParallaxSideEffects scrollProgress={scrollProgress} isParallaxActive={isParallaxActive} />
 
-        {/* ── Phrase overlay — fixed, only during parallax ── */}
-        {isParallaxActive && (
-          <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 8 }}>
-
-            {/* Scroll hint — only after 5s idle, fades with scroll progress */}
-            {scrollHintVisible && (
-              <div style={{
-                position: 'absolute',
-                bottom: '2.5rem',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '0.6rem',
-                opacity: hintOpacity,
-              }}>
-                <span style={{
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: '0.6rem',
-                  letterSpacing: '0.28em',
-                  textTransform: 'uppercase',
-                  color: '#000',
-                  opacity: 0.38,
-                }}>scroll</span>
-                <div className="scroll-line-indicator" />
-              </div>
-            )}
-
-            {/* Phrases — scroll-progress based crossfade, always active during parallax */}
-            {PHRASES.map(phrase => {
-              const opacity = getPhraseOpacity(phrase);
-              const fontSize   = isMobile && phrase.mobileFontSize   ? phrase.mobileFontSize   : phrase.fontSize;
-              const lineHeight = isMobile && phrase.mobileLineHeight ? phrase.mobileLineHeight : phrase.lineHeight;
-              return (
-                <div
-                  key={phrase.id}
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 'min(480px, calc(100vw - 4rem))',
-                    opacity,
-                    borderLeft: '1px solid rgba(0,0,0,0.18)',
-                    paddingLeft: '1.25rem',
-                  }}
-                >
-                  <span style={{
-                    display: 'block',
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: '0.65rem',
-                    letterSpacing: '0.08em',
-                    color: 'rgba(0,0,0,0.35)',
-                    marginBottom: '0.6rem',
-                  }}>{phrase.label}</span>
-                  <p style={{
-                    fontFamily: phrase.fontFamily,
-                    fontSize,
-                    fontWeight: phrase.weight,
-                    fontStyle: phrase.style,
-                    letterSpacing: phrase.spacing,
-                    lineHeight,
-                    margin: 0,
-                    color: '#000',
-                  }}>
-                    {phrase.id === 0 && "this site is an index of things i find worth sharing. look through around the site, there might just be something that inerest you. "}
-                    {phrase.id === 1 && <>
-                      if you found things here interesting then i will interesting as well <br></br>
-                      reach me {' '}
-                      <a
-                        href="https://alexgaoth.com/?flip=1#about"
-                        style={{
-                          color: 'inherit',
-                          textDecoration: 'underline',
-                          textUnderlineOffset: '3px',
-                          pointerEvents: 'auto',
-                        }}
-                      >in all these different ways</a>
-                      {' '} 
-                    </>}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        )}
+        <MainPageOverlay
+          hintOpacity={hintOpacity}
+          isMobile={isMobile}
+          isParallaxActive={isParallaxActive}
+          scrollHintVisible={scrollHintVisible}
+          scrollProgress={scrollProgress}
+        />
 
         <div
           className="parallax-container"
-          ref={parallaxContainerRef}
           style={getContainerStyle()}
         >
           <div className="content-wrapper">
 
-            {/* ── Title section: h1 + always-rendered subtitle ── */}
-            <div
-              className="title-section-parallax"
-              ref={titleRef}
+            <MainPageTitle
+              sectionRef={titleRef}
               style={getTitleStyle()}
-            >
-              <h1 className="title-main">this is alex gaoth's directory</h1>
-              {/*
-                Subtitle is always at its natural height — never collapsed.
-                Since this element is position:fixed during parallax, its
-                height has zero effect on document flow. Only opacity changes,
-                so there is no layout shift when parallax ends.
-              */}
-              <div className="title-sub" style={{
-                opacity: subtitleOpacity,
-                paddingTop: '0.4rem',
-              }}>
-                <p>I am alex gao, the additional 'th' is here so you can find me easier</p>
-                <p className='reverse-hidden'>'th' is the initials of my chinese first name, and u can find me elsewhere all by alexgaoth</p>
-                <p className="hidden">I spy a mobile user - this site is better on desktop</p>
-              </div>
-            </div>
+              subtitleOpacity={subtitleOpacity}
+            />
 
-            {/* ── Cards section ── */}
-            <div
-              className="cards-section-parallax"
-              ref={cardsRef}
+            <MainPageCards
+              content={content}
               style={getCardsStyle()}
-            >
-              <div className="grid-2col">
-                {Object.entries(content).map(([key, data]) => (
-                  <Link
-                    key={key}
-                    to={`/${key}`}
-                    className="card"
-                  >
-                    <div className="card-image">
-                      <img
-                        src={process.env.PUBLIC_URL + data.previewImage}
-                        alt={`${data.title} preview`}
-                      />
-                    </div>
-                    <h2 className="title-card">{data.title}</h2>
-                    <p className="card-description">
-                      {key === 'resume' && "My professional experience and skills"}
-                      {key === 'projects' && "Creative projects funded by my relentless mind"}
-                      {key === 'thoughts' && "Ideas worth saying - maybe worth reading"}
-                      {key === 'quotes' && "The good and the bad"}
-                    </p>
-                  </Link>
-                ))}
-              </div>
+            />
 
-              {/* ── /art strip ── */}
-              <Link
-                to="/art"
-                className="art-strip"
-              >
-                <span className="art-strip-label">/art</span>
-                <span className="art-strip-desc">the other side of the directory</span>
-                <span className="art-strip-arrow">→</span>
-              </Link>
-            </div>
-
-            <div style={{ ...getFooterStyle(), paddingTop: '3rem' }}>
-              <a
-                href="https://alexgaoth.com/?flip=1#about"
-                className="art-strip"
-              >
-                <span className="art-strip-label">#contact</span>
-                <span className="art-strip-desc">reach out || stay up to date</span>
-                <span className="art-strip-arrow">→</span>
-              </a>
-              <div className="footer">
-                <p>this page is written with React @2022 (now deprecated)</p>
-                <p>No rights reserved – this work by alex is free to use for any purpose.</p>
-              </div>
-            </div>
+            <MainPageFooter style={getFooterStyle()} />
           </div>
         </div>
       </div>

@@ -11,8 +11,8 @@ import PoetryCollectionPage from './components/PoetryCollectionPage';
 import CiCollectionPage from './components/CiCollectionPage';
 import ArtPage from './components/ArtPage';
 import ScrollToTop from './components/ScrollToTop';
+import { APP_ROUTES } from './config/site';
 import { content } from './data/content';
-import { getNowData } from './data/nowData';
 import './styles/global.css';
 import './styles/components.css';
 import './styles/bookshelf.css';
@@ -22,19 +22,19 @@ function App() {
     <Router>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<MainPage content={content} />} />
-        <Route path="/resume" element={<ResumePage data={content.resume} />} />
-        <Route path="/projects" element={<ProjectsPage data={content.projects} />} />
-        <Route path="/thoughts" element={<ThoughtsPage data={content.thoughts} />} />
-        <Route path="/thoughts/:slug" element={<ThoughtArticlePage />} />
-        <Route path="/quotes" element={<QuotesPage data={content.quotes} />} />
-        <Route path="/now" element={<NowPage data={getNowData} />} />
-        <Route path="/art"     element={<ArtPage />} />
-        <Route path="/regents" element={<RegentsPage />} />
-        <Route path="/poetry" element={<PoetryCollectionPage lang="zh" />} />
-        <Route path="/poetry/en" element={<PoetryCollectionPage lang="en" />} />
-        <Route path="/ci" element={<CiCollectionPage lang="zh" />} />
-        <Route path="/ci/en" element={<CiCollectionPage lang="en" />} />
+        <Route path={APP_ROUTES.home} element={<MainPage content={content} />} />
+        <Route path={APP_ROUTES.resume} element={<ResumePage data={content.resume} />} />
+        <Route path={APP_ROUTES.projects} element={<ProjectsPage data={content.projects} />} />
+        <Route path={APP_ROUTES.thoughts} element={<ThoughtsPage data={content.thoughts} />} />
+        <Route path={`${APP_ROUTES.thoughts}/:slug`} element={<ThoughtArticlePage />} />
+        <Route path={APP_ROUTES.quotes} element={<QuotesPage data={content.quotes} />} />
+        <Route path={APP_ROUTES.now} element={<NowPage />} />
+        <Route path={APP_ROUTES.art} element={<ArtPage />} />
+        <Route path={APP_ROUTES.regents} element={<RegentsPage />} />
+        <Route path={APP_ROUTES.poetry} element={<PoetryCollectionPage lang="zh" />} />
+        <Route path={APP_ROUTES.poetryEn} element={<PoetryCollectionPage lang="en" />} />
+        <Route path={APP_ROUTES.ci} element={<CiCollectionPage lang="zh" />} />
+        <Route path={APP_ROUTES.ciEn} element={<CiCollectionPage lang="en" />} />
       </Routes>
     </Router>
   );

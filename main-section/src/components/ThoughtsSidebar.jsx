@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronRight, ChevronDown } from 'lucide-react';
+import { APP_ROUTES } from '../config/site';
+import { getArticleMonth, getArticleYear } from '../utils/articleDates';
 
 const ThoughtsSidebar = ({ articles }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,9 +14,8 @@ const ThoughtsSidebar = ({ articles }) => {
     const groups = {};
 
     articles.forEach(article => {
-      const date = new Date(article.date);
-      const year = date.getFullYear();
-      const month = date.toLocaleString('en-US', { month: 'long' });
+      const year = getArticleYear(article.date);
+      const month = getArticleMonth(article.date);
 
       if (!groups[year]) {
         groups[year] = {};
@@ -117,9 +118,9 @@ const ThoughtsSidebar = ({ articles }) => {
                           {months[month].map(article => (
                             <li key={article.slug}>
                               <Link
-                                to={`/thoughts/${article.slug}`}
+                                to={`${APP_ROUTES.thoughts}/${article.slug}`}
                                 className={`sidebar-article-link ${
-                                  location.pathname === `/thoughts/${article.slug}` ? 'active' : ''
+                                  location.pathname === `${APP_ROUTES.thoughts}/${article.slug}` ? 'active' : ''
                                 }`}
                                 onClick={() => setIsOpen(false)}
                               >

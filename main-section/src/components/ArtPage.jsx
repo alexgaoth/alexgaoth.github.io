@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import SEO from './SEO';
 import ArtBackground from './ArtBackground';
 import '../styles/art.css';
+import { APP_ROUTES } from '../config/site';
 
 const PORTALS = [
   { num: '一', zh: '诗', label: 'poetry',             path: '/poetry'   },
@@ -15,8 +16,8 @@ const ArtPage = () => (
     <SEO
       title="Art — Alex Gao"
       description="The artistic pages of Alex Gao — poetry, ci, and figures of mind."
-      keywords="Alex Gao, poetry, ci, regents, 诗, 词"
-      url="https://app.alexgaoth.com/art"
+      keywords={['Alex Gao', 'poetry', 'ci', 'regents', '诗', '词']}
+      path={APP_ROUTES.art}
     />
 
     <div className="art-page">
@@ -27,7 +28,7 @@ const ArtPage = () => (
       <div className="art-grain" aria-hidden="true" />
 
       {/* back */}
-      <Link to="/" state={{ skipParallax: true }} className="art-back">
+      <Link to={APP_ROUTES.home} state={{ skipParallax: true }} className="art-back">
         <ArrowLeft size={13} strokeWidth={1} />
         <span>back</span>
       </Link>

@@ -5,6 +5,7 @@ import SEO from './SEO';
 import '../styles/art.css';
 import { ciPieces } from '../data/poetryData';
 import '../styles/poetry.css';
+import { APP_ROUTES, buildAppUrl } from '../config/site';
 
 const AI_SERVICES = [
   {
@@ -31,12 +32,10 @@ const TEXT = {
   zh: {
     pageTitle: '词',
     seoTitle: '词 — Alex Gao',
-    seoUrl: 'https://app.alexgaoth.com/ci',
     langToggle: 'English →',
     langTogglePath: '/ci/en',
     abstract: '词体以长短句为形，宜于抒怀、叙事与议论。此辑主要收录我舞勺之年前后所作。 由此呈上。',
     contextLabel: '背景与感想',
-    contextPlaceholder: '待填写……',
     claudeLabel: 'Claude 评',
     aiToastMsg: 'AI提示词已复制，正在跳转……',
     footerNote: '点击AI图标后，将自动复制提示词，打开对应模型后粘贴即可。',
@@ -46,28 +45,14 @@ const TEXT = {
   en: {
     pageTitle: 'Ci Poetry',
     seoTitle: 'Ci Poetry — Alex Gao',
-    seoUrl: 'https://app.alexgaoth.com/ci/en',
     langToggle: '中文 →',
     langTogglePath: '/ci',
     abstract: 'Ci is a classical Chinese form with varying line lengths, historically composed to music. This collection spans philosophical argument, dynastic panorama, and wuxia narrative. It is also mostly written around when I am 15, it carries generally a more nuanced message compared to the poems.',
-    transCallout: 'Each line is divided at its natural pauses. Click any dotted-underlined phrase to reveal its English translation inline — one phrase at a time, or the whole line at once.',
     contextLabel: 'Context & Notes',
-    contextPlaceholder: 'To be written…',
     claudeLabel: 'What Claude thinks',
     aiToastMsg: 'Prompt copied. Opening AI…',
     footerNote: 'Clicking an AI icon copies a translation & commentary prompt to your clipboard. Paste it after the tab opens.',
     emptyTitle: 'No Content Yet',
-
-
-
-
-
-
-
-
-
-
-    
     emptyText: 'Ci pieces are being compiled. Check back soon.',
     translateHint: 'tap a phrase to translate',
   },
@@ -187,10 +172,15 @@ const CiCollectionPage = ({ lang = 'zh' }) => {
       <SEO
         title={t.seoTitle}
         description="Ci poetry by Alex Gao (alexgaoth)."
-        keywords="Alex Gao, alexgaoth, ci poetry, 词, Chinese lyric poetry"
-        url={t.seoUrl}
+        keywords={['Alex Gao', 'alexgaoth', 'ci poetry', '词', 'Chinese lyric poetry']}
+        path={lang === 'zh' ? APP_ROUTES.ci : APP_ROUTES.ciEn}
+        alternates={[
+          { hrefLang: 'zh', href: buildAppUrl(APP_ROUTES.ci) },
+          { hrefLang: 'en', href: buildAppUrl(APP_ROUTES.ciEn) },
+          { hrefLang: 'x-default', href: buildAppUrl(APP_ROUTES.ci) },
+        ]}
       />
-      <Link to="/art" className="art-back">
+      <Link to={APP_ROUTES.art} className="art-back">
         <ArrowLeft size={13} strokeWidth={1} />
         <span>art</span>
       </Link>

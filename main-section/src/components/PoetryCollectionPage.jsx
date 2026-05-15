@@ -5,6 +5,7 @@ import SEO from './SEO';
 import '../styles/art.css';
 import { poems } from '../data/poetryData';
 import '../styles/poetry.css';
+import { APP_ROUTES, buildAppUrl } from '../config/site';
 
 const AI_SERVICES = [
   {
@@ -31,12 +32,10 @@ const TEXT = {
   zh: {
     pageTitle: '诗',
     seoTitle: '诗 — Alex Gao',
-    seoUrl: 'https://app.alexgaoth.com/poetry',
     langToggle: 'English →',
     langTogglePath: '/poetry/en',
     abstract: '诗者，心之声也；今者，尘之扰也。以声涤尘，可得片刻真我。此辑主要收录我舞勺之年前后所作。 拙作待正。',
     contextLabel: '背景与感想',
-    contextPlaceholder: '待填写……',
     claudeLabel: 'Claude 评',
     aiToastMsg: 'AI提示词已复制，正在跳转……',
     footerNote: '点击AI图标后，将自动复制提示词，打开对应模型后粘贴即可。',
@@ -44,13 +43,10 @@ const TEXT = {
   en: {
     pageTitle: 'Poetry',
     seoTitle: 'Poetry — Alex Gao',
-    seoUrl: 'https://app.alexgaoth.com/poetry/en',
     langToggle: '中文 →',
     langTogglePath: '/poetry',
     abstract: 'Most of these Poems I wrote around age 15, the overarching context is mostly: covid, abroad in the UK, has way too much free time on my hands.',
-    transCallout: 'Each line is divided at its natural pauses. Click any dotted-underlined phrase to reveal its English translation inline — one phrase at a time, or the whole line at once.',
     contextLabel: 'Context & Notes',
-    contextPlaceholder: 'To be written…',
     claudeLabel: 'What Claude thinks',
     aiToastMsg: 'Prompt copied. Opening AI…',
     footerNote: 'Clicking an AI icon copies a translation & commentary prompt to your clipboard. Paste it after the tab opens.',
@@ -167,10 +163,15 @@ const PoetryCollectionPage = ({ lang = 'zh' }) => {
       <SEO
         title={t.seoTitle}
         description="Poetry by Alex Gao (alexgaoth)."
-        keywords="Alex Gao, alexgaoth, poetry, 诗, Chinese poetry"
-        url={t.seoUrl}
+        keywords={['Alex Gao', 'alexgaoth', 'poetry', '诗', 'Chinese poetry']}
+        path={lang === 'zh' ? APP_ROUTES.poetry : APP_ROUTES.poetryEn}
+        alternates={[
+          { hrefLang: 'zh', href: buildAppUrl(APP_ROUTES.poetry) },
+          { hrefLang: 'en', href: buildAppUrl(APP_ROUTES.poetryEn) },
+          { hrefLang: 'x-default', href: buildAppUrl(APP_ROUTES.poetry) },
+        ]}
       />
-      <Link to="/art" className="art-back">
+      <Link to={APP_ROUTES.art} className="art-back">
         <ArrowLeft size={13} strokeWidth={1} />
         <span>art</span>
       </Link>

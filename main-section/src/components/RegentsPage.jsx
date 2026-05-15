@@ -6,6 +6,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as THREE from 'three';
 import { Link } from 'react-router-dom';
 import SEO from './SEO';
+import { APP_ROUTES } from '../config/site';
 
 // ---------------------------------------------------------------------------
 // Data — add entries here as { name, glb, audio, bio }
@@ -277,12 +278,12 @@ const RegentsPage = () => {
       <SEO
         title="Regents of My Mind — alex gaoth"
         description="An interactive 3D exhibition of the regents of my mind."
-        keywords="alex gaoth, regents, 3D, art"
-        url="https://app.alexgaoth.com/regents"
+        keywords={['alex gaoth', 'regents', '3D', 'art']}
+        path={APP_ROUTES.regents}
       />
 
       <div className="regents-page">
-        <Link to="/art" className="regents-back-btn" aria-label="Back to art">
+        <Link to={APP_ROUTES.art} className="regents-back-btn" aria-label="Back to art">
           <span style={{ fontSize: '0.85em' }}>←</span> art
         </Link>
 

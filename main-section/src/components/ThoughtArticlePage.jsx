@@ -7,12 +7,15 @@ import { thoughtsIndex } from '../data/thoughtsIndex';
 import ThoughtsSidebar from './ThoughtsSidebar';
 import ArticleShareButtons from './ArticleShareButtons';
 import SEO from './SEO';
+import { APP_ROUTES } from '../config/site';
+import { toIsoDateString } from '../utils/articleDates';
 
 const ThoughtArticlePage = () => {
   const { slug } = useParams();
 
   // Find the article by slug
   const article = thoughtsIndex.find(a => a.slug === slug);
+  const articlePublishedTime = article ? toIsoDateString(article.date) : undefined;
 
   useEffect(() => {
     // Scroll to top when article changes
@@ -25,7 +28,7 @@ const ThoughtArticlePage = () => {
         <div className="content-wrapper-narrow">
           <h1 className="title-page">Article Not Found</h1>
           <p>The article you're looking for doesn't exist.</p>
-          <Link to="/thoughts" className="btn-back">
+          <Link to={APP_ROUTES.thoughts} className="btn-back">
             <ArrowLeft size={20} />
             Back to Thoughts
           </Link>
@@ -37,12 +40,14 @@ const ThoughtArticlePage = () => {
   return (
     <>
       <SEO
-        title={`${article.title} - alex gaoth`}
+        title={`${article.title} — Alex Gao (alexgaoth)`}
         description={article.excerpt}
-        keywords={article.tags ? article.tags.join(', ') : 'alex gaoth, blog, article'}
-        url={`https://app.alexgaoth.com/thoughts/${article.slug}`}
-        image={article.image ? `https://app.alexgaoth.com${article.image}` : undefined}
+        keywords={['Alex Gao', 'alexgaoth', ...(article.tags || ['blog', 'article'])]}
+        path={`${APP_ROUTES.thoughts}/${article.slug}`}
+        imagePath={article.image || undefined}
         type="article"
+        publishedTime={articlePublishedTime}
+        modifiedTime={articlePublishedTime}
       />
       <div className="article-page-layout">
       {/* Sidebar */}
@@ -52,7 +57,7 @@ const ThoughtArticlePage = () => {
       <div className="article-page-content">
         <div className="article-page-wrapper">
           {/* Back Button */}
-          <Link to="/thoughts" className="btn-back">
+          <Link to={APP_ROUTES.thoughts} className="btn-back">
             <ArrowLeft size={20} />
             Back to Thoughts
           </Link>

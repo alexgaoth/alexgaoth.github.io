@@ -1,25 +1,24 @@
 import React from 'react';
-import NavigationBar from './NavigationBar';
 import SEO from './SEO';
+import ContentPage from './layout/ContentPage';
+import { APP_ROUTES } from '../config/site';
 
 const ResumePage = ({ data }) => (
   <>
     <SEO
       title="Resume — Alex Gao"
       description="Alex Gao (alexgaoth) resume."
-      keywords="Alex Gao, alexgaoth, resume, UCSD"
-      url="https://app.alexgaoth.com/resume"
+      keywords={['Alex Gao', 'alexgaoth', 'resume', 'UCSD']}
+      path={APP_ROUTES.resume}
     />
-    <NavigationBar />
-    <div className="page-container">
-    <div className="content-wrapper-narrow">
+    <ContentPage>
 
       <h1 className="title-page">Resume</h1>
-      <p className='mb-small'>
-            To view my proper resume here: {" "}
-            <a href = "https://alexgaoth.com/resume.pdf" target="_blank" rel="noopener noreferrer"> view resume</a>
-          </p>
-      <div className="space-y-large">     
+      <p className="mb-small">
+        To view my proper resume here:{' '}
+        <a href="https://alexgaoth.com/resume.pdf" target="_blank" rel="noopener noreferrer">view resume</a>
+      </p>
+      <div className="space-y-large">
         <section>
           <h2 className="title-section">Experience</h2>
           {data.content.experience.map((job, index) => (
@@ -59,8 +58,7 @@ const ResumePage = ({ data }) => (
         </section>
 
       </div>
-    </div>
-  </div>
+    </ContentPage>
   </>
 );
 

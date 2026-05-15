@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Share2, Copy, Check } from 'lucide-react';
+import { APP_ROUTES, buildAppUrl } from '../config/site';
 
 const ArticleShareButtons = ({ title, slug }) => {
   const [copied, setCopied] = useState(false);
 
-  const url = `${window.location.origin}/main-section/thoughts/${slug}`;
+  const url = buildAppUrl(`${APP_ROUTES.thoughts}/${slug}`);
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
 
