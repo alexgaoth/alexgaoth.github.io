@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import NowButton from '../components/NowButton';
 import ParallaxSideEffects from '../components/ParallaxSideEffects';
 import SEO from '../components/SEO';
-import HomePreviewRail from '../components/main/HomePreviewRail';
+import HomePreviewRail, { PANEL_BACKGROUNDS } from '../components/main/HomePreviewRail';
 import MainPageCards from '../components/main/MainPageCards';
 import MainPageFooter from '../components/main/MainPageFooter';
 import MainPageOverlay from '../components/main/MainPageOverlay';
@@ -180,6 +180,19 @@ const MainPage = ({ content }) => {
     };
   };
 
+  // Background colour fade: white → cream (#ebe1c8) → white as KNOWN panel
+  // scrolls into and out of view. activeIndex runs 0→2 across the 3 panels.
+  const getPageBg = () => {
+    if (!isPreviewStage) return undefined; // let CSS handle non-preview stages
+    const activeIndex = previewProgress * (PANEL_BACKGROUNDS.length - 1);
+    // Interpolate toward KNOWN (panel 1) and back; creamness peaks at activeIndex=1
+    const creamness = Math.max(0, 1 - Math.abs(activeIndex - 1));
+    const r = Math.round(255 + (235 - 255) * creamness);
+    const g = Math.round(255 + (225 - 255) * creamness);
+    const b = Math.round(255 + (200 - 255) * creamness);
+    return `rgb(${r},${g},${b})`;
+  };
+
   const getContainerStyle = () => {
     if (isParallaxActive) {
       return {
@@ -227,7 +240,7 @@ const MainPage = ({ content }) => {
         keywords={SITE.keywords}
         path={APP_ROUTES.home}
       />
-      <div className="page-container">
+      <div className="page-container" style={{ backgroundColor: getPageBg(), transition: 'background-color 0.35s ease' }}>
         <NowButton />
 
         <ParallaxSideEffects scrollProgress={scrollProgress} isParallaxActive={isParallaxActive} />
@@ -255,9 +268,9 @@ const MainPage = ({ content }) => {
 
             {isPreviewStage && (
               <HomePreviewRail
-                content={content}
                 progress={previewProgress}
                 style={getPreviewStyle()}
+                isMobile={isMobile}
               />
             )}
 

@@ -15,7 +15,9 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:cdn.jsdelivr.net)",
       "Bash(npx skills *)",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(unzip *)"
     ]
   }
 }
