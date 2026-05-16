@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import NowButton from '../components/NowButton';
 import ParallaxSideEffects from '../components/ParallaxSideEffects';
 import SEO from '../components/SEO';
+import HomePreviewRail from '../components/main/HomePreviewRail';
 import MainPageCards from '../components/main/MainPageCards';
 import MainPageFooter from '../components/main/MainPageFooter';
 import MainPageOverlay from '../components/main/MainPageOverlay';
@@ -14,6 +15,9 @@ const CARDS_RISE_START = 0.63;
 const PHRASE_CUTOFF = 0.73;
 const CARDS_SLOW_FRAC = 0.06;
 const SUB_FADE_START = 0.85;
+const PREVIEW_START = 0.22;
+const PREVIEW_END = 0.54;
+const RETURN_START = 0.54;
 
 const MainPage = ({ content }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -26,7 +30,7 @@ const MainPage = ({ content }) => {
 
   useEffect(() => {
     const calculateParallaxDistance = () => {
-      setParallaxDistance(window.innerHeight * 2.5);
+      setParallaxDistance(window.innerHeight * 3.3);
     };
 
     const measureTitleHeight = () => {
@@ -81,15 +85,20 @@ const MainPage = ({ content }) => {
   const ease = (p) => 1 - Math.pow(1 - Math.max(0, Math.min(1, p)), 3);
   // Quintic ease-out: far more pronounced deceleration as title nears top
   const easeTitle = (p) => 1 - Math.pow(1 - Math.max(0, Math.min(1, p)), 5);
+  const clamp01 = (p) => Math.max(0, Math.min(1, p));
+  const getSegmentProgress = (progress, start, end) => clamp01((progress - start) / (end - start));
 
-  const getTitleStyle = () => {
+  const introProgress = getSegmentProgress(scrollProgress, 0, PREVIEW_START);
+  const previewProgress = getSegmentProgress(scrollProgress, PREVIEW_START, PREVIEW_END);
+  const returnProgress = getSegmentProgress(scrollProgress, RETURN_START, 1);
+
+  const isIntroStage = isParallaxActive && scrollProgress < PREVIEW_START;
+  const isPreviewStage = isParallaxActive && scrollProgress >= PREVIEW_START && scrollProgress < PREVIEW_END;
+  const isReturnStage = isParallaxActive && scrollProgress >= RETURN_START;
+
+  const getTitleStyle = (progressValue) => {
     const sidePadding = getSidePadding();
-
-    if (!isParallaxActive) {
-      return { position: 'relative', transform: 'none' };
-    }
-
-    const titleProgress = scrollProgress / TITLE_RISE_END;
+    const titleProgress = progressValue / TITLE_RISE_END;
     const eased = easeTitle(titleProgress);
     const pagePadding = getPagePadding();
     const startTop = (window.innerHeight - titleHeight) * 0.5;
@@ -107,28 +116,41 @@ const MainPage = ({ content }) => {
     };
   };
 
-  const getCardsStyle = () => {
+  const getPreviewStyle = () => {
     const sidePadding = getSidePadding();
+    const pagePadding = getPagePadding();
+    const settleProgress = ease(clamp01(previewProgress / 0.18));
+    const exitProgress = ease(clamp01((previewProgress - 0.88) / 0.12));
+    const currentTop = pagePadding + (1 - settleProgress) * 72;
+    const currentOpacity = Math.max(0, Math.min(1, settleProgress * (1 - exitProgress)));
 
-    if (!isParallaxActive) {
-      return { position: 'relative', transform: 'none' };
-    }
+    return {
+      position: 'fixed',
+      top: `${currentTop}px`,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      maxWidth: '1152px',
+      width: `calc(100% - ${sidePadding}px)`,
+      height: `${Math.max(window.innerHeight - pagePadding - 28, 420)}px`,
+      zIndex: 1,
+      opacity: currentOpacity,
+    };
+  };
 
+  const getReturnCardsStyle = () => {
+    const sidePadding = getSidePadding();
     const pagePadding = getPagePadding();
     const startTop = window.innerHeight + 60;
     const endTop = pagePadding + titleHeight;
 
     let journeyFraction;
-    if (scrollProgress <= CARDS_RISE_START) {
-      // Cards are stationary, off-screen below
+    if (returnProgress <= CARDS_RISE_START) {
       journeyFraction = 0;
-    } else if (scrollProgress < PHRASE_CUTOFF) {
-      // Slow phase: cover only CARDS_SLOW_FRAC of the journey (cards barely peek)
-      const p = (scrollProgress - CARDS_RISE_START) / (PHRASE_CUTOFF - CARDS_RISE_START);
+    } else if (returnProgress < PHRASE_CUTOFF) {
+      const p = (returnProgress - CARDS_RISE_START) / (PHRASE_CUTOFF - CARDS_RISE_START);
       journeyFraction = CARDS_SLOW_FRAC * ease(p);
     } else {
-      // Fast phase: accelerate through the remaining (1 - CARDS_SLOW_FRAC) of journey
-      const p = (scrollProgress - PHRASE_CUTOFF) / (1 - PHRASE_CUTOFF);
+      const p = (returnProgress - PHRASE_CUTOFF) / (1 - PHRASE_CUTOFF);
       journeyFraction = CARDS_SLOW_FRAC + (1 - CARDS_SLOW_FRAC) * ease(p);
     }
 
@@ -145,6 +167,19 @@ const MainPage = ({ content }) => {
     };
   };
 
+  const getFooterStyle = () => {
+    const sidePadding = getSidePadding();
+    return {
+      position: 'absolute',
+      top: `${-window.innerHeight * 0.5}px`,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      maxWidth: '1152px',
+      width: `calc(100% - ${sidePadding}px)`,
+      zIndex: 0,
+    };
+  };
+
   const getContainerStyle = () => {
     if (isParallaxActive) {
       return {
@@ -158,23 +193,12 @@ const MainPage = ({ content }) => {
     };
   };
 
-  const getFooterStyle = () => {
-    if (!isParallaxActive) return {};
-    const sidePadding = getSidePadding();
-    return {
-      position: 'absolute',
-      top: `${-window.innerHeight * 0.5}px`,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      maxWidth: '1152px',
-      width: `calc(100% - ${sidePadding}px)`,
-      zIndex: 0,
-    };
-  };
-
-  const subtitleOpacity = isParallaxActive
-    ? Math.max(0, Math.min(1, (scrollProgress - SUB_FADE_START) / (1 - SUB_FADE_START)))
-    : 1;
+  const introSubtitleOpacity = isIntroStage
+    ? Math.max(0, Math.min(1, (introProgress - SUB_FADE_START) / (1 - SUB_FADE_START)))
+    : 0;
+  const returnSubtitleOpacity = isReturnStage
+    ? Math.max(0, Math.min(1, (returnProgress - SUB_FADE_START) / (1 - SUB_FADE_START)))
+    : 0;
 
   // Scroll hint only appears after 5s of no scrolling; hides immediately on scroll
   const [scrollHintVisible, setScrollHintVisible] = useState(false);
@@ -211,9 +235,9 @@ const MainPage = ({ content }) => {
         <MainPageOverlay
           hintOpacity={hintOpacity}
           isMobile={isMobile}
-          isParallaxActive={isParallaxActive}
+          isParallaxActive={isReturnStage}
           scrollHintVisible={scrollHintVisible}
-          scrollProgress={scrollProgress}
+          scrollProgress={returnProgress}
         />
 
         <div
@@ -221,19 +245,48 @@ const MainPage = ({ content }) => {
           style={getContainerStyle()}
         >
           <div className="content-wrapper">
+            {isIntroStage && (
+              <MainPageTitle
+                sectionRef={titleRef}
+                style={getTitleStyle(introProgress)}
+                subtitleOpacity={introSubtitleOpacity}
+              />
+            )}
 
-            <MainPageTitle
-              sectionRef={titleRef}
-              style={getTitleStyle()}
-              subtitleOpacity={subtitleOpacity}
-            />
+            {isPreviewStage && (
+              <HomePreviewRail
+                content={content}
+                progress={previewProgress}
+                style={getPreviewStyle()}
+              />
+            )}
 
-            <MainPageCards
-              content={content}
-              style={getCardsStyle()}
-            />
+            {isReturnStage && (
+              <>
+                <MainPageTitle
+                  style={getTitleStyle(returnProgress)}
+                  subtitleOpacity={returnSubtitleOpacity}
+                />
 
-            <MainPageFooter style={getFooterStyle()} />
+                <MainPageCards
+                  content={content}
+                  style={getReturnCardsStyle()}
+                />
+
+                <MainPageFooter style={getFooterStyle()} />
+              </>
+            )}
+
+            {!isParallaxActive && (
+              <>
+                <MainPageTitle
+                  style={{ position: 'relative', transform: 'none' }}
+                  subtitleOpacity={1}
+                />
+                <MainPageCards content={content} />
+                <MainPageFooter />
+              </>
+            )}
           </div>
         </div>
       </div>

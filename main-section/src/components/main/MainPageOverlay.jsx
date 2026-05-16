@@ -2,9 +2,9 @@ const PHRASES = [
   {
     id: 0,
     label: '// 01',
-    start: 0.13,
-    peak: 0.22,
-    end: 0.38,
+    start: 0.11,
+    peak: 0.24,
+    end: 0.46,
     fontFamily: "'Space Mono', monospace",
     fontSize: '0.82rem',
     mobileFontSize: '0.72rem',
@@ -17,9 +17,9 @@ const PHRASES = [
   {
     id: 1,
     label: '// 02',
-    start: 0.36,
-    peak: 0.47,
-    end: 0.60,
+    start: 0.40,
+    peak: 0.55,
+    end: 0.76,
     fontFamily: "'Space Mono', monospace",
     fontSize: '0.82rem',
     mobileFontSize: '0.72rem',
@@ -40,7 +40,8 @@ function getPhraseOpacity(scrollProgress, phrase) {
     return (scrollProgress - phrase.start) / (phrase.peak - phrase.start);
   }
 
-  return 1 - (scrollProgress - phrase.peak) / (phrase.end - phrase.peak);
+  const fadeProgress = (scrollProgress - phrase.peak) / (phrase.end - phrase.peak);
+  return 1 - Math.pow(fadeProgress, 1.45);
 }
 
 const MainPageOverlay = ({
@@ -93,7 +94,7 @@ const MainPageOverlay = ({
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: 'min(480px, calc(100vw - 4rem))',
+              width: 'min(640px, calc(100vw - 4rem))',
               opacity,
               borderLeft: '1px solid rgba(0,0,0,0.18)',
               paddingLeft: '1.25rem',
