@@ -4,9 +4,9 @@ import SEO from '../components/SEO';
 import { APP_ROUTES } from '../config/site';
 
 // ── Data ─────────────────────────────────────────────────────────
-const NOW = {
+// Fallback used while profile.json is loading or if the fetch fails.
+const NOW_FALLBACK = {
   date: 'may 16, 2026',
-  edition: 'vol. 003 · no. 41',
   location: 'la jolla, california',
   why: 'home for summer · sdx @ ucsd',
   tz: 'pdt',
@@ -31,14 +31,14 @@ const NOW = {
     { state: 'open', val: 'the politics of attention' },
     { state: 'stuck', val: 'a story about the fall of nineveh' },
   ],
-  thisWeek: [
-    { day: 'mon', val: 'signalor v0.3.2 shipped', tag: '+340 −120' },
-    { day: 'tue', val: 'sdx pitches · 3 brands', tag: '4 hrs' },
-    { day: 'wed', val: 'jung — finished chapter 4', tag: 'read' },
-    { day: 'thu', val: 'preview rail redesign · this', tag: 'wip' },
-    { day: 'fri', val: 'open', tag: '—' },
+  quickThoughts: [
+    { thought: 'the borrow checker is just the compiler asking you to think about ownership explicitly. it\'s not hard, it\'s unfamiliar.', date: 'may 15, 2026' },
+    { thought: 'every abstraction is a lie that happens to be useful.', date: 'may 12, 2026' },
   ],
 };
+
+// Context so cards can read live data without prop-drilling
+const NowCtx = React.createContext(NOW_FALLBACK);
 
 // ── Helpers ───────────────────────────────────────────────────────
 function fmtStamp(ts) {
@@ -270,10 +270,11 @@ function Kind({ children }) {
 
 // ── Content cards ─────────────────────────────────────────────────
 function BuildingCard() {
+  const now = React.useContext(NowCtx);
   return (
-    <Card eyebrow="// 01" title="building" subtitle="projects with the lamp on" count={`${NOW.building.length} active`}>
-      {NOW.building.map((b, i) => (
-        <Row key={i} leading={<Tag color={b.tag === 'live' ? NB.red : NB.ink}>{b.tag}</Tag>} borderless={i === NOW.building.length - 1}>
+    <Card eyebrow="// 01" title="building" subtitle="projects with the lamp on" count={`${now.building.length} active`}>
+      {now.building.map((b, i) => (
+        <Row key={i} leading={<Tag color={b.tag === 'live' ? NB.red : NB.ink}>{b.tag}</Tag>} borderless={i === now.building.length - 1}>
           <span style={{ fontWeight: 500 }}>{b.name}</span>
           <span style={{ color: NB.fade }}> — {b.detail}</span>
         </Row>
@@ -283,10 +284,11 @@ function BuildingCard() {
 }
 
 function ConsumingCard() {
+  const now = React.useContext(NowCtx);
   return (
-    <Card eyebrow="// 02" title="consuming" subtitle="inputs · sound, read, watch, play" count={`${NOW.consuming.length} streams`}>
-      {NOW.consuming.map((c, i) => (
-        <Row key={i} leading={<Kind>{c.kind}</Kind>} trailing={c.meta} borderless={i === NOW.consuming.length - 1}>
+    <Card eyebrow="// 02" title="consuming" subtitle="inputs · sound, read, watch, play" count={`${now.consuming.length} streams`}>
+      {now.consuming.map((c, i) => (
+        <Row key={i} leading={<Kind>{c.kind}</Kind>} trailing={c.meta} borderless={i === now.consuming.length - 1}>
           {c.val}
         </Row>
       ))}
@@ -295,10 +297,11 @@ function ConsumingCard() {
 }
 
 function LearningCard() {
+  const now = React.useContext(NowCtx);
   return (
-    <Card eyebrow="// 03" title="learning" subtitle="slow burns · cognitive load" count={`${NOW.learning.length} open`}>
-      {NOW.learning.map((l, i) => (
-        <Row key={i} borderless={i === NOW.learning.length - 1}>
+    <Card eyebrow="// 03" title="learning" subtitle="slow burns · cognitive load" count={`${now.learning.length} open`}>
+      {now.learning.map((l, i) => (
+        <Row key={i} borderless={i === now.learning.length - 1}>
           <span style={{ fontWeight: 500 }}>{l.name}</span>
           <span style={{ color: NB.fade }}> — {l.detail}</span>
         </Row>
@@ -308,11 +311,12 @@ function LearningCard() {
 }
 
 function WritingCard() {
+  const now = React.useContext(NowCtx);
   return (
-    <Card eyebrow="// 04" title="writing" subtitle="drafts in flight" count={`${NOW.writing.length} drafts`}>
-      {NOW.writing.map((w, i) => (
+    <Card eyebrow="// 04" title="writing" subtitle="drafts in flight" count={`${now.writing.length} drafts`}>
+      {now.writing.map((w, i) => (
         <Row
-          key={i} borderless={i === NOW.writing.length - 1}
+          key={i} borderless={i === now.writing.length - 1}
           leading={<Tag color={w.state === 'stuck' ? NB.red : NB.ink}>{w.state}</Tag>}
         >
           {w.val}
@@ -322,28 +326,21 @@ function WritingCard() {
   );
 }
 
-function ThisWeekCard() {
+function QuickThoughtsCard() {
+  const now = React.useContext(NowCtx);
   return (
-    <Card eyebrow="// 05" title="this week" subtitle="w20 · mon — fri" count="5 days">
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', borderLeft: `1px solid ${NB.hair}` }}>
-        {NOW.thisWeek.map((d, i) => (
-          <div key={i} style={{
-            padding: '8px 10px',
-            borderRight: `1px solid ${NB.hair}`,
-            display: 'flex', flexDirection: 'column', gap: 5,
-            minHeight: 100,
-          }}>
-            <div style={{ fontSize: 9.5, letterSpacing: '0.22em', textTransform: 'uppercase', color: NB.fade }}>{d.day}</div>
-            <div style={{ fontSize: 12, lineHeight: 1.35, color: NB.ink }}>{d.val}</div>
-            <div style={{ fontSize: 10, color: NB.fade, marginTop: 'auto' }}>{d.tag}</div>
-          </div>
-        ))}
-      </div>
+    <Card eyebrow="// 05" title="quick thoughts" subtitle="raw — not essays" count={`${now.quickThoughts.length} notes`}>
+      {now.quickThoughts.map((t, i) => (
+        <Row key={i} trailing={t.date} borderless={i === now.quickThoughts.length - 1}>
+          {t.thought}
+        </Row>
+      ))}
     </Card>
   );
 }
 
 function LocationCard() {
+  const now = React.useContext(NowCtx);
   const [time, setTime] = React.useState(new Date());
   React.useEffect(() => {
     const id = setInterval(() => setTime(new Date()), 60000);
@@ -351,9 +348,9 @@ function LocationCard() {
   }, []);
   const fmt = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }).toLowerCase();
   return (
-    <Card eyebrow="// at" title="la jolla" subtitle="home for summer · sdx @ ucsd" count={`${fmt} ${NOW.tz}`}>
+    <Card eyebrow="// at" title={now.location} subtitle={now.why} count={`${fmt} ${now.tz}`}>
       <div style={{ fontSize: 12, color: NB.fade, lineHeight: 1.6 }}>
-        {`// tracking pdt. on campus most days. dm me if you're nearby.`}
+        {`// tracking ${now.tz.toLowerCase()}. on campus most days. dm me if you're nearby.`}
       </div>
     </Card>
   );
@@ -464,6 +461,7 @@ function SlipCardBody({ slip, onClose }) {
 
 // ── Page header ───────────────────────────────────────────────────
 function PageHeader({ onReset, slipCount, onBack }) {
+  const now = React.useContext(NowCtx);
   const [time, setTime] = React.useState(new Date());
   React.useEffect(() => {
     const id = setInterval(() => setTime(new Date()), 1000);
@@ -490,8 +488,8 @@ function PageHeader({ onReset, slipCount, onBack }) {
             cursor: 'pointer', padding: 0,
           }}
         >← alexgaoth.com</button>
-        <span>now · {NOW.edition}</span>
-        <span>{fmt} {NOW.tz}</span>
+        <span>now</span>
+        <span>{fmt} {now.tz}</span>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 30, alignItems: 'flex-end' }}>
         <div>
@@ -507,7 +505,7 @@ function PageHeader({ onReset, slipCount, onBack }) {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, fontSize: 11 }}>
           <span style={{ letterSpacing: '0.18em', color: NB.fade, textTransform: 'uppercase' }}>
-            updated {NOW.date}
+            updated {now.date}
           </span>
           <span style={{ letterSpacing: '0.06em', color: NB.fade }}>
             {slipCount} visitor slip{slipCount === 1 ? '' : 's'} on board
@@ -530,13 +528,13 @@ function PageHeader({ onReset, slipCount, onBack }) {
 
 // ── Default card positions ─────────────────────────────────────────
 const CARDS = [
-  { id: 'building',  w: 380, defaultPos: { x:  20, y:  20, z: 1 } },
-  { id: 'consuming', w: 420, defaultPos: { x: 420, y:  20, z: 2 } },
-  { id: 'learning',  w: 360, defaultPos: { x: 860, y:  20, z: 3 } },
-  { id: 'thisweek',  w: 740, defaultPos: { x:  20, y: 320, z: 4 } },
-  { id: 'writing',   w: 360, defaultPos: { x: 780, y: 320, z: 5 } },
-  { id: 'location',  w: 360, defaultPos: { x: 780, y: 520, z: 6 } },
-  { id: 'patron',    w: 460, defaultPos: { x:  20, y: 580, z: 7 } },
+  { id: 'building',      w: 380, defaultPos: { x:  20, y:  20, z: 1 } },
+  { id: 'consuming',     w: 420, defaultPos: { x: 420, y:  20, z: 2 } },
+  { id: 'learning',      w: 360, defaultPos: { x: 860, y:  20, z: 3 } },
+  { id: 'quickthoughts', w: 560, defaultPos: { x:  20, y: 320, z: 4 } },
+  { id: 'writing',       w: 360, defaultPos: { x: 600, y: 320, z: 5 } },
+  { id: 'location',      w: 360, defaultPos: { x: 600, y: 520, z: 6 } },
+  { id: 'patron',        w: 460, defaultPos: { x:  20, y: 540, z: 7 } },
 ];
 
 const DEFAULT_LAYOUT = CARDS.reduce((acc, c) => { acc[c.id] = c.defaultPos; return acc; }, {});
@@ -553,7 +551,7 @@ function BoardSurface({ slips, addSlip, removeSlip, ctx }) {
   const [bh, setBh] = React.useState(900);
 
   React.useEffect(() => {
-    const heights = { building: 230, consuming: 260, learning: 200, thisweek: 230, writing: 200, location: 130, patron: 320 };
+    const heights = { building: 230, consuming: 260, learning: 200, quickthoughts: 200, writing: 200, location: 130, patron: 320 };
     const allIds = [...CARDS.map((c) => c.id), ...slips.map((s) => s.id)];
     let maxBottom = 0;
     allIds.forEach((id) => {
@@ -592,7 +590,7 @@ function BoardSurface({ slips, addSlip, removeSlip, ctx }) {
           <Draggable id="building"  defaultPos={DEFAULT_LAYOUT.building}  width={380}><BuildingCard /></Draggable>
           <Draggable id="consuming" defaultPos={DEFAULT_LAYOUT.consuming} width={420}><ConsumingCard /></Draggable>
           <Draggable id="learning"  defaultPos={DEFAULT_LAYOUT.learning}  width={360}><LearningCard /></Draggable>
-          <Draggable id="thisweek"  defaultPos={DEFAULT_LAYOUT.thisweek}  width={740}><ThisWeekCard /></Draggable>
+          <Draggable id="quickthoughts" defaultPos={DEFAULT_LAYOUT.quickthoughts} width={560}><QuickThoughtsCard /></Draggable>
           <Draggable id="writing"   defaultPos={DEFAULT_LAYOUT.writing}   width={360}><WritingCard /></Draggable>
           <Draggable id="location"  defaultPos={DEFAULT_LAYOUT.location}  width={360}><LocationCard /></Draggable>
           <Draggable id="patron"    defaultPos={DEFAULT_LAYOUT.patron}    width={460}>
@@ -628,7 +626,7 @@ function Footer() {
 }
 
 // ── Root board component ──────────────────────────────────────────
-function Board({ onBack }) {
+function Board({ onBack, now }) {
   const [slips, setSlips] = React.useState(() => {
     try { return JSON.parse(localStorage.getItem(SLIPS_KEY) || '[]'); } catch (e) { return []; }
   });
@@ -670,6 +668,7 @@ function Board({ onBack }) {
   };
 
   return (
+    <NowCtx.Provider value={now}>
     <LayoutProvider defaults={defaults}>
       <LayoutCtx.Consumer>
         {(ctx) => (
@@ -690,12 +689,21 @@ function Board({ onBack }) {
         )}
       </LayoutCtx.Consumer>
     </LayoutProvider>
+    </NowCtx.Provider>
   );
 }
 
 // ── Page export ───────────────────────────────────────────────────
 const NowPage = () => {
   const navigate = useNavigate();
+  const [now, setNow] = React.useState(NOW_FALLBACK);
+
+  React.useEffect(() => {
+    fetch('/profile.json')
+      .then((r) => r.json())
+      .then((data) => { if (data.now) setNow(data.now); })
+      .catch(() => {}); // keep fallback on error
+  }, []);
 
   // swap body background to cream while on this page
   React.useEffect(() => {
@@ -713,7 +721,7 @@ const NowPage = () => {
         path={APP_ROUTES.now}
       />
       <div style={{ minHeight: '100vh', background: NB.paper }}>
-        <Board onBack={() => navigate(APP_ROUTES.home)} />
+        <Board onBack={() => navigate(APP_ROUTES.home)} now={now} />
       </div>
     </>
   );
