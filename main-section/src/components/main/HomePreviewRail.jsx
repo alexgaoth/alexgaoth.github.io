@@ -102,15 +102,13 @@ function MegaTitle({ children }) {
   );
 }
 
-// PanelChrome: background comes from the parent <section> so it spans the full
-// viewport width. We inherit here rather than repeat it.
 function PanelChrome({ idx, total, eyebrow, title, sub, children, footerLeft, footerRight, footerLink }) {
   return (
     <div style={{
-      flex: 1, width: '100%', background: 'inherit', color: '#000',
+      flex: 1, width: '100%', color: '#000',
       boxSizing: 'border-box',
       maxWidth: '1152px', margin: '0 auto',
-      padding: 'clamp(1.3rem,2.4vw,2.2rem) clamp(1.2rem,3vw,2.4rem) clamp(1rem,1.8vw,1.8rem)',
+      padding: 'clamp(1.3rem,2.4vw,2.2rem) 0 clamp(1rem,1.8vw,1.8rem)',
       display: 'flex', flexDirection: 'column',
       fontFamily: MONO, overflow: 'hidden',
     }}>
@@ -540,16 +538,13 @@ function NowPanel({ isMobile }) {
   );
 }
 
-// ── Panel backgrounds (one entry per panel, in order) ────────────────────────
-
-const PANEL_BGS = ['#ffffff', '#ebe1c8', '#ffffff'];
-const PANELS    = [BuiltPanel, KnownPanel, NowPanel];
+const PANELS = [BuiltPanel, KnownPanel, NowPanel];
 
 // ── HomePreviewRail ───────────────────────────────────────────────────────────
-// Three full-viewport-width sections in normal document flow.
-// No fixed positioning, no translateY, no progress prop.
-// Background spans the entire viewport width; content is max-width constrained
-// inside PanelChrome via maxWidth + margin:auto.
+// Three full-viewport-height sections in normal document flow.
+// Sections are transparent — background color is driven by MainPage's pageBg,
+// which spans the full viewport width and fades white→cream→white as the
+// KNOWN panel scrolls through.
 
 const HomePreviewRail = ({ isMobile }) => (
   <>
@@ -561,7 +556,6 @@ const HomePreviewRail = ({ isMobile }) => (
           minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          background: PANEL_BGS[i],
         }}
       >
         <Panel isMobile={isMobile} />

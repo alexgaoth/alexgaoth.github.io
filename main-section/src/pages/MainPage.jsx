@@ -6,6 +6,7 @@ import SEO from '../components/SEO';
 import HomePreviewRail from '../components/main/HomePreviewRail';
 import MainPageCards from '../components/main/MainPageCards';
 import MainPageFooter from '../components/main/MainPageFooter';
+import MainPageOverlay from '../components/main/MainPageOverlay';
 import MainPageTitle from '../components/main/MainPageTitle';
 import { APP_ROUTES, SITE } from '../config/site';
 
@@ -68,8 +69,15 @@ const MainPage = ({ content }) => {
   const creamness  = Math.max(0, 1 - Math.abs(panelIndex - 1));
   const pageBg     = `rgb(${Math.round(255 + (CREAM[0] - 255) * creamness)},${Math.round(255 + (CREAM[1] - 255) * creamness)},${Math.round(255 + (CREAM[2] - 255) * creamness)})`;
 
-  // Left-edge scroll progress indicator covers intro + 3 panels
-  const totalTracked    = introH + winH * 3;
+  // Return stage: cards rise from below the fold after the 3 preview panels.
+  const returnH        = winH * 2.2;
+  const returnStart    = introH + winH * 3;
+  const returnProgress = Math.min(1, Math.max(0, (scrollY - returnStart) / returnH));
+  const inReturn       = scrollY >= returnStart && returnProgress < 1;
+  const cardEase       = 1 - Math.pow(1 - returnProgress, 3);
+
+  // Left-edge scroll progress indicator covers intro + 3 panels + return
+  const totalTracked    = introH + winH * 3 + returnH;
   const overallProgress = Math.min(1, scrollY / totalTracked);
 
   // Scroll hint: appears after 5 s idle, fades out as soon as user scrolls
@@ -152,8 +160,44 @@ const MainPage = ({ content }) => {
             No fixed positioning, no translateY tricks. */}
         <HomePreviewRail isMobile={isMobile} />
 
-        {/* ── Directory ─────────────────────────────────────────────────────
-            Title reappears in static flow, followed by the 2×2 card grid. */}
+        {/* ── Return stage spacer ────────────────────────────────────────────
+            Provides scroll distance for the cards-rising animation. */}
+        <div style={{ height: `${returnH}px` }} />
+
+        {/* ── Return overlay (floating text phrases) ────────────────────────*/}
+        {inReturn && (
+          <MainPageOverlay
+            hintOpacity={0}
+            isMobile={isMobile}
+            isParallaxActive
+            scrollHintVisible={false}
+            scrollProgress={returnProgress}
+          />
+        )}
+
+        {/* ── Cards rising during return stage (fixed, animates from below) ─*/}
+        {inReturn && (
+          <div style={{
+            position: 'fixed',
+            top: `${winH * (1 - cardEase)}px`,
+            left: 0, right: 0, zIndex: 6,
+            boxSizing: 'border-box',
+            paddingLeft: isMobile ? '1rem' : '2rem',
+            paddingRight: isMobile ? '1rem' : '2rem',
+            opacity: Math.min(1, returnProgress * 4),
+          }}>
+            <div className="content-wrapper" style={{ paddingTop: '2.5rem', paddingBottom: '3rem' }}>
+              <MainPageTitle
+                style={{ position: 'relative', transform: 'none' }}
+                subtitleOpacity={1}
+              />
+              <MainPageCards content={content} />
+              <MainPageFooter />
+            </div>
+          </div>
+        )}
+
+        {/* ── Directory — static in normal flow after return stage ───────────*/}
         <div className="content-wrapper" style={{ paddingTop: '2.5rem', paddingBottom: '3rem' }}>
           <MainPageTitle
             style={{ position: 'relative', transform: 'none' }}
