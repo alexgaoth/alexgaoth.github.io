@@ -1,18 +1,18 @@
 {
-  "working":[
+  "working": [
     "Getting better at simply writing interestingly, intuitively",
     "Learning Rust",
     "building random things that might solve actual problems?"
-        
   ],
-  "consuming":{
-    "listening ":" Soldier of Heaven - Sabaton",
-    "reading ":" jung (in English)",
-    "watching ":" xavier renegade angels ",
-    "playing ":" non actually"
+  "consuming": {
+    "listening ": " Soldier of Heaven - Sabaton",
+    "reading ": " jung (in English)",
+    "watching ": " xavier renegade angels ",
+    "playing ": " non actually"
   },
-  "location":[
+  "location": [
     "Location : San Jose, California",
     "Why I'm here : Home for christmas"
-  ]
+  ],
+  "status": "Workin "
 }
