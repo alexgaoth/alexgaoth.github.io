@@ -24,7 +24,7 @@ export const profileData = {
   links: [
     { label: 'Main site', href: 'https://alexgaoth.com/' },
     { label: 'Legacy app redirect', href: 'https://app.alexgaoth.com/' },
-    { label: 'Personal site', href: 'https://personal.alexgaoth.com/' },
+    { label: 'Personal site', href: 'https://intro.alexgaoth.com/' },
     { label: 'GitHub', href: 'https://github.com/alexgaoth' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/alexgaoth' },
     { label: 'X / Twitter', href: 'https://twitter.com/alexgaoth' },

@@ -8,7 +8,7 @@ export const SITE = {
   rootUrl: 'https://alexgaoth.com',
   appUrl: 'https://alexgaoth.com',
   legacyAppUrl: 'https://app.alexgaoth.com',
-  personalUrl: 'https://personal.alexgaoth.com',
+  personalUrl: 'https://intro.alexgaoth.com',
   defaultImagePath: '/logo.jpg',
   socialProfiles: [
     'https://github.com/alexgaoth',

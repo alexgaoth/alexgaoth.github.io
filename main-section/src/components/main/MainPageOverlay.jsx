@@ -2,9 +2,9 @@ const PHRASES = [
   {
     id: 0,
     label: '// 01',
-    start: 0.11,
-    peak: 0.24,
-    end: 0.46,
+    start: 0.0,
+    peak: 0.10,
+    end: 0.30,
     fontFamily: "'Space Mono', monospace",
     fontSize: '0.82rem',
     mobileFontSize: '0.72rem',
@@ -17,9 +17,9 @@ const PHRASES = [
   {
     id: 1,
     label: '// 02',
-    start: 0.40,
-    peak: 0.55,
-    end: 0.76,
+    start: 0.22,
+    peak: 0.35,
+    end: 0.50,
     fontFamily: "'Space Mono', monospace",
     fontSize: '0.82rem',
     mobileFontSize: '0.72rem',
@@ -124,7 +124,9 @@ const MainPageOverlay = ({
                   if you found things here interesting then i will interesting as well <br />
                   reach me{' '}
                   <a
-                    href="/about"
+                    href="https://intro.alexgaoth.com/?flip=1#about"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     style={{
                       color: 'inherit',
                       textDecoration: 'underline',

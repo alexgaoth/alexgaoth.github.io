@@ -51,6 +51,10 @@ const MainPage = ({ content }) => {
   const titleTop    = startTop + (navH - startTop) * easedTp;
   const subtitleOpacity = Math.max(0, (tp - 0.8) / 0.2);
 
+  // Title fades out in the last 30% of the intro scroll (after rising is complete)
+  const inIntroProgress = Math.min(1, scrollY / introH);
+  const titleOpacity    = Math.max(0, 1 - Math.max(0, (inIntroProgress - 0.7) / 0.3));
+
   const titleStyle = {
     position: 'fixed',
     top: `${titleTop}px`,
@@ -59,6 +63,7 @@ const MainPage = ({ content }) => {
     maxWidth: '1152px',
     width: `calc(100% - ${sidePad}px)`,
     zIndex: 10,
+    opacity: titleOpacity,
   };
 
   // Background fade: white → cream → white as the KNOWN panel scrolls through.
@@ -69,14 +74,18 @@ const MainPage = ({ content }) => {
   const creamness  = Math.max(0, 1 - Math.abs(panelIndex - 1));
   const pageBg     = `rgb(${Math.round(255 + (CREAM[0] - 255) * creamness)},${Math.round(255 + (CREAM[1] - 255) * creamness)},${Math.round(255 + (CREAM[2] - 255) * creamness)})`;
 
-  // Return stage: cards rise from below the fold after the 3 preview panels.
-  const returnH        = winH * 2.2;
+  // Return stage: overlay text plays while the directory scrolls naturally
+  // into view from below. returnH is the extra spacer above the directory
+  // that gives the text phrases their scroll distance.
+  const returnH        = winH * 1.1;
   const returnStart    = introH + winH * 3;
   const returnProgress = Math.min(1, Math.max(0, (scrollY - returnStart) / returnH));
   const inReturn       = scrollY >= returnStart && returnProgress < 1;
-  const cardEase       = 1 - Math.pow(1 - returnProgress, 3);
+  // Ease used for the directory's entrance translateY — only activates in back half
+  const cardP    = Math.max(0, (returnProgress - 0.5) / 0.5);
+  const cardEase = 1 - Math.pow(1 - cardP, 3);
 
-  // Left-edge scroll progress indicator covers intro + 3 panels + return
+  // Left-edge progress rail covers intro + 3 panels + return spacer
   const totalTracked    = introH + winH * 3 + returnH;
   const overallProgress = Math.min(1, scrollY / totalTracked);
 
@@ -161,10 +170,11 @@ const MainPage = ({ content }) => {
         <HomePreviewRail isMobile={isMobile} />
 
         {/* ── Return stage spacer ────────────────────────────────────────────
-            Provides scroll distance for the cards-rising animation. */}
+            Scroll distance for the MainPageOverlay text phrases.
+            The directory below scrolls naturally into view through this space. */}
         <div style={{ height: `${returnH}px` }} />
 
-        {/* ── Return overlay (floating text phrases) ────────────────────────*/}
+        {/* ── Return overlay (floating text phrases, z-index above everything) */}
         {inReturn && (
           <MainPageOverlay
             hintOpacity={0}
@@ -175,30 +185,20 @@ const MainPage = ({ content }) => {
           />
         )}
 
-        {/* ── Cards rising during return stage (fixed, animates from below) ─*/}
-        {inReturn && (
-          <div style={{
-            position: 'fixed',
-            top: `${winH * (1 - cardEase)}px`,
-            left: 0, right: 0, zIndex: 6,
-            boxSizing: 'border-box',
-            paddingLeft: isMobile ? '1rem' : '2rem',
-            paddingRight: isMobile ? '1rem' : '2rem',
-            opacity: Math.min(1, returnProgress * 4),
-          }}>
-            <div className="content-wrapper" style={{ paddingTop: '2.5rem', paddingBottom: '3rem' }}>
-              <MainPageTitle
-                style={{ position: 'relative', transform: 'none' }}
-                subtitleOpacity={1}
-              />
-              <MainPageCards content={content} />
-              <MainPageFooter />
-            </div>
-          </div>
-        )}
-
-        {/* ── Directory — static in normal flow after return stage ───────────*/}
-        <div className="content-wrapper" style={{ paddingTop: '2.5rem', paddingBottom: '3rem' }}>
+        {/* ── Directory ─────────────────────────────────────────────────────
+            Single render in normal document flow — no duplicate, no fixed
+            overlay, no visibility hacks. It scrolls into view naturally as
+            the user moves through the return spacer above. The fade + slight
+            translateY are driven by returnProgress for a smooth entrance. */}
+        <div
+          className="content-wrapper"
+          style={{
+            paddingTop: '2.5rem',
+            paddingBottom: '3rem',
+            opacity: Math.min(1, Math.max(0, (returnProgress - 0.5) * 2)),
+            transform: `translateY(${Math.max(0, (1 - cardEase) * 28)}px)`,
+          }}
+        >
           <MainPageTitle
             style={{ position: 'relative', transform: 'none' }}
             subtitleOpacity={1}
@@ -206,6 +206,7 @@ const MainPage = ({ content }) => {
           <MainPageCards content={content} />
           <MainPageFooter />
         </div>
+
       </div>
     </>
   );

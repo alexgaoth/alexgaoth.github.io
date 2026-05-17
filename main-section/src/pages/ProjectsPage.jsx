@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import CompactViewButton from '../components/CompactViewButton';
 import SEO from '../components/SEO';
 import ContentPage from '../components/layout/ContentPage';
@@ -6,9 +7,20 @@ import ProjectCard from '../components/projects/ProjectCard';
 import { APP_ROUTES } from '../config/site';
 import { getCompactGridDimensions } from '../utils/compactGrid';
 
+const projectSlug = (name) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
 const ProjectsPage = ({ data }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState({});
   const [progress, setProgress] = useState(0);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const el = document.getElementById(location.hash.slice(1));
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    }
+  }, [location.hash]);
   const totalCards = data.content.length;
   const { columns, rows } = getCompactGridDimensions(totalCards);
 
@@ -61,15 +73,16 @@ const ProjectsPage = ({ data }) => {
           }}
         >
           {data.content.map((project, index) => (
-            <ProjectCard
-              key={index}
-              project={project}
-              index={index}
-              currentImage={getCurrentImage(project, index)}
-              selectedImageIndex={selectedImageIndex[index] || 0}
-              onPreviousImage={prevImage}
-              onNextImage={nextImage}
-            />
+            <div key={index} id={`project-${projectSlug(project.name)}`}>
+              <ProjectCard
+                project={project}
+                index={index}
+                currentImage={getCurrentImage(project, index)}
+                selectedImageIndex={selectedImageIndex[index] || 0}
+                onPreviousImage={prevImage}
+                onNextImage={nextImage}
+              />
+            </div>
           ))}
         </div>
       </ContentPage>
