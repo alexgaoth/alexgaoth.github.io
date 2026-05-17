@@ -102,11 +102,14 @@ function MegaTitle({ children }) {
   );
 }
 
-function PanelChrome({ idx, total, eyebrow, title, sub, children, background = '#fff', footerLeft, footerRight, footerLink }) {
+// PanelChrome: background comes from the parent <section> so it spans the full
+// viewport width. We inherit here rather than repeat it.
+function PanelChrome({ idx, total, eyebrow, title, sub, children, footerLeft, footerRight, footerLink }) {
   return (
     <div style={{
-      width: '100%', height: '100%', background, color: '#000',
+      flex: 1, width: '100%', background: 'inherit', color: '#000',
       boxSizing: 'border-box',
+      maxWidth: '1152px', margin: '0 auto',
       padding: 'clamp(1.3rem,2.4vw,2.2rem) clamp(1.2rem,3vw,2.4rem) clamp(1rem,1.8vw,1.8rem)',
       display: 'flex', flexDirection: 'column',
       fontFamily: MONO, overflow: 'hidden',
@@ -332,7 +335,6 @@ function KnownPanel({ isMobile }) {
   return (
     <PanelChrome
       idx={2} total={3}
-      background={BG}
       eyebrow="// 02 — what i know"
       title={<>KNOWN<span style={{ color: 'rgba(0,0,0,0.18)' }}>.</span></>}
       sub="2× olympiad gold · 4 working languages · math-cs @ ucsd · serious about ideas at 19."
@@ -538,71 +540,34 @@ function NowPanel({ isMobile }) {
   );
 }
 
-// ── Panels ordered: BUILT → KNOWN → NOW ──────────────────────────────────────
+// ── Panel backgrounds (one entry per panel, in order) ────────────────────────
 
-const PANELS = [BuiltPanel, KnownPanel, NowPanel];
-const SLIDE_COUNT = PANELS.length;
+const PANEL_BGS = ['#ffffff', '#ebe1c8', '#ffffff'];
+const PANELS    = [BuiltPanel, KnownPanel, NowPanel];
 
-// Background colors per panel — used by MainPage for the scroll fade
-export const PANEL_BACKGROUNDS = ['#ffffff', '#ebe1c8', '#ffffff'];
+// ── HomePreviewRail ───────────────────────────────────────────────────────────
+// Three full-viewport-width sections in normal document flow.
+// No fixed positioning, no translateY, no progress prop.
+// Background spans the entire viewport width; content is max-width constrained
+// inside PanelChrome via maxWidth + margin:auto.
 
-// ── Main component ────────────────────────────────────────────────────────────
-
-const HomePreviewRail = ({ progress, style, isMobile }) => {
-  const [viewportHeight, setViewportHeight] = useState(() => {
-    const pad = window.innerWidth >= 768 ? 80 : 140;
-    return Math.max(window.innerHeight - pad - 28, 420);
-  });
-
-  useEffect(() => {
-    const update = () => {
-      const pad = window.innerWidth >= 768 ? 80 : 140;
-      setViewportHeight(Math.max(window.innerHeight - pad - 28, 420));
-    };
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
-  const slideGap = window.innerWidth >= 768 ? 36 : 24;
-  const totalTravel = (viewportHeight + slideGap) * (SLIDE_COUNT - 1);
-  const translateY = progress * totalTravel;
-  const activeIndex = progress * (SLIDE_COUNT - 1);
-
-  const getSlideStyle = (index) => {
-    const dist = Math.abs(activeIndex - index);
-    return {
-      opacity:   Math.max(0.26, 1 - dist * 0.55),
-      transform: `scale(${1 - Math.min(dist * 0.08, 0.16)})`,
-      filter:    `blur(${Math.min(dist * 1.4, 2.8)}px)`,
-    };
-  };
-
-  return (
-    <div className="cards-section-parallax home-preview-rail" style={style}>
-      <div className="home-preview-viewport">
-        <div
-          className="home-preview-track"
-          style={{ transform: `translateY(-${translateY}px)`, gap: `${slideGap}px` }}
-        >
-          {PANELS.map((Panel, i) => (
-            <div
-              key={i}
-              className="home-preview-slide"
-              style={{
-                minHeight: `${viewportHeight}px`,
-                height: `${viewportHeight}px`,
-                overflow: 'hidden',
-                ...getSlideStyle(i),
-              }}
-            >
-              <Panel isMobile={isMobile} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
+const HomePreviewRail = ({ isMobile }) => (
+  <>
+    {PANELS.map((Panel, i) => (
+      <section
+        key={i}
+        style={{
+          width: '100%',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          background: PANEL_BGS[i],
+        }}
+      >
+        <Panel isMobile={isMobile} />
+      </section>
+    ))}
+  </>
+);
 
 export default HomePreviewRail;
