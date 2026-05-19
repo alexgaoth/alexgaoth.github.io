@@ -1,40 +1,63 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import SEO from '../components/SEO';
-import { APP_ROUTES } from '../config/site';
-import { supabase } from '../lib/supabase';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import SEO from "../components/SEO";
+import { APP_ROUTES } from "../config/site";
+import { supabase } from "../lib/supabase";
 
 // ── Data ─────────────────────────────────────────────────────────
 // Fallback used while profile.json is loading or if the fetch fails.
 const NOW_FALLBACK = {
-  date: 'may 16, 2026',
-  location: 'la jolla, california',
-  why: 'home for summer · sdx @ ucsd',
-  tz: 'pdt',
+  date: "may 16, 2026",
+  location: "la jolla, california",
+  why: "home for summer · sdx @ ucsd",
+  tz: "pdt",
   building: [
-    { name: 'signalor.app', detail: 'v0.3 · google analytics for brands · in production', tag: 'live' },
-    { name: 'sdx @ ucsd', detail: 'design-engineering club · 3 brand pitches this week', tag: 'wip' },
-    { name: 'this very site', detail: 'preview rail redesign · the page you are on', tag: 'wip' },
+    {
+      name: "signalor.app",
+      detail: "v0.3 · google analytics for brands · in production",
+      tag: "live",
+    },
+    {
+      name: "sdx @ ucsd",
+      detail: "design-engineering club · 3 brand pitches this week",
+      tag: "wip",
+    },
+    {
+      name: "this very site",
+      detail: "preview rail redesign · the page you are on",
+      tag: "wip",
+    },
   ],
   learning: [
-    { name: 'rust', detail: 'borrow checker, finally' },
-    { name: 'தமிழ் / tamil', detail: 'reading aloud, slowly' },
-    { name: 'writing more clearly', detail: 'fewer words, harder meaning' },
+    { name: "rust", detail: "borrow checker, finally" },
+    { name: "தமிழ் / tamil", detail: "reading aloud, slowly" },
+    { name: "writing more clearly", detail: "fewer words, harder meaning" },
   ],
   consuming: [
-    { kind: 'sound', val: 'soldier of heaven — sabaton', meta: 'on repeat' },
-    { kind: 'read', val: 'the undiscovered self — c.g. jung', meta: 'ch. 4 of 7' },
-    { kind: 'watch', val: 'xavier: renegade angel', meta: 's2' },
-    { kind: 'play', val: 'none actually', meta: '—' },
+    { kind: "sound", val: "soldier of heaven — sabaton", meta: "on repeat" },
+    {
+      kind: "read",
+      val: "the undiscovered self — c.g. jung",
+      meta: "ch. 4 of 7",
+    },
+    { kind: "watch", val: "xavier: renegade angel", meta: "s2" },
+    { kind: "play", val: "none actually", meta: "—" },
   ],
   writing: [
-    { state: 'wip', val: 'a note on metaphor as compression' },
-    { state: 'open', val: 'the politics of attention' },
-    { state: 'stuck', val: 'a story about the fall of nineveh' },
+    { state: "wip", val: "a note on metaphor as compression" },
+    { state: "open", val: "the politics of attention" },
+    { state: "stuck", val: "a story about the fall of nineveh" },
   ],
   quickThoughts: [
-    { thought: 'the borrow checker is just the compiler asking you to think about ownership explicitly. it\'s not hard, it\'s unfamiliar.', date: 'may 15, 2026' },
-    { thought: 'every abstraction is a lie that happens to be useful.', date: 'may 12, 2026' },
+    {
+      thought:
+        "the borrow checker is just the compiler asking you to think about ownership explicitly. it's not hard, it's unfamiliar.",
+      date: "may 15, 2026",
+    },
+    {
+      thought: "every abstraction is a lie that happens to be useful.",
+      date: "may 12, 2026",
+    },
   ],
 };
 
@@ -42,13 +65,13 @@ const NOW_FALLBACK = {
 const NowCtx = React.createContext(NOW_FALLBACK);
 
 const NB = {
-  paper: '#efe9d6',
-  card:  '#fbf7e8',
-  ink:   '#1c1a14',
-  fade:  'rgba(28, 26, 20, 0.55)',
-  rule:  'rgba(28, 26, 20, 0.14)',
-  hair:  'rgba(28, 26, 20, 0.08)',
-  red:   '#9b2a1e',
+  paper: "#efe9d6",
+  card: "#fbf7e8",
+  ink: "#1c1a14",
+  fade: "rgba(28, 26, 20, 0.55)",
+  rule: "rgba(28, 26, 20, 0.14)",
+  hair: "rgba(28, 26, 20, 0.08)",
+  red: "#9b2a1e",
 };
 
 // ── Layout context ────────────────────────────────────────────────
@@ -58,7 +81,7 @@ function LayoutProvider({ defaults, children }) {
   const boardRef = React.useRef(null);
   const [layout, setLayout] = React.useState(defaults);
   const maxZRef = React.useRef(
-    Object.values(defaults).reduce((m, p) => Math.max(m, (p && p.z) || 1), 1)
+    Object.values(defaults).reduce((m, p) => Math.max(m, (p && p.z) || 1), 1),
   );
 
   const update = React.useCallback((id, patch) => {
@@ -68,10 +91,13 @@ function LayoutProvider({ defaults, children }) {
     }));
   }, []);
 
-  const bringToFront = React.useCallback((id) => {
-    maxZRef.current += 1;
-    update(id, { z: maxZRef.current });
-  }, [update]);
+  const bringToFront = React.useCallback(
+    (id) => {
+      maxZRef.current += 1;
+      update(id, { z: maxZRef.current });
+    },
+    [update],
+  );
 
   return (
     <LayoutCtx.Provider value={{ layout, update, bringToFront, boardRef }}>
@@ -82,40 +108,44 @@ function LayoutProvider({ defaults, children }) {
 
 // ── Draggable wrapper ─────────────────────────────────────────────
 function Draggable({ id, width, children }) {
-  const { layout, update, bringToFront, boardRef } = React.useContext(LayoutCtx);
+  const { layout, update, bringToFront, boardRef } =
+    React.useContext(LayoutCtx);
   const pos = layout[id] || { x: 0, y: 0, z: 1 };
   const ref = React.useRef(null);
   const [dragging, setDragging] = React.useState(false);
 
   const onPointerDown = (e) => {
-    if (!e.target.closest('[data-drag-handle]')) return;
-    if (e.target.closest('[data-no-drag]')) return;
+    if (!e.target.closest("[data-drag-handle]")) return;
+    if (e.target.closest("[data-no-drag]")) return;
     e.preventDefault();
     bringToFront(id);
     setDragging(true);
-    const startX = e.clientX, startY = e.clientY;
+    const startX = e.clientX,
+      startY = e.clientY;
     const startPos = { x: pos.x, y: pos.y };
-    const boardRect = boardRef.current ? boardRef.current.getBoundingClientRect() : null;
-    const cardRect  = ref.current     ? ref.current.getBoundingClientRect()     : null;
+    const boardRect = boardRef.current
+      ? boardRef.current.getBoundingClientRect()
+      : null;
+    const cardRect = ref.current ? ref.current.getBoundingClientRect() : null;
 
     const onMove = (ev) => {
       let nx = startPos.x + (ev.clientX - startX);
       let ny = startPos.y + (ev.clientY - startY);
       if (boardRect && cardRect) {
-        nx = Math.max(0, Math.min(boardRect.width  - cardRect.width,  nx));
+        nx = Math.max(0, Math.min(boardRect.width - cardRect.width, nx));
         ny = Math.max(0, Math.min(boardRect.height - cardRect.height, ny));
       }
       update(id, { x: nx, y: ny });
     };
     const onUp = () => {
       setDragging(false);
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-      window.removeEventListener('pointercancel', onUp);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
     };
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-    window.addEventListener('pointercancel', onUp);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
   };
 
   return (
@@ -123,16 +153,17 @@ function Draggable({ id, width, children }) {
       ref={ref}
       onPointerDown={onPointerDown}
       style={{
-        position: 'absolute',
-        left: 0, top: 0,
+        position: "absolute",
+        left: 0,
+        top: 0,
         width,
         transform: `translate(${pos.x}px, ${pos.y}px)`,
-        zIndex: dragging ? 9999 : (pos.z || 1),
-        transition: dragging ? 'none' : 'box-shadow 0.18s ease',
+        zIndex: dragging ? 9999 : pos.z || 1,
+        transition: dragging ? "none" : "box-shadow 0.18s ease",
         filter: dragging
-          ? 'drop-shadow(0 14px 24px rgba(0,0,0,0.18))'
-          : 'drop-shadow(0 2px 8px rgba(0,0,0,0.06))',
-        willChange: 'transform',
+          ? "drop-shadow(0 14px 24px rgba(0,0,0,0.18))"
+          : "drop-shadow(0 2px 8px rgba(0,0,0,0.06))",
+        willChange: "transform",
       }}
     >
       {children}
@@ -141,48 +172,118 @@ function Draggable({ id, width, children }) {
 }
 
 // ── Card shell ────────────────────────────────────────────────────
-function Card({ eyebrow, title, subtitle, children, count, closable, onClose, dense }) {
+function Card({
+  eyebrow,
+  title,
+  subtitle,
+  children,
+  count,
+  closable,
+  onClose,
+  dense,
+}) {
   return (
-    <div style={{
-      background: NB.card,
-      border: `1px solid ${NB.ink}`,
-      fontFamily: "'Space Mono', monospace",
-      color: NB.ink,
-      display: 'flex', flexDirection: 'column',
-    }}>
-      <div data-drag-handle style={{
-        cursor: 'grab',
-        touchAction: 'none',
-        padding: dense ? '10px 14px 8px 14px' : '14px 16px 10px 16px',
-        borderBottom: `1px solid ${NB.hair}`,
-        position: 'relative',
-        userSelect: 'none',
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+    <div
+      style={{
+        background: NB.card,
+        border: `1px solid ${NB.ink}`,
+        fontFamily: "'Space Mono', monospace",
+        color: NB.ink,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        data-drag-handle
+        style={{
+          cursor: "grab",
+          touchAction: "none",
+          padding: dense ? "10px 14px 8px 14px" : "14px 16px 10px 16px",
+          borderBottom: `1px solid ${NB.hair}`,
+          position: "relative",
+          userSelect: "none",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: 12,
+          }}
+        >
           <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontSize: 9.5, letterSpacing: '0.28em', textTransform: 'uppercase', color: NB.fade, marginBottom: 3 }}>
+            <div
+              style={{
+                fontSize: 9.5,
+                letterSpacing: "0.28em",
+                textTransform: "uppercase",
+                color: NB.fade,
+                marginBottom: 3,
+              }}
+            >
               {eyebrow}
             </div>
-            <h3 style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 600, fontSize: dense ? 18 : 22, margin: 0,
-              letterSpacing: '-0.015em', textTransform: 'lowercase', lineHeight: 1.1,
-            }}>{title}</h3>
+            <h3
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 600,
+                fontSize: dense ? 18 : 22,
+                margin: 0,
+                letterSpacing: "-0.015em",
+                textTransform: "lowercase",
+                lineHeight: 1.1,
+              }}
+            >
+              {title}
+            </h3>
             {subtitle && (
-              <div style={{ fontSize: 10.5, color: NB.fade, marginTop: 3, lineHeight: 1.4 }}>{subtitle}</div>
+              <div
+                style={{
+                  fontSize: 10.5,
+                  color: NB.fade,
+                  marginTop: 3,
+                  lineHeight: 1.4,
+                }}
+              >
+                {subtitle}
+              </div>
             )}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 2 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              paddingTop: 2,
+            }}
+          >
             {count != null && (
-              <span style={{ fontSize: 9.5, letterSpacing: '0.18em', textTransform: 'uppercase', color: NB.fade, whiteSpace: 'nowrap' }}>
+              <span
+                style={{
+                  fontSize: 9.5,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: NB.fade,
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {count}
               </span>
             )}
-            <span aria-hidden style={{
-              fontFamily: "'Space Mono', monospace",
-              color: NB.fade, fontSize: 14, letterSpacing: '-0.05em',
-              lineHeight: 1, paddingTop: 2,
-            }}>⠿</span>
+            <span
+              aria-hidden
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                color: NB.fade,
+                fontSize: 14,
+                letterSpacing: "-0.05em",
+                lineHeight: 1,
+                paddingTop: 2,
+              }}
+            >
+              ⠿
+            </span>
             {closable && (
               <button
                 data-no-drag
@@ -190,15 +291,27 @@ function Card({ eyebrow, title, subtitle, children, count, closable, onClose, de
                 onClick={onClose}
                 title="remove slip"
                 style={{
-                  background: 'none', border: 'none', color: NB.fade,
-                  fontFamily: "'Space Mono', monospace", fontSize: 13,
-                  cursor: 'pointer', padding: '0 2px', lineHeight: 1,
-                }}>✕</button>
+                  background: "none",
+                  border: "none",
+                  color: NB.fade,
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 13,
+                  cursor: "pointer",
+                  padding: "0 2px",
+                  lineHeight: 1,
+                }}
+              >
+                ✕
+              </button>
             )}
           </div>
         </div>
       </div>
-      <div style={{ padding: dense ? '10px 14px 12px 14px' : '14px 16px 16px 16px' }}>
+      <div
+        style={{
+          padding: dense ? "10px 14px 12px 14px" : "14px 16px 16px 16px",
+        }}
+      >
         {children}
       </div>
     </div>
@@ -208,37 +321,61 @@ function Card({ eyebrow, title, subtitle, children, count, closable, onClose, de
 // ── Row primitives ────────────────────────────────────────────────
 function Row({ leading, trailing, children, borderless }) {
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: `${leading ? 'auto ' : ''}1fr${trailing ? ' auto' : ''}`,
-      gap: 10, alignItems: 'baseline',
-      padding: '7px 0',
-      borderBottom: borderless ? 'none' : `1px dotted ${NB.rule}`,
-      fontSize: 13, lineHeight: 1.45,
-    }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: `${leading ? "auto " : ""}1fr${trailing ? " auto" : ""}`,
+        gap: 10,
+        alignItems: "baseline",
+        padding: "7px 0",
+        borderBottom: borderless ? "none" : `1px dotted ${NB.rule}`,
+        fontSize: 13,
+        lineHeight: 1.45,
+      }}
+    >
       {leading && <span style={{ minWidth: 0 }}>{leading}</span>}
-      <span style={{ overflow: 'hidden' }}>{children}</span>
-      {trailing && <span style={{ color: NB.fade, fontSize: 11, whiteSpace: 'nowrap' }}>{trailing}</span>}
+      <span style={{ overflow: "hidden" }}>{children}</span>
+      {trailing && (
+        <span style={{ color: NB.fade, fontSize: 11, whiteSpace: "nowrap" }}>
+          {trailing}
+        </span>
+      )}
     </div>
   );
 }
 
 function Tag({ children, color = NB.ink }) {
   return (
-    <span style={{
-      fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase',
-      border: `1px solid ${color}`, color, padding: '1px 5px',
-      whiteSpace: 'nowrap',
-    }}>{children}</span>
+    <span
+      style={{
+        fontSize: 9,
+        letterSpacing: "0.18em",
+        textTransform: "uppercase",
+        border: `1px solid ${color}`,
+        color,
+        padding: "1px 5px",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </span>
   );
 }
 
 function Kind({ children }) {
   return (
-    <span style={{
-      fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase',
-      color: NB.fade, minWidth: 50, display: 'inline-block',
-    }}>{children}</span>
+    <span
+      style={{
+        fontSize: 10,
+        letterSpacing: "0.18em",
+        textTransform: "uppercase",
+        color: NB.fade,
+        minWidth: 50,
+        display: "inline-block",
+      }}
+    >
+      {children}
+    </span>
   );
 }
 
@@ -248,7 +385,13 @@ function BuildingCard() {
   return (
     <Card eyebrow="// 01" title="building">
       {now.building.map((b, i) => (
-        <Row key={i} leading={<Tag color={b.tag === 'live' ? NB.red : NB.ink}>{b.tag}</Tag>} borderless={i === now.building.length - 1}>
+        <Row
+          key={i}
+          leading={
+            <Tag color={b.tag === "live" ? NB.red : NB.ink}>{b.tag}</Tag>
+          }
+          borderless={i === now.building.length - 1}
+        >
           <span style={{ fontWeight: 500 }}>{b.name}</span>
           <span style={{ color: NB.fade }}> — {b.detail}</span>
         </Row>
@@ -262,7 +405,12 @@ function ConsumingCard() {
   return (
     <Card eyebrow="// 02" title="consuming">
       {now.consuming.map((c, i) => (
-        <Row key={i} leading={<Kind>{c.kind}</Kind>} trailing={c.meta} borderless={i === now.consuming.length - 1}>
+        <Row
+          key={i}
+          leading={<Kind>{c.kind}</Kind>}
+          trailing={c.meta}
+          borderless={i === now.consuming.length - 1}
+        >
           {c.val}
         </Row>
       ))}
@@ -290,8 +438,11 @@ function WritingCard() {
     <Card eyebrow="// 04" title="writing">
       {now.writing.map((w, i) => (
         <Row
-          key={i} borderless={i === now.writing.length - 1}
-          leading={<Tag color={w.state === 'stuck' ? NB.red : NB.ink}>{w.state}</Tag>}
+          key={i}
+          borderless={i === now.writing.length - 1}
+          leading={
+            <Tag color={w.state === "stuck" ? NB.red : NB.ink}>{w.state}</Tag>
+          }
         >
           {w.val}
         </Row>
@@ -305,7 +456,11 @@ function QuickThoughtsCard() {
   return (
     <Card eyebrow="// 05" title="quick thoughts">
       {now.quickThoughts.map((t, i) => (
-        <Row key={i} trailing={t.date} borderless={i === now.quickThoughts.length - 1}>
+        <Row
+          key={i}
+          trailing={t.date}
+          borderless={i === now.quickThoughts.length - 1}
+        >
           {t.thought}
         </Row>
       ))}
@@ -320,9 +475,16 @@ function LocationCard() {
     const id = setInterval(() => setTime(new Date()), 60000);
     return () => clearInterval(id);
   }, []);
-  const fmt = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }).toLowerCase();
+  const fmt = time
+    .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    .toLowerCase();
   return (
-    <Card eyebrow="// at" title={now.location} subtitle={now.why} count={`${fmt} ${now.tz}`}>
+    <Card
+      eyebrow="// at"
+      title={now.location}
+      subtitle={now.why}
+      count={`${fmt} ${now.tz}`}
+    >
       <div style={{ fontSize: 12, color: NB.fade, lineHeight: 1.6 }}>
         {`// tracking ${now.tz.toLowerCase()}. on campus most days. dm me if you're nearby.`}
       </div>
@@ -332,34 +494,73 @@ function LocationCard() {
 
 // ── Guest slip card (editable name + content, fixed label) ──────
 function GuestSlipCard({ content, onUpdate }) {
-  const { name = '', text = '' } = content || {};
+  const { name = "", text = "" } = content || {};
 
   const baseInput = {
-    background: 'transparent', border: 'none', outline: 'none',
-    fontFamily: "'Space Mono', monospace", color: NB.ink, width: '100%',
+    background: "transparent",
+    border: "none",
+    outline: "none",
+    fontFamily: "'Space Mono', monospace",
+    color: NB.ink,
+    width: "100%",
   };
 
   return (
-    <div style={{
-      background: NB.card, border: `1px solid ${NB.ink}`,
-      fontFamily: "'Space Mono', monospace", color: NB.ink,
-      display: 'flex', flexDirection: 'column', width: '100%',
-    }}>
+    <div
+      style={{
+        background: NB.card,
+        border: `1px solid ${NB.ink}`,
+        fontFamily: "'Space Mono', monospace",
+        color: NB.ink,
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+      }}
+    >
       {/* fixed drag handle — label cannot be changed */}
-      <div data-drag-handle style={{
-        cursor: 'grab', touchAction: 'none', userSelect: 'none',
-        padding: '10px 14px 8px 14px',
-        borderBottom: `1px solid ${NB.hair}`,
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      }}>
-        <div style={{ fontSize: 9.5, letterSpacing: '0.28em', textTransform: 'uppercase', color: NB.fade }}>
+      <div
+        data-drag-handle
+        style={{
+          cursor: "grab",
+          touchAction: "none",
+          userSelect: "none",
+          padding: "10px 14px 8px 14px",
+          borderBottom: `1px solid ${NB.hair}`,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 9.5,
+            letterSpacing: "0.28em",
+            textTransform: "uppercase",
+            color: NB.fade,
+          }}
+        >
           {`// guest slip`}
         </div>
-        <span aria-hidden style={{ color: NB.fade, fontSize: 14, letterSpacing: '-0.05em', lineHeight: 1 }}>⠿</span>
+        <span
+          aria-hidden
+          style={{
+            color: NB.fade,
+            fontSize: 14,
+            letterSpacing: "-0.05em",
+            lineHeight: 1,
+          }}
+        >
+          ⠿
+        </span>
       </div>
 
       {/* editable name — styled like a card title */}
-      <div style={{ padding: '10px 14px 6px 14px', borderBottom: `1px solid ${NB.hair}` }}>
+      <div
+        style={{
+          padding: "10px 14px 6px 14px",
+          borderBottom: `1px solid ${NB.hair}`,
+        }}
+      >
         <input
           data-no-drag
           onPointerDown={(e) => e.stopPropagation()}
@@ -371,14 +572,16 @@ function GuestSlipCard({ content, onUpdate }) {
           style={{
             ...baseInput,
             fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 600, fontSize: 18,
-            letterSpacing: '-0.015em', textTransform: 'lowercase',
+            fontWeight: 600,
+            fontSize: 18,
+            letterSpacing: "-0.015em",
+            textTransform: "lowercase",
           }}
         />
       </div>
 
       {/* editable content */}
-      <div style={{ padding: '10px 14px 12px 14px' }}>
+      <div style={{ padding: "10px 14px 12px 14px" }}>
         <textarea
           data-no-drag
           onPointerDown={(e) => e.stopPropagation()}
@@ -386,9 +589,22 @@ function GuestSlipCard({ content, onUpdate }) {
           maxLength={200}
           value={text}
           onChange={(e) => onUpdate({ name, text: e.target.value })}
-          style={{ ...baseInput, resize: 'none', fontSize: 12.5, lineHeight: 1.55 }}
+          style={{
+            ...baseInput,
+            resize: "none",
+            fontSize: 12.5,
+            lineHeight: 1.55,
+          }}
         />
-        <div style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: NB.fade, marginTop: 4 }}>
+        <div
+          style={{
+            fontSize: 9,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: NB.fade,
+            marginTop: 4,
+          }}
+        >
           {text.length}/200
         </div>
       </div>
@@ -404,41 +620,91 @@ function PageHeader({ onBack }) {
     const id = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
-  const fmt = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }).toLowerCase();
+  const fmt = time
+    .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    .toLowerCase();
   return (
-    <header style={{
-      background: NB.paper, color: NB.ink,
-      fontFamily: "'Space Mono', monospace",
-      padding: '28px 40px 18px 40px',
-      borderBottom: `1px solid ${NB.ink}`,
-    }}>
-      <div style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-        fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: NB.fade, marginBottom: 8,
-      }}>
+    <header
+      style={{
+        background: NB.paper,
+        color: NB.ink,
+        fontFamily: "'Space Mono', monospace",
+        padding: "28px 40px 18px 40px",
+        borderBottom: `1px solid ${NB.ink}`,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          fontSize: 10,
+          letterSpacing: "0.28em",
+          textTransform: "uppercase",
+          color: NB.fade,
+          marginBottom: 8,
+        }}
+      >
         <button
           onClick={onBack}
           style={{
-            background: 'none', border: 'none', color: NB.fade,
-            fontFamily: "'Space Mono', monospace", fontSize: 10,
-            letterSpacing: '0.28em', textTransform: 'uppercase',
-            cursor: 'pointer', padding: 0,
+            background: "none",
+            border: "none",
+            color: NB.fade,
+            fontFamily: "'Space Mono', monospace",
+            fontSize: 10,
+            letterSpacing: "0.28em",
+            textTransform: "uppercase",
+            cursor: "pointer",
+            padding: 0,
           }}
-        >← alexgaoth.com</button>
+        >
+          ← alexgaoth.com
+        </button>
         <span>now</span>
-        <span>{fmt} {now.tz}</span>
+        <span>
+          {fmt} {now.tz}
+        </span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 30, alignItems: 'flex-end' }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr auto",
+          gap: 30,
+          alignItems: "flex-end",
+        }}
+      >
         <div>
-          <h1 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 600, fontSize: 72, margin: 0,
-            letterSpacing: '-0.035em', lineHeight: 0.95,
-            textTransform: 'lowercase',
-          }}>the now page<span style={{ color: NB.red }}>.</span></h1>
+          <h1
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 72,
+              margin: 0,
+              letterSpacing: "-0.035em",
+              lineHeight: 0.95,
+              textTransform: "lowercase",
+            }}
+          >
+            me<span style={{ color: NB.red }}> - </span>rn
+          </h1>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, fontSize: 11 }}>
-          <span style={{ letterSpacing: '0.18em', color: NB.fade, textTransform: 'uppercase' }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            gap: 6,
+            fontSize: 11,
+          }}
+        >
+          <span
+            style={{
+              letterSpacing: "0.18em",
+              color: NB.fade,
+              textTransform: "uppercase",
+            }}
+          >
             updated {now.date}
           </span>
         </div>
@@ -448,8 +714,15 @@ function PageHeader({ onBack }) {
 }
 
 // ── Dynamic layout — fresh random positions on every page load ────
-const GUEST_IDS = ['gslip-1', 'gslip-2', 'gslip-3', 'gslip-4', 'gslip-5'];
-const CONTENT_IDS = ['building', 'consuming', 'learning', 'quickthoughts', 'writing', 'location'];
+const GUEST_IDS = ["gslip-1", "gslip-2", "gslip-3", "gslip-4", "gslip-5"];
+const CONTENT_IDS = [
+  "building",
+  "consuming",
+  "learning",
+  "quickthoughts",
+  "writing",
+  "location",
+];
 
 function generateLayout(W) {
   const clamp = (min, v, max) => Math.max(min, Math.min(max, v));
@@ -457,13 +730,13 @@ function generateLayout(W) {
 
   // Card widths scale with board width
   const cw = {
-    building:      clamp(240, Math.round(W * 0.22), 460),
-    consuming:     clamp(260, Math.round(W * 0.25), 500),
-    learning:      clamp(220, Math.round(W * 0.20), 420),
+    building: clamp(240, Math.round(W * 0.22), 460),
+    consuming: clamp(260, Math.round(W * 0.25), 500),
+    learning: clamp(220, Math.round(W * 0.2), 420),
     quickthoughts: clamp(340, Math.round(W * 0.34), 640),
-    writing:       clamp(220, Math.round(W * 0.20), 420),
-    location:      clamp(220, Math.round(W * 0.20), 420),
-    gslip:         clamp(190, Math.round(W * 0.15), 300),
+    writing: clamp(220, Math.round(W * 0.2), 420),
+    location: clamp(220, Math.round(W * 0.2), 420),
+    gslip: clamp(190, Math.round(W * 0.15), 300),
   };
 
   const gap = Math.round(W * 0.026);
@@ -488,12 +761,28 @@ function generateLayout(W) {
   const r4y = r3y + 150 + gap;
 
   const layout = {};
-  layout.building      = { x: r1x + j(22),                                        y: r1y + j(6), z: 1 };
-  layout.consuming     = { x: r1x + cw.building + gap + j(22),                    y: r1y + j(6), z: 2 };
-  layout.learning      = { x: r1x + cw.building + cw.consuming + gap*2 + j(22),   y: r1y + j(6), z: 3 };
-  layout.quickthoughts = { x: r2x + j(22),                                        y: r2y + j(6), z: 4 };
-  layout.writing       = { x: r2x + cw.quickthoughts + gap + j(22),               y: r2y + j(6), z: 5 };
-  layout.location      = { x: r2x + cw.quickthoughts + gap + j(22),               y: r3y + j(6), z: 6 };
+  layout.building = { x: r1x + j(22), y: r1y + j(6), z: 1 };
+  layout.consuming = {
+    x: r1x + cw.building + gap + j(22),
+    y: r1y + j(6),
+    z: 2,
+  };
+  layout.learning = {
+    x: r1x + cw.building + cw.consuming + gap * 2 + j(22),
+    y: r1y + j(6),
+    z: 3,
+  };
+  layout.quickthoughts = { x: r2x + j(22), y: r2y + j(6), z: 4 };
+  layout.writing = {
+    x: r2x + cw.quickthoughts + gap + j(22),
+    y: r2y + j(6),
+    z: 5,
+  };
+  layout.location = {
+    x: r2x + cw.quickthoughts + gap + j(22),
+    y: r3y + j(6),
+    z: 6,
+  };
 
   GUEST_IDS.forEach((id, i) => {
     layout[id] = {
@@ -512,7 +801,14 @@ function BoardSurface({ guestContent, updateGuest, cw, ctx }) {
   const [bh, setBh] = React.useState(1100);
 
   React.useEffect(() => {
-    const heights = { building: 230, consuming: 260, learning: 200, quickthoughts: 210, writing: 200, location: 140 };
+    const heights = {
+      building: 230,
+      consuming: 260,
+      learning: 200,
+      quickthoughts: 210,
+      writing: 200,
+      location: 140,
+    };
     let maxBottom = 0;
     [...CONTENT_IDS, ...GUEST_IDS].forEach((id) => {
       const pos = ctx.layout[id] || {};
@@ -524,35 +820,49 @@ function BoardSurface({ guestContent, updateGuest, cw, ctx }) {
   }, [ctx.layout]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div style={{
-      background: NB.paper,
-      backgroundImage: `
+    <div
+      style={{
+        background: NB.paper,
+        backgroundImage: `
         radial-gradient(rgba(80,60,30,0.05) 1px, transparent 1px),
         radial-gradient(rgba(80,60,30,0.03) 1px, transparent 1px)
       `,
-      backgroundSize: '4px 4px, 9px 9px',
-      backgroundPosition: '0 0, 2px 2px',
-      minHeight: 'calc(100vh - 200px)',
-      padding: '24px 0',
-    }}>
-      <div style={{ padding: '0 20px', boxSizing: 'border-box' }}>
+        backgroundSize: "4px 4px, 9px 9px",
+        backgroundPosition: "0 0, 2px 2px",
+        minHeight: "calc(100vh - 200px)",
+        padding: "24px 0",
+      }}
+    >
+      <div style={{ padding: "0 20px", boxSizing: "border-box" }}>
         <div
           ref={boardRef}
           style={{
-            position: 'relative',
-            width: '100%',
+            position: "relative",
+            width: "100%",
             minWidth: 760,
             height: bh,
             borderTop: `1px dashed ${NB.rule}`,
             borderBottom: `1px dashed ${NB.rule}`,
           }}
         >
-          <Draggable id="building"      width={cw.building}     ><BuildingCard /></Draggable>
-          <Draggable id="consuming"     width={cw.consuming}    ><ConsumingCard /></Draggable>
-          <Draggable id="learning"      width={cw.learning}     ><LearningCard /></Draggable>
-          <Draggable id="quickthoughts" width={cw.quickthoughts}><QuickThoughtsCard /></Draggable>
-          <Draggable id="writing"       width={cw.writing}      ><WritingCard /></Draggable>
-          <Draggable id="location"      width={cw.location}     ><LocationCard /></Draggable>
+          <Draggable id="building" width={cw.building}>
+            <BuildingCard />
+          </Draggable>
+          <Draggable id="consuming" width={cw.consuming}>
+            <ConsumingCard />
+          </Draggable>
+          <Draggable id="learning" width={cw.learning}>
+            <LearningCard />
+          </Draggable>
+          <Draggable id="quickthoughts" width={cw.quickthoughts}>
+            <QuickThoughtsCard />
+          </Draggable>
+          <Draggable id="writing" width={cw.writing}>
+            <WritingCard />
+          </Draggable>
+          <Draggable id="location" width={cw.location}>
+            <LocationCard />
+          </Draggable>
 
           {GUEST_IDS.map((id) => (
             <Draggable key={id} id={id} width={cw.gslip}>
@@ -570,15 +880,28 @@ function BoardSurface({ guestContent, updateGuest, cw, ctx }) {
 
 function Footer() {
   return (
-    <footer style={{
-      background: NB.paper, color: NB.fade,
-      fontFamily: "'Space Mono', monospace",
-      padding: '18px 40px 32px 40px',
-      borderTop: `1px solid ${NB.ink}`,
-      display: 'flex', justifyContent: 'space-between',
-      fontSize: 10.5, letterSpacing: '0.22em', textTransform: 'uppercase',
-    }}>
-      <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer" style={{ color: NB.fade, textDecoration: 'none' }}>nownownow.com</a>
+    <footer
+      style={{
+        background: NB.paper,
+        color: NB.fade,
+        fontFamily: "'Space Mono', monospace",
+        padding: "18px 40px 32px 40px",
+        borderTop: `1px solid ${NB.ink}`,
+        display: "flex",
+        justifyContent: "space-between",
+        fontSize: 10.5,
+        letterSpacing: "0.22em",
+        textTransform: "uppercase",
+      }}
+    >
+      <a
+        href="https://nownownow.com/about"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ color: NB.fade, textDecoration: "none" }}
+      >
+        nownownow.com
+      </a>
       <span>kept locally · nothing leaves your device</span>
     </footer>
   );
@@ -586,33 +909,44 @@ function Footer() {
 
 // ── Root board component ──────────────────────────────────────────
 function Board({ onBack, now }) {
-  const [{ layout, cw }] = React.useState(() => generateLayout(window.innerWidth - 40));
+  const [{ layout, cw }] = React.useState(() =>
+    generateLayout(window.innerWidth - 40),
+  );
   const [guestContent, setGuestContent] = React.useState({});
   const debounceRef = React.useRef({});
 
   // fetch all 5 slips on mount + subscribe to realtime updates
   React.useEffect(() => {
     supabase
-      .from('guest_slips')
-      .select('id, name, content')
+      .from("guest_slips")
+      .select("id, name, content")
       .then(({ data }) => {
         if (!data) return;
         const mapped = data.reduce((acc, row) => {
-          acc[row.id] = { name: row.name || '', text: row.content || '' };
+          acc[row.id] = { name: row.name || "", text: row.content || "" };
           return acc;
         }, {});
         setGuestContent(mapped);
       });
 
     const channel = supabase
-      .channel('guest_slips_changes')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'guest_slips' }, (payload) => {
-        const { id, name, content } = payload.new;
-        setGuestContent((prev) => ({ ...prev, [id]: { name: name || '', text: content || '' } }));
-      })
+      .channel("guest_slips_changes")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "guest_slips" },
+        (payload) => {
+          const { id, name, content } = payload.new;
+          setGuestContent((prev) => ({
+            ...prev,
+            [id]: { name: name || "", text: content || "" },
+          }));
+        },
+      )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const updateGuest = React.useCallback((id, val) => {
@@ -620,25 +954,30 @@ function Board({ onBack, now }) {
     clearTimeout(debounceRef.current[id]);
     debounceRef.current[id] = setTimeout(() => {
       supabase
-        .from('guest_slips')
+        .from("guest_slips")
         .update({ name: val.name, content: val.text })
-        .eq('id', id);
+        .eq("id", id);
     }, 800);
   }, []);
 
   return (
     <NowCtx.Provider value={now}>
-    <LayoutProvider defaults={layout}>
-      <LayoutCtx.Consumer>
-        {(ctx) => (
-          <>
-            <PageHeader onBack={onBack} />
-            <BoardSurface guestContent={guestContent} updateGuest={updateGuest} cw={cw} ctx={ctx} />
-            <Footer />
-          </>
-        )}
-      </LayoutCtx.Consumer>
-    </LayoutProvider>
+      <LayoutProvider defaults={layout}>
+        <LayoutCtx.Consumer>
+          {(ctx) => (
+            <>
+              <PageHeader onBack={onBack} />
+              <BoardSurface
+                guestContent={guestContent}
+                updateGuest={updateGuest}
+                cw={cw}
+                ctx={ctx}
+              />
+              <Footer />
+            </>
+          )}
+        </LayoutCtx.Consumer>
+      </LayoutProvider>
     </NowCtx.Provider>
   );
 }
@@ -649,9 +988,11 @@ const NowPage = () => {
   const [now, setNow] = React.useState(NOW_FALLBACK);
 
   React.useEffect(() => {
-    fetch('/profile.json')
+    fetch("/profile.json")
       .then((r) => r.json())
-      .then((data) => { if (data.now) setNow(data.now); })
+      .then((data) => {
+        if (data.now) setNow(data.now);
+      })
       .catch(() => {}); // keep fallback on error
   }, []);
 
@@ -659,7 +1000,9 @@ const NowPage = () => {
   React.useEffect(() => {
     const prev = document.body.style.background;
     document.body.style.background = NB.paper;
-    return () => { document.body.style.background = prev; };
+    return () => {
+      document.body.style.background = prev;
+    };
   }, []);
 
   return (
@@ -667,10 +1010,10 @@ const NowPage = () => {
       <SEO
         title="Now — Alex Gao"
         description="What Alex Gao is doing now — building, learning, consuming."
-        keywords={['Alex Gao', 'alexgaoth', 'now']}
+        keywords={["Alex Gao", "alexgaoth", "now"]}
         path={APP_ROUTES.now}
       />
-      <div style={{ minHeight: '100vh', background: NB.paper }}>
+      <div style={{ minHeight: "100vh", background: NB.paper }}>
         <Board onBack={() => navigate(APP_ROUTES.home)} now={now} />
       </div>
     </>
