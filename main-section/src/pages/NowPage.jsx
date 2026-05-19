@@ -902,7 +902,6 @@ function Footer() {
       >
         nownownow.com
       </a>
-      <span>kept locally · nothing leaves your device</span>
     </footer>
   );
 }
