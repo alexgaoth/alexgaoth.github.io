@@ -5,7 +5,6 @@ const MainPageFooter = ({ style }) => (
   <div className="mainpage-footer" style={style}>
     <Link to={APP_ROUTES.art} className="art-strip mainpage-footer-strip">
       <span className="art-strip-label">/art</span>
-      <span className="art-strip-desc">the other side of the directory</span>
       <span className="art-strip-arrow">→</span>
     </Link>
     <Link
@@ -14,7 +13,6 @@ const MainPageFooter = ({ style }) => (
       style={{ marginTop: "0.5rem" }}
     >
       <span className="art-strip-label">/about</span>
-      <span className="art-strip-desc">compiled version of the site</span>
       <span className="art-strip-arrow">→</span>
     </Link>
     <a
@@ -23,7 +21,6 @@ const MainPageFooter = ({ style }) => (
       style={{ marginTop: "0.5rem" }}
     >
       <span className="art-strip-label">#contact</span>
-      <span className="art-strip-desc">reach out and stay up to date</span>
       <span className="art-strip-arrow">→</span>
     </a>
     <div className="footer">
