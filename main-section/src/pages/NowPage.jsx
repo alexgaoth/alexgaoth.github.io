@@ -878,7 +878,9 @@ function BoardSurface({ guestContent, updateGuest, cw, ctx }) {
   );
 }
 
-function Footer() {
+function Footer({ syncStatus }) {
+  const dot = { connecting: NB.fade, live: '#4a7c59', error: NB.red }[syncStatus];
+  const label = { connecting: 'connecting', live: 'live', error: 'offline' }[syncStatus];
   return (
     <footer
       style={{
@@ -889,6 +891,7 @@ function Footer() {
         borderTop: `1px solid ${NB.ink}`,
         display: "flex",
         justifyContent: "space-between",
+        alignItems: "center",
         fontSize: 10.5,
         letterSpacing: "0.22em",
         textTransform: "uppercase",
@@ -902,6 +905,14 @@ function Footer() {
       >
         nownownow.com
       </a>
+      <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <span style={{
+          width: 6, height: 6, borderRadius: '50%',
+          background: dot, display: 'inline-block',
+          transition: 'background 0.4s',
+        }} />
+        {label}
+      </span>
     </footer>
   );
 }
@@ -912,24 +923,28 @@ function Board({ onBack, now }) {
     generateLayout(window.innerWidth - 40),
   );
   const [guestContent, setGuestContent] = React.useState({});
+  const [syncStatus, setSyncStatus] = React.useState('connecting');
   const debounceRef = React.useRef({});
 
-  // fetch all 5 slips on mount + subscribe to realtime updates
   React.useEffect(() => {
+    // initial fetch
     supabase
       .from("guest_slips")
       .select("id, name, content")
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) { setSyncStatus('error'); return; }
         if (!data) return;
-        const mapped = data.reduce((acc, row) => {
-          acc[row.id] = { name: row.name || "", text: row.content || "" };
-          return acc;
-        }, {});
-        setGuestContent(mapped);
+        setGuestContent(
+          data.reduce((acc, row) => {
+            acc[row.id] = { name: row.name || "", text: row.content || "" };
+            return acc;
+          }, {})
+        );
       });
 
+    // realtime subscription
     const channel = supabase
-      .channel("guest_slips_changes")
+      .channel("guest_slips_sync")
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "guest_slips" },
@@ -941,9 +956,15 @@ function Board({ onBack, now }) {
           }));
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") setSyncStatus("live");
+        else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") setSyncStatus("error");
+        else setSyncStatus("connecting");
+      });
 
+    const timers = debounceRef.current;
     return () => {
+      Object.values(timers).forEach(clearTimeout);
       supabase.removeChannel(channel);
     };
   }, []);
@@ -951,11 +972,12 @@ function Board({ onBack, now }) {
   const updateGuest = React.useCallback((id, val) => {
     setGuestContent((prev) => ({ ...prev, [id]: val }));
     clearTimeout(debounceRef.current[id]);
-    debounceRef.current[id] = setTimeout(() => {
-      supabase
+    debounceRef.current[id] = setTimeout(async () => {
+      const { error } = await supabase
         .from("guest_slips")
-        .update({ name: val.name, content: val.text })
+        .update({ name: val.name, content: val.text, updated_at: new Date().toISOString() })
         .eq("id", id);
+      if (error) setSyncStatus("error");
     }, 800);
   }, []);
 
@@ -972,7 +994,7 @@ function Board({ onBack, now }) {
                 cw={cw}
                 ctx={ctx}
               />
-              <Footer />
+              <Footer syncStatus={syncStatus} />
             </>
           )}
         </LayoutCtx.Consumer>
