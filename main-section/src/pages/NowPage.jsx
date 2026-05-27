@@ -495,6 +495,14 @@ function LocationCard() {
 // ── Guest slip card (editable name + content, fixed label) ──────
 function GuestSlipCard({ content, onUpdate }) {
   const { name = "", text = "" } = content || {};
+  const taRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const el = taRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  }, [text]);
 
   const baseInput = {
     background: "transparent",
@@ -583,17 +591,21 @@ function GuestSlipCard({ content, onUpdate }) {
       {/* editable content */}
       <div style={{ padding: "10px 14px 12px 14px" }}>
         <textarea
+          ref={taRef}
           data-no-drag
           onPointerDown={(e) => e.stopPropagation()}
-          rows={3}
+          rows={1}
           maxLength={200}
           value={text}
           onChange={(e) => onUpdate({ name, text: e.target.value })}
           style={{
             ...baseInput,
             resize: "none",
+            overflow: "hidden",
             fontSize: 12.5,
             lineHeight: 1.55,
+            minHeight: "2.6em",
+            display: "block",
           }}
         />
         <div
@@ -724,9 +736,23 @@ const CONTENT_IDS = [
   "location",
 ];
 
+// Responsive canvas: wider margins on large screens, tighter on small
+function getBoardPadding() {
+  const vw = window.innerWidth;
+  if (vw >= 2560) return 200; // 4K — 100px each side
+  if (vw >= 1920) return 140; // 2K — 70px each side
+  if (vw >= 1440) return 100; // large laptop
+  if (vw >= 1024) return 60;  // laptop
+  return 40;                   // tablet / mobile
+}
+
 function generateLayout(W) {
   const clamp = (min, v, max) => Math.max(min, Math.min(max, v));
   const j = (amp) => (Math.random() - 0.5) * amp;
+
+  // Guest slip: tighter range — comfortable across viewports
+  // Mobile (W~335): ~48 → 160  |  laptop (W~1300): ~182 → 200  |  2K (W~1780): ~249 → 260  |  4K: capped at 300
+  const gslipW = clamp(160, Math.round(W * 0.14), 300);
 
   // Card widths scale with board width
   const cw = {
@@ -736,7 +762,7 @@ function generateLayout(W) {
     quickthoughts: clamp(340, Math.round(W * 0.34), 640),
     writing: clamp(220, Math.round(W * 0.2), 420),
     location: clamp(220, Math.round(W * 0.2), 420),
-    gslip: clamp(190, Math.round(W * 0.15), 300),
+    gslip: gslipW,
   };
 
   const gap = Math.round(W * 0.026);
@@ -796,7 +822,7 @@ function generateLayout(W) {
 }
 
 // ── Board surface ─────────────────────────────────────────────────
-function BoardSurface({ guestContent, updateGuest, cw, ctx }) {
+function BoardSurface({ guestContent, updateGuest, cw, ctx, boardPad }) {
   const { boardRef } = ctx;
   const [bh, setBh] = React.useState(1100);
 
@@ -833,7 +859,7 @@ function BoardSurface({ guestContent, updateGuest, cw, ctx }) {
         padding: "24px 0",
       }}
     >
-      <div style={{ padding: "0 20px", boxSizing: "border-box" }}>
+      <div style={{ padding: `0 ${boardPad}px`, boxSizing: "border-box" }}>
         <div
           ref={boardRef}
           style={{
@@ -919,8 +945,9 @@ function Footer({ syncStatus }) {
 
 // ── Root board component ──────────────────────────────────────────
 function Board({ onBack, now }) {
+  const [boardPad] = React.useState(() => getBoardPadding());
   const [{ layout, cw }] = React.useState(() =>
-    generateLayout(window.innerWidth - 40),
+    generateLayout(window.innerWidth - boardPad * 2),
   );
   const [guestContent, setGuestContent] = React.useState({});
   const [syncStatus, setSyncStatus] = React.useState('connecting');
@@ -993,6 +1020,7 @@ function Board({ onBack, now }) {
                 updateGuest={updateGuest}
                 cw={cw}
                 ctx={ctx}
+                boardPad={boardPad}
               />
               <Footer syncStatus={syncStatus} />
             </>
