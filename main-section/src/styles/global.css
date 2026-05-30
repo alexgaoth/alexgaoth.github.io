@@ -1,6 +1,14 @@
 /* Global Styles - styles/global.css */
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --muted: #888;
+  --subtle: rgba(0, 0, 0, 0.18);
+  --hairline: rgba(0, 0, 0, 0.08);
+}
+
 /* Reset and Base Styles */
 * {
   margin: 0;
@@ -16,8 +24,8 @@ body {
 /* Layout Classes */
 .page-container {
   min-height: 100vh;
-  background-color: white;
-  color: black;
+  background-color: var(--paper);
+  color: var(--ink);
   padding: 1rem;
   position: relative;
 }
@@ -89,7 +97,7 @@ body {
 .scroll-line-indicator {
   width: 1px;
   height: 28px;
-  background: #000;
+  background: var(--ink);
   transform-origin: top center;
   animation: scrollLineGrow 1.8s ease-in-out infinite;
 }
@@ -344,7 +352,7 @@ body {
 }
 
 .leading-relaxed {
-  line-height: 1.225;
+  line-height: 1.6;
 }
 
 /* /art strip — below the 2×2 card grid */
@@ -364,8 +372,8 @@ body {
 }
 
 .art-strip:hover {
-  background: #000;
-  color: #fff;
+  background: var(--ink);
+  color: var(--paper);
   padding-left: 1rem;
   padding-right: 1rem;
 }

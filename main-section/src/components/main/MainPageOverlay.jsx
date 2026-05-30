@@ -45,10 +45,8 @@ function getPhraseOpacity(scrollProgress, phrase) {
 }
 
 const MainPageOverlay = ({
-  hintOpacity,
   isMobile,
   isParallaxActive,
-  scrollHintVisible,
   scrollProgress,
 }) => {
   if (!isParallaxActive) {
@@ -57,29 +55,6 @@ const MainPageOverlay = ({
 
   return (
     <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 8 }}>
-      {scrollHintVisible && (
-        <div style={{
-          position: 'absolute',
-          bottom: '2.5rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '0.6rem',
-          opacity: hintOpacity,
-        }}>
-          <span style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: '0.6rem',
-            letterSpacing: '0.28em',
-            textTransform: 'uppercase',
-            color: '#000',
-            opacity: 0.38,
-          }}>scroll</span>
-          <div className="scroll-line-indicator" />
-        </div>
-      )}
 
       {PHRASES.map((phrase) => {
         const opacity = getPhraseOpacity(scrollProgress, phrase);
@@ -118,10 +93,10 @@ const MainPageOverlay = ({
               margin: 0,
               color: '#000',
             }}>
-              {phrase.id === 0 && 'this site is an index of things i find worth sharing. look through around the site, there might just be something that inerest you. '}
+              {phrase.id === 0 && 'this site is an index of things i find worth sharing. look around — there might just be something that interests you. '}
               {phrase.id === 1 && (
                 <>
-                  if you found things here interesting then i will interesting as well <br />
+                  if you found things here interesting, i will be just as interesting in person. <br />
                   reach me{' '}
                   <a
                     href="https://intro.alexgaoth.com/?flip=1#about"

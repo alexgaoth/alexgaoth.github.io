@@ -89,7 +89,7 @@ const MainPage = ({ content }) => {
   const totalTracked    = introH + winH * 3 + returnH;
   const overallProgress = Math.min(1, scrollY / totalTracked);
 
-  // Scroll hint: appears after 5 s idle, fades out as soon as user scrolls
+  // Scroll hint: appears after 5 s idle, hidden immediately on scroll
   const [scrollHintVisible, setScrollHintVisible] = useState(false);
   useEffect(() => {
     let t;
@@ -102,7 +102,6 @@ const MainPage = ({ content }) => {
     window.addEventListener('scroll', arm, { passive: true });
     return () => { clearTimeout(t); window.removeEventListener('scroll', arm); };
   }, []);
-  const hintOpacity = scrollY < winH * 0.12 ? 1 - scrollY / (winH * 0.12) : 0;
 
   // skipParallax: used when navigating back to home — skip past the intro
   useEffect(() => {
@@ -110,8 +109,6 @@ const MainPage = ({ content }) => {
       window.scrollTo({ top: introH, behavior: 'instant' });
     }
   }, [introH, location.state]);
-
-  const inIntro = scrollY < introH;
 
   return (
     <>
@@ -140,7 +137,6 @@ const MainPage = ({ content }) => {
             <div style={{
               position: 'absolute', bottom: '2.5rem', left: '50%', transform: 'translateX(-50%)',
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem',
-              opacity: hintOpacity,
             }}>
               <span style={{
                 fontFamily: "'Space Mono', monospace", fontSize: '0.6rem',
@@ -154,14 +150,14 @@ const MainPage = ({ content }) => {
         {/* ── Intro section ──────────────────────────────────────────────────
             Empty space that gives the title-rise animation its scroll distance.
             The title itself is fixed-position and driven by scrollY above. */}
+        {/* Title always mounted so titleRef stays attached for height measurement.
+            opacity:0 + pointerEvents:none makes it inert once the intro scroll completes. */}
         <div style={{ height: `${introH}px`, position: 'relative' }}>
-          {inIntro && (
-            <MainPageTitle
-              sectionRef={titleRef}
-              style={titleStyle}
-              subtitleOpacity={subtitleOpacity}
-            />
-          )}
+          <MainPageTitle
+            sectionRef={titleRef}
+            style={{ ...titleStyle, pointerEvents: titleOpacity > 0 ? 'auto' : 'none' }}
+            subtitleOpacity={subtitleOpacity}
+          />
         </div>
 
         {/* ── Preview panels ─────────────────────────────────────────────────
@@ -177,10 +173,8 @@ const MainPage = ({ content }) => {
         {/* ── Return overlay (floating text phrases, z-index above everything) */}
         {inReturn && (
           <MainPageOverlay
-            hintOpacity={0}
             isMobile={isMobile}
             isParallaxActive
-            scrollHintVisible={false}
             scrollProgress={returnProgress}
           />
         )}

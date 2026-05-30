@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { APP_ROUTES } from './config/site';
@@ -10,13 +11,15 @@ import PoetryCollectionPage from './pages/PoetryCollectionPage';
 import ProfilePage from './pages/ProfilePage';
 import ProjectsPage from './pages/ProjectsPage';
 import QuotesPage from './pages/QuotesPage';
-import RegentsPage from './pages/RegentsPage';
 import ResumePage from './pages/ResumePage';
 import ThoughtArticlePage from './pages/ThoughtArticlePage';
 import ThoughtsPage from './pages/ThoughtsPage';
 import './styles/global.css';
 import './styles/components.css';
 import './styles/bookshelf.css';
+
+// Three.js (~600 KB) is only needed on the Regents page — lazy-load to keep main bundle lean.
+const RegentsPage = lazy(() => import('./pages/RegentsPage'));
 
 function App() {
   return (
@@ -32,7 +35,7 @@ function App() {
         <Route path={APP_ROUTES.quotes} element={<QuotesPage data={content.quotes} />} />
         <Route path={APP_ROUTES.now} element={<NowPage />} />
         <Route path={APP_ROUTES.art} element={<ArtPage />} />
-        <Route path={APP_ROUTES.regents} element={<RegentsPage />} />
+        <Route path={APP_ROUTES.regents} element={<Suspense fallback={null}><RegentsPage /></Suspense>} />
         <Route path={APP_ROUTES.poetry} element={<PoetryCollectionPage lang="zh" />} />
         <Route path={APP_ROUTES.poetryEn} element={<PoetryCollectionPage lang="en" />} />
         <Route path={APP_ROUTES.ci} element={<CiCollectionPage lang="zh" />} />

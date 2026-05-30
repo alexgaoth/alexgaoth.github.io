@@ -3,63 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
 import { APP_ROUTES } from "../config/site";
 import { supabase } from "../lib/supabase";
-
-// ── Data ─────────────────────────────────────────────────────────
-// Fallback used while profile.json is loading or if the fetch fails.
-const NOW_FALLBACK = {
-  date: "may 16, 2026",
-  location: "la jolla, california",
-  why: "home for summer · sdx @ ucsd",
-  tz: "pdt",
-  building: [
-    {
-      name: "signalor.app",
-      detail: "v0.3 · google analytics for brands · in production",
-      tag: "live",
-    },
-    {
-      name: "sdx @ ucsd",
-      detail: "design-engineering club · 3 brand pitches this week",
-      tag: "wip",
-    },
-    {
-      name: "this very site",
-      detail: "preview rail redesign · the page you are on",
-      tag: "wip",
-    },
-  ],
-  learning: [
-    { name: "rust", detail: "borrow checker, finally" },
-    { name: "தமிழ் / tamil", detail: "reading aloud, slowly" },
-    { name: "writing more clearly", detail: "fewer words, harder meaning" },
-  ],
-  consuming: [
-    { kind: "sound", val: "soldier of heaven — sabaton", meta: "on repeat" },
-    {
-      kind: "read",
-      val: "the undiscovered self — c.g. jung",
-      meta: "ch. 4 of 7",
-    },
-    { kind: "watch", val: "xavier: renegade angel", meta: "s2" },
-    { kind: "play", val: "none actually", meta: "—" },
-  ],
-  writing: [
-    { state: "wip", val: "a note on metaphor as compression" },
-    { state: "open", val: "the politics of attention" },
-    { state: "stuck", val: "a story about the fall of nineveh" },
-  ],
-  quickThoughts: [
-    {
-      thought:
-        "the borrow checker is just the compiler asking you to think about ownership explicitly. it's not hard, it's unfamiliar.",
-      date: "may 15, 2026",
-    },
-    {
-      thought: "every abstraction is a lie that happens to be useful.",
-      date: "may 12, 2026",
-    },
-  ],
-};
+import { NOW_FALLBACK } from "../data/nowData";
 
 // Context so cards can read live data without prop-drilling
 const NowCtx = React.createContext(NOW_FALLBACK);
@@ -577,6 +521,7 @@ function GuestSlipCard({ content, onUpdate }) {
           placeholder="your name"
           value={name}
           onChange={(e) => onUpdate({ name: e.target.value, text })}
+          aria-label="your name"
           style={{
             ...baseInput,
             fontFamily: "'Space Grotesk', sans-serif",
@@ -598,6 +543,7 @@ function GuestSlipCard({ content, onUpdate }) {
           maxLength={200}
           value={text}
           onChange={(e) => onUpdate({ name, text: e.target.value })}
+          aria-label="leave a note"
           style={{
             ...baseInput,
             resize: "none",
@@ -629,7 +575,8 @@ function PageHeader({ onBack }) {
   const now = React.useContext(NowCtx);
   const [time, setTime] = React.useState(new Date());
   React.useEffect(() => {
-    const id = setInterval(() => setTime(new Date()), 1000);
+    // HH:MM display only — 60s interval is sufficient
+    const id = setInterval(() => setTime(new Date()), 60000);
     return () => clearInterval(id);
   }, []);
   const fmt = time
@@ -736,25 +683,21 @@ const CONTENT_IDS = [
   "location",
 ];
 
-// Responsive canvas: wider margins on large screens, tighter on small
 function getBoardPadding() {
   const vw = window.innerWidth;
-  if (vw >= 2560) return 200; // 4K — 100px each side
-  if (vw >= 1920) return 140; // 2K — 70px each side
-  if (vw >= 1440) return 100; // large laptop
-  if (vw >= 1024) return 60;  // laptop
-  return 40;                   // tablet / mobile
+  if (vw >= 2560) return 200;
+  if (vw >= 1920) return 140;
+  if (vw >= 1440) return 100;
+  if (vw >= 1024) return 60;
+  return 40;
 }
 
 function generateLayout(W) {
   const clamp = (min, v, max) => Math.max(min, Math.min(max, v));
   const j = (amp) => (Math.random() - 0.5) * amp;
 
-  // Guest slip: tighter range — comfortable across viewports
-  // Mobile (W~335): ~48 → 160  |  laptop (W~1300): ~182 → 200  |  2K (W~1780): ~249 → 260  |  4K: capped at 300
   const gslipW = clamp(160, Math.round(W * 0.14), 300);
 
-  // Card widths scale with board width
   const cw = {
     building: clamp(240, Math.round(W * 0.22), 460),
     consuming: clamp(260, Math.round(W * 0.25), 500),
@@ -767,20 +710,16 @@ function generateLayout(W) {
 
   const gap = Math.round(W * 0.026);
 
-  // Row 1: building | consuming | learning — centered
   const r1w = cw.building + cw.consuming + cw.learning + gap * 2;
   const r1x = (W - r1w) / 2;
   const r1y = 28;
 
-  // Row 2: quickthoughts | writing — centered
   const r2w = cw.quickthoughts + cw.writing + gap;
   const r2x = (W - r2w) / 2;
   const r2y = r1y + 260 + gap;
 
-  // Row 3: location aligned under writing
   const r3y = r2y + 210 + gap;
 
-  // Row 4: 5 guest slips spread across
   const gw = cw.gslip;
   const guestTotal = 5 * gw + 4 * gap;
   const gx0 = (W - guestTotal) / 2;
@@ -788,27 +727,11 @@ function generateLayout(W) {
 
   const layout = {};
   layout.building = { x: r1x + j(22), y: r1y + j(6), z: 1 };
-  layout.consuming = {
-    x: r1x + cw.building + gap + j(22),
-    y: r1y + j(6),
-    z: 2,
-  };
-  layout.learning = {
-    x: r1x + cw.building + cw.consuming + gap * 2 + j(22),
-    y: r1y + j(6),
-    z: 3,
-  };
+  layout.consuming = { x: r1x + cw.building + gap + j(22), y: r1y + j(6), z: 2 };
+  layout.learning = { x: r1x + cw.building + cw.consuming + gap * 2 + j(22), y: r1y + j(6), z: 3 };
   layout.quickthoughts = { x: r2x + j(22), y: r2y + j(6), z: 4 };
-  layout.writing = {
-    x: r2x + cw.quickthoughts + gap + j(22),
-    y: r2y + j(6),
-    z: 5,
-  };
-  layout.location = {
-    x: r2x + cw.quickthoughts + gap + j(22),
-    y: r3y + j(6),
-    z: 6,
-  };
+  layout.writing = { x: r2x + cw.quickthoughts + gap + j(22), y: r2y + j(6), z: 5 };
+  layout.location = { x: r2x + cw.quickthoughts + gap + j(22), y: r3y + j(6), z: 6 };
 
   GUEST_IDS.forEach((id, i) => {
     layout[id] = {
@@ -819,6 +742,27 @@ function generateLayout(W) {
   });
 
   return { layout, cw };
+}
+
+// ── Mobile fallback — simple stacked list, no drag ────────────────
+function MobileView({ guestContent, updateGuest }) {
+  return (
+    <div style={{ background: NB.paper, padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
+      <BuildingCard />
+      <LearningCard />
+      <ConsumingCard />
+      <WritingCard />
+      <QuickThoughtsCard />
+      <LocationCard />
+      <div style={{ marginTop: "4px" }}>
+        {GUEST_IDS.slice(0, 2).map(id => (
+          <div key={id} style={{ marginBottom: "12px" }}>
+            <GuestSlipCard content={guestContent[id]} onUpdate={val => updateGuest(id, val)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // ── Board surface ─────────────────────────────────────────────────
@@ -865,7 +809,6 @@ function BoardSurface({ guestContent, updateGuest, cw, ctx, boardPad }) {
           style={{
             position: "relative",
             width: "100%",
-            minWidth: 760,
             height: bh,
             borderTop: `1px dashed ${NB.rule}`,
             borderBottom: `1px dashed ${NB.rule}`,
@@ -945,16 +888,33 @@ function Footer({ syncStatus }) {
 
 // ── Root board component ──────────────────────────────────────────
 function Board({ onBack, now }) {
-  const [boardPad] = React.useState(() => getBoardPadding());
-  const [{ layout, cw }] = React.useState(() =>
-    generateLayout(window.innerWidth - boardPad * 2),
-  );
+  // Combine mobile detection, board padding, and layout into one state so
+  // a single resize event updates everything atomically.
+  const [view, setView] = React.useState(() => {
+    const pad = getBoardPadding();
+    const mobile = window.innerWidth < 768;
+    return { isMobile: mobile, boardPad: pad, ...generateLayout(window.innerWidth - pad * 2) };
+  });
   const [guestContent, setGuestContent] = React.useState({});
   const [syncStatus, setSyncStatus] = React.useState('connecting');
   const debounceRef = React.useRef({});
 
+  // Recompute layout on resize (debounced)
   React.useEffect(() => {
-    // initial fetch
+    let t;
+    const onResize = () => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        const pad = getBoardPadding();
+        const mobile = window.innerWidth < 768;
+        setView({ isMobile: mobile, boardPad: pad, ...generateLayout(window.innerWidth - pad * 2) });
+      }, 150);
+    };
+    window.addEventListener('resize', onResize);
+    return () => { clearTimeout(t); window.removeEventListener('resize', onResize); };
+  }, []);
+
+  React.useEffect(() => {
     supabase
       .from("guest_slips")
       .select("id, name, content")
@@ -969,7 +929,6 @@ function Board({ onBack, now }) {
         );
       });
 
-    // realtime subscription
     const channel = supabase
       .channel("guest_slips_sync")
       .on(
@@ -1008,25 +967,35 @@ function Board({ onBack, now }) {
     }, 800);
   }, []);
 
+  const { isMobile, boardPad, layout, cw } = view;
+
   return (
     <NowCtx.Provider value={now}>
-      <LayoutProvider defaults={layout}>
-        <LayoutCtx.Consumer>
-          {(ctx) => (
-            <>
-              <PageHeader onBack={onBack} />
-              <BoardSurface
-                guestContent={guestContent}
-                updateGuest={updateGuest}
-                cw={cw}
-                ctx={ctx}
-                boardPad={boardPad}
-              />
-              <Footer syncStatus={syncStatus} />
-            </>
-          )}
-        </LayoutCtx.Consumer>
-      </LayoutProvider>
+      {isMobile ? (
+        <>
+          <PageHeader onBack={onBack} />
+          <MobileView guestContent={guestContent} updateGuest={updateGuest} />
+          <Footer syncStatus={syncStatus} />
+        </>
+      ) : (
+        <LayoutProvider defaults={layout}>
+          <LayoutCtx.Consumer>
+            {(ctx) => (
+              <>
+                <PageHeader onBack={onBack} />
+                <BoardSurface
+                  guestContent={guestContent}
+                  updateGuest={updateGuest}
+                  cw={cw}
+                  ctx={ctx}
+                  boardPad={boardPad}
+                />
+                <Footer syncStatus={syncStatus} />
+              </>
+            )}
+          </LayoutCtx.Consumer>
+        </LayoutProvider>
+      )}
     </NowCtx.Provider>
   );
 }

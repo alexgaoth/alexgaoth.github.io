@@ -25,8 +25,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "prebuild": "node scripts/generate-thoughts-index.js",
-    "build": "REACT_APP_BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ) react-scripts build",
+    "prebuild": "node scripts/generate-thoughts-index.js && node scripts/set-build-time.js",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "generate-thoughts": "node scripts/generate-thoughts-index.js"
@@ -50,10 +50,7 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.21",
     "copyfiles": "^2.4.1",
-    "gray-matter": "^4.0.3",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.11"
+    "gray-matter": "^4.0.3"
   }
 }

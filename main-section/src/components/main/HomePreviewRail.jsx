@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../../config/site";
+import { NOWDATA } from "../../data/nowData";
 
 // ── Static data for the preview rail ──────────────────────────────────────────
 
@@ -120,29 +121,6 @@ const DOMAINS = [
 ];
 const TONGUES = ["english (native)", "中文 (native)", "தமிழ் (learning)"];
 
-const NOWDATA = {
-  building: ["signalor.app · v0.3", "sdx @ ucsd", "this very site"],
-  learning: ["rust", "tamil", "writing more clearly"],
-  consuming: [
-    { kind: "sound", val: "soldier of heaven — sabaton" },
-    { kind: "read", val: "the undiscovered self — jung" },
-    { kind: "watch", val: "xavier renegade angel" },
-    { kind: "play", val: "none actually" },
-  ],
-  location: ["la jolla, california", "ucsd campus · home for summer"],
-  writing: [
-    { state: "wip", val: "a note on metaphor as compression" },
-    { state: "open", val: "the politics of attention" },
-    { state: "stuck", val: "a story about the fall of nineveh" },
-  ],
-  thisWeek: [
-    { day: "mon", val: "signalor v0.3.2 shipped", tag: "+340 −120" },
-    { day: "tue", val: "sdx pitches · 3 brands", tag: "4 hrs" },
-    { day: "wed", val: "jung — finished chapter 4", tag: "read" },
-    { day: "thu", val: "this site preview rail redesign", tag: "wip" },
-    { day: "fri", val: "open", tag: "—" },
-  ],
-};
 
 // ── Shared atoms ────────────────────────────────────────────────────────────
 

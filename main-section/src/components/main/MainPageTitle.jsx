@@ -8,7 +8,7 @@ const MainPageTitle = ({ sectionRef, style, subtitleOpacity }) => (
     <div className="title-sub" style={{ opacity: subtitleOpacity, paddingTop: '0.4rem' }}>
       <p>I am alex gao, the additional &apos;th&apos; is here so you can find me easier</p>
       <p className="reverse-hidden">&apos;th&apos; is the initials of my chinese first name, and u can find me elsewhere all by alexgaoth</p>
-      <p className="hidden">I spy a mobile user - this site is better on desktop</p>
+      <p className="hidden">mobile-first redesign coming — works better on desktop for now</p>
     </div>
   </div>
 );
