@@ -1,34 +1,34 @@
 {
   "now": {
     "date": "may 16, 2026",
-    "location": "la jolla, california",
-    "why": "home for summer Â· sdx @ ucsd",
+    "location": "San Jose, california",
+    "why": "home for summer ÃÂ· sdx @ ucsd",
     "tz": "pdt",
     "building": [
       {
         "name": "signalor.app",
-        "detail": "v0.3 Â· google analytics for brands Â· in production",
+        "detail": "v0.3 ÃÂ· google analytics for brands ÃÂ· in production",
         "tag": "live"
       },
       {
         "name": "sdx @ ucsd",
-        "detail": "design-engineering club Â· 3 brand pitches this week",
+        "detail": "design-engineering club ÃÂ· 3 brand pitches this week",
         "tag": "wip"
       },
       {
         "name": "this very site",
-        "detail": "preview rail redesign Â· the page you are on",
+        "detail": "preview rail redesign ÃÂ· the page you are on",
         "tag": "wip"
       }
     ],
     "learning": [
       {
         "name": "rust",
-        "detail": "borrow checker, finally"
+        "detail": "beyond the learning curve dip"
       },
       {
-        "name": "à®¤à®®à®¿à®´à¯ / tamil",
-        "detail": "reading aloud, slowly"
+        "name": "Ã Â®Â¤Ã Â®Â®Ã Â®Â¿Ã Â®Â´Ã Â¯Â / tamil",
+        "detail": ""
       },
       {
         "name": "writing more clearly",
@@ -38,12 +38,12 @@
     "consuming": [
       {
         "kind": "sound",
-        "val": "soldier of heaven â sabaton",
+        "val": "soldier of heaven Ã¢ÂÂ sabaton",
         "meta": "on repeat"
       },
       {
         "kind": "read",
-        "val": "the undiscovered self â c.g. jung",
+        "val": "the undiscovered self Ã¢ÂÂ c.g. jung",
         "meta": "ch. 4 of 7"
       },
       {
