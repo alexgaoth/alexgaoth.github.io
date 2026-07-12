@@ -5,6 +5,7 @@ import { APP_ROUTES } from './config/site';
 import { content } from './data/content';
 import ArtPage from './pages/ArtPage';
 import CiCollectionPage from './pages/CiCollectionPage';
+import GalleryPage from './pages/GalleryPage';
 import MainPage from './pages/MainPage';
 import NowPage from './pages/NowPage';
 import PoetryCollectionPage from './pages/PoetryCollectionPage';
@@ -35,6 +36,7 @@ function App() {
         <Route path={APP_ROUTES.quotes} element={<QuotesPage data={content.quotes} />} />
         <Route path={APP_ROUTES.now} element={<NowPage />} />
         <Route path={APP_ROUTES.art} element={<ArtPage />} />
+        <Route path={APP_ROUTES.gallery} element={<GalleryPage />} />
         <Route path={APP_ROUTES.regents} element={<Suspense fallback={null}><RegentsPage /></Suspense>} />
         <Route path={APP_ROUTES.poetry} element={<PoetryCollectionPage lang="zh" />} />
         <Route path={APP_ROUTES.poetryEn} element={<PoetryCollectionPage lang="en" />} />

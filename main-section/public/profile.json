@@ -4,6 +4,7 @@
     "location": "la jolla, california",
     "why": "home for summer · sdx @ ucsd",
     "tz": "pdt",
+    "tzIana": "America/Los_Angeles",
     "building": [
       {
         "name": "signalor.app",

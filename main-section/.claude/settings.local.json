@@ -16,7 +16,10 @@
       "WebFetch(domain:paulbourke.net)",
       "Bash(npm install:*)",
       "Bash(npx react-scripts:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(getent hosts *)",
+      "Bash(curl -sS -m 15 -w '\\\\nHTTP %{http_code}\\\\n' __TRACKED_VAR__/rest/v1/ -H 'apikey: __TRACKED_VAR__')",
+      "Bash(npx eslint *)"
     ]
   }
 }

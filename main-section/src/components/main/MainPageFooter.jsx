@@ -8,6 +8,14 @@ const MainPageFooter = ({ style }) => (
       <span className="art-strip-arrow">→</span>
     </Link>
     <Link
+      to={APP_ROUTES.gallery}
+      className="art-strip mainpage-footer-strip"
+      style={{ marginTop: "0.5rem" }}
+    >
+      <span className="art-strip-label">/gallery</span>
+      <span className="art-strip-arrow">→</span>
+    </Link>
+    <Link
       to={APP_ROUTES.about}
       className="art-strip mainpage-footer-strip"
       style={{ marginTop: "0.5rem" }}

@@ -27,6 +27,7 @@ export const APP_ROUTES = {
   quotes: '/quotes',
   now: '/now',
   art: '/art',
+  gallery: '/gallery',
   regents: '/regents',
   poetry: '/poetry',
   poetryEn: '/poetry/en',

@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../../config/site";
-import { NOWDATA } from "../../data/nowData";
 
 // ── Static data for the preview rail ──────────────────────────────────────────
 
@@ -94,7 +93,7 @@ const WRITINGS = [
     slug: "winning-the-battle-of-manzikert",
   },
   {
-    pull: '"without others, hell has no meaning" - is what lacan shouldve said when he was writing Écrits. I have to thank the very fact that he didnt so i can somewhat preserve my unique take on this topic.',
+    pull: '"without others, hell has no meaning"',
     title: "Submitting to the Symbolic Order",
     date: "2025.11",
     tag: "lacan",
@@ -102,13 +101,40 @@ const WRITINGS = [
     slug: "submitting-to-the-symbolic-order",
   },
   {
-    pull: '"inventing a nation and defending AT THE SAME TIME?, i wish i was sun yatsen" - me almost once every day',
+    pull: '"inventing a nation and defending AT THE SAME TIME?, i wish i was sun yatsen"',
     title: "Chinese Modernisation",
     date: "2024.09",
     tag: "history",
     read: "2m",
     slug: "chinese-nationalization-modernization-is-actually-quite-intersting",
   },
+];
+
+// doors into the personal side of the site
+const DOORS = [
+  { glyph: "诗", label: "poetry", note: "chinese verse", to: APP_ROUTES.poetry },
+  { glyph: "词", label: "ci", note: "to song-dynasty tunes", to: APP_ROUTES.ci },
+];
+
+// compressed from the resume data in src/data/content.js
+const EXPERIENCE = [
+  {
+    role: "software & devops intern",
+    org: "climind · san francisco",
+    period: "2024–25",
+    desc: "esg data crawler feeding llm training · docker, ci/cd",
+  },
+  {
+    role: "lead developer",
+    org: "radians · london",
+    period: "2023–24",
+    desc: "full-stack product site · react, node, mongo",
+  },
+];
+
+const EDUCATION = [
+  { school: "uc san diego", detail: "math-cs · class of 2029" },
+  { school: "st paul's, london", detail: "a-levels · 2023–25" },
 ];
 
 const DOMAINS = [
@@ -210,19 +236,21 @@ function PanelChrome({
         <MegaTitle>{title}</MegaTitle>
       </div>
 
-      <p
-        style={{
-          fontSize: "clamp(0.68rem,0.82vw,0.82rem)",
-          color: "#888",
-          margin: "0 0 clamp(0.65rem,1.1vw,1.1rem)",
-          letterSpacing: "0.02em",
-          maxWidth: "70ch",
-          flexShrink: 0,
-          lineHeight: 1.5,
-        }}
-      >
-        {sub}
-      </p>
+      {sub && (
+        <p
+          style={{
+            fontSize: "clamp(0.68rem,0.82vw,0.82rem)",
+            color: "#888",
+            margin: "0 0 clamp(0.65rem,1.1vw,1.1rem)",
+            letterSpacing: "0.02em",
+            maxWidth: "70ch",
+            flexShrink: 0,
+            lineHeight: 1.5,
+          }}
+        >
+          {sub}
+        </p>
+      )}
 
       <div
         style={{
@@ -570,7 +598,7 @@ function BuiltPanel({ isMobile }) {
   );
 }
 
-// ── 02 KNOWN ─────────────────────────────────────────────────────────────────
+// ── 02 WRITING ───────────────────────────────────────────────────────────────
 
 function WritingCard({ w }) {
   const [hover, setHover] = useState(false);
@@ -581,17 +609,14 @@ function WritingCard({ w }) {
       onMouseLeave={() => setHover(false)}
       style={{
         border: "1px solid #000",
-        padding: "10px 12px",
+        padding: "12px 14px",
         background: hover ? "#000" : "transparent",
         color: hover ? "#fff" : "#000",
         transition: "background 0.15s, color 0.15s",
         textDecoration: "none",
         display: "flex",
         flexDirection: "column",
-        gap: 6,
-        flex: 1,
-        minHeight: 0,
-        justifyContent: "space-between",
+        gap: 8,
       }}
     >
       <div
@@ -643,448 +668,384 @@ function WritingCard({ w }) {
   );
 }
 
-function KnownPanel({ isMobile }) {
+function TrophyRow({ t }) {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "auto 1fr auto",
+        gap: 10,
+        padding: "7px 6px",
+        borderBottom: "1px solid rgba(0,0,0,0.12)",
+        alignItems: "baseline",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: GROTESK,
+          fontWeight: 600,
+          fontSize: 13,
+          whiteSpace: "nowrap",
+        }}
+      >
+        [{t.stamp}]
+      </span>
+      <span
+        style={{
+          fontSize: 10.5,
+          lineHeight: 1.35,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {t.label}
+      </span>
+      <span style={{ fontSize: 9.5, color: "#999", letterSpacing: "0.06em" }}>
+        {t.year}
+      </span>
+    </div>
+  );
+}
+
+function InlineList({ label, items }) {
+  return (
+    <div>
+      <Eyebrow color="#888">{"// "}{label}</Eyebrow>
+      <p
+        style={{
+          margin: "6px 0 0",
+          fontSize: 11.5,
+          lineHeight: 1.7,
+          color: "#000",
+          letterSpacing: "0.02em",
+        }}
+      >
+        {items.map((item, i) => (
+          <span key={item} style={{ whiteSpace: "nowrap" }}>
+            {item}
+            {i < items.length - 1 && (
+              <span style={{ color: "#bbb" }}> &nbsp;·&nbsp; </span>
+            )}
+          </span>
+        ))}
+      </p>
+    </div>
+  );
+}
+
+function DoorRow({ d }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <Link
+      to={d.to}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: "grid",
+        gridTemplateColumns: "auto 1fr auto",
+        gap: 12,
+        alignItems: "center",
+        padding: "9px 10px",
+        border: "1px solid #000",
+        background: hover ? "#000" : "transparent",
+        color: hover ? "#fff" : "#000",
+        transition: "background 0.12s, color 0.12s",
+        textDecoration: "none",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: GROTESK,
+          fontWeight: 600,
+          fontSize: 18,
+          lineHeight: 1,
+        }}
+      >
+        {d.glyph}
+      </span>
+      <span style={{ minWidth: 0 }}>
+        <span
+          style={{
+            fontSize: 10.5,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            fontWeight: 700,
+          }}
+        >
+          {d.label}
+        </span>
+        <span
+          style={{
+            display: "block",
+            fontSize: 9.5,
+            opacity: 0.6,
+            marginTop: 2,
+            letterSpacing: "0.04em",
+          }}
+        >
+          {d.note}
+        </span>
+      </span>
+      <span style={{ fontSize: 12 }}>→</span>
+    </Link>
+  );
+}
+
+function WritingPanel({ isMobile }) {
   const DIM = "#888";
-  const FAINT = "rgba(0,0,0,0.18)";
   return (
     <PanelChrome
       idx={2}
       total={3}
-      eyebrow="// what i have.. "
+      eyebrow="// what i think"
       title={
         <>
-          KNOWN<span style={{ color: "rgba(0,0,0,0.18)" }}>.</span>
+          WRITING<span style={{ color: "rgba(0,0,0,0.18)" }}>.</span>
         </>
       }
-      sub="4× olympiad gold · 4 working languages · math-cs @ ucsd · serious about ideas at 19."
+      sub="i like to think, and make others think."
       footerLeft="the long version is in /thoughts"
       footerRight="/thoughts →"
       footerLink={APP_ROUTES.thoughts}
     >
+      {/* Mirrors BUILT: main column left, doors column right,
+          content at natural height — whitespace below is intentional. */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.5fr 0.85fr",
-          gap: "clamp(0.7rem,1.6vw,1.5rem)",
-          flex: 1,
-          minHeight: 0,
-          overflow: "hidden",
+          gridTemplateColumns: isMobile ? "1fr" : "1.35fr 1fr",
+          gap: "clamp(0.8rem,1.8vw,1.6rem)",
+          alignItems: "flex-start",
         }}
       >
-        {/* Trophies — desktop only */}
-        {!isMobile && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-              minHeight: 0,
-              overflow: "hidden",
-            }}
-          >
-            <Eyebrow color={DIM}>{'// trophies'}</Eyebrow>
-            {TROPHIES.map((t) => (
-              <div
-                key={t.label}
-                style={{
-                  border: "1px solid #000",
-                  padding: "8px 10px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                  flex: 1,
-                  minHeight: 0,
-                  justifyContent: "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: GROTESK,
-                    fontWeight: 600,
-                    fontSize:
-                      t.stamp.length > 5
-                        ? "clamp(0.82rem,1.2vw,1.05rem)"
-                        : "clamp(1rem,1.7vw,1.5rem)",
-                    color: "#000",
-                    lineHeight: 1,
-                    marginBottom: 2,
-                  }}
-                >
-                  [{t.stamp}]
-                </div>
-                <div
-                  style={{ fontSize: 10.5, color: "#000", lineHeight: 1.35 }}
-                >
-                  {t.label}
-                </div>
-                <div
-                  style={{
-                    fontSize: 9,
-                    color: DIM,
-                    letterSpacing: "0.1em",
-                    marginTop: 1,
-                  }}
-                >
-                  {t.year}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Writings */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            minHeight: 0,
-            overflow: "hidden",
-          }}
-        >
+        {/* Writings — the meat */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <Eyebrow color={DIM}>{'// recent thoughts'}</Eyebrow>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-              flex: 1,
-              overflow: "hidden",
-            }}
-          >
-            {WRITINGS.map((w, i) => (
-              <WritingCard key={i} w={w} />
-            ))}
-          </div>
+          {WRITINGS.map((w, i) => (
+            <WritingCard key={i} w={w} />
+          ))}
         </div>
 
-        {/* Domains + tongues — desktop only */}
-        {!isMobile && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 12,
-              minHeight: 0,
-              justifyContent: "space-between",
-              overflow: "hidden",
-            }}
-          >
-            <div>
-              <Eyebrow color={DIM}>{'// domains of attention'}</Eyebrow>
-              <ul
-                style={{
-                  listStyle: "none",
-                  padding: 0,
-                  margin: "7px 0 0",
-                  fontSize: 11.5,
-                  lineHeight: 1.5,
-                }}
-              >
-                {DOMAINS.map((d) => (
-                  <li
-                    key={d}
-                    style={{
-                      borderBottom: `1px dotted ${FAINT}`,
-                      padding: "3px 0",
-                      color: "#000",
-                    }}
-                  >
-                    <span style={{ color: DIM, marginRight: 5 }}>·</span>
-                    {d}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <Eyebrow color={DIM}>{'// tongues'}</Eyebrow>
-              <ul
-                style={{
-                  listStyle: "none",
-                  padding: 0,
-                  margin: "7px 0 0",
-                  fontSize: 11.5,
-                  lineHeight: 1.5,
-                }}
-              >
-                {TONGUES.map((t) => (
-                  <li
-                    key={t}
-                    style={{
-                      borderBottom: `1px dotted ${FAINT}`,
-                      padding: "3px 0",
-                      color: "#000",
-                    }}
-                  >
-                    <span style={{ color: DIM, marginRight: 5 }}>·</span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
+        {/* Doors into the personal side — shown on mobile too */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <Eyebrow color={DIM}>{'// the personal side'}</Eyebrow>
+          {DOORS.map((d) => (
+            <DoorRow key={d.label} d={d} />
+          ))}
+        </div>
       </div>
     </PanelChrome>
   );
 }
 
-// ── 03 NOW ────────────────────────────────────────────────────────────────────
+// ── 03 EXPERIENCE ────────────────────────────────────────────────────────────
 
-function NowItem({ idx, children }) {
-  return (
-    <div style={{ display: "flex", gap: 10, alignItems: "baseline" }}>
-      <span
-        style={{
-          color: "#bbb",
-          fontSize: 10,
-          minWidth: 16,
-          letterSpacing: "0.02em",
-          flexShrink: 0,
-        }}
-      >
-        {String(idx).padStart(2, "0")}
-      </span>
-      <span style={{ fontSize: 12.5, lineHeight: 1.4 }}>{children}</span>
-    </div>
-  );
-}
-
-function NowCell({ label, live, children }) {
+function ExperienceRow({ e }) {
   return (
     <div
       style={{
-        padding: "0.8rem 0.85rem 0.8rem 0",
-        borderRight: "1px solid rgba(0,0,0,0.08)",
-        borderBottom: "1px solid rgba(0,0,0,0.08)",
-        display: "flex",
-        flexDirection: "column",
-        gap: 9,
-        minWidth: 0,
-        overflow: "hidden",
+        padding: "8px 6px",
+        borderBottom: "1px solid #eee",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <Eyebrow>{'// '}{label}</Eyebrow>
-        {live && (
-          <span
-            className="rail-pulse"
-            style={{
-              display: "inline-block",
-              width: 6,
-              height: 6,
-              background: "#0a7",
-              borderRadius: "50%",
-              flexShrink: 0,
-            }}
-          />
-        )}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          gap: 10,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: GROTESK,
+            fontWeight: 600,
+            fontSize: 13,
+            letterSpacing: "-0.01em",
+          }}
+        >
+          {e.role}
+        </span>
+        <span
+          style={{ fontSize: 9.5, color: "#999", letterSpacing: "0.06em" }}
+        >
+          {e.period}
+        </span>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-        {children}
+      <div
+        style={{
+          fontSize: 10.5,
+          marginTop: 2,
+          letterSpacing: "0.02em",
+        }}
+      >
+        {e.org}
+      </div>
+      <div
+        style={{
+          fontSize: 9.5,
+          color: "#888",
+          marginTop: 2,
+          letterSpacing: "0.02em",
+        }}
+      >
+        {e.desc}
       </div>
     </div>
   );
 }
 
-function NowPanel({ isMobile }) {
-  const [time, setTime] = useState(new Date());
-  useEffect(() => {
-    const id = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
+function EducationRow({ e }) {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr auto",
+        gap: 10,
+        padding: "7px 6px",
+        borderBottom: "1px solid #eee",
+        alignItems: "baseline",
+      }}
+    >
+      <span style={{ fontSize: 11.5, fontWeight: 500 }}>{e.school}</span>
+      <span style={{ fontSize: 9.5, color: "#888", letterSpacing: "0.04em" }}>
+        {e.detail}
+      </span>
+    </div>
+  );
+}
 
-  const buildDate = process.env.REACT_APP_BUILD_TIME
-    ? new Date(process.env.REACT_APP_BUILD_TIME)
-    : null;
-  const syncStr = buildDate
-    ? buildDate.toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).toLowerCase()
-    : "dev";
-  const dateStr = time
-    .toLocaleDateString("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    })
-    .toLowerCase();
+// Single entry point to the live /now page — the live grid moved off the
+// home rail; NowPage still fetches profile.json itself.
+function NowStrip() {
+  const [hover, setHover] = useState(false);
+  return (
+    <Link
+      to={APP_ROUTES.now}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "8px 10px",
+        border: "1px solid #000",
+        background: hover ? "#000" : "transparent",
+        color: hover ? "#fff" : "#000",
+        transition: "background 0.12s, color 0.12s",
+        textDecoration: "none",
+        marginTop: "clamp(0.8rem,1.6vw,1.4rem)",
+      }}
+    >
+      <span
+        className="rail-pulse"
+        style={{
+          display: "inline-block",
+          width: 6,
+          height: 6,
+          background: hover ? "#0f6" : "#0a7",
+          borderRadius: "50%",
+          flexShrink: 0,
+        }}
+      />
+      <span style={{ fontSize: 11, letterSpacing: "0.04em", flex: 1 }}>
+        what i'm doing right now, updated from my phone
+      </span>
+      <span style={{ fontSize: 12 }}>→</span>
+    </Link>
+  );
+}
 
+function ExperiencePanel({ isMobile }) {
+  const DIM = "#888";
   return (
     <PanelChrome
       idx={3}
       total={3}
-      eyebrow="// but for"
+      eyebrow="// on paper"
       title={
         <>
-          NOW<span style={{ color: "#ccc" }}>.</span>
+          EXPERIENCE<span style={{ color: "#ccc" }}>.</span>
         </>
       }
-      sub={`this is what i am doing · last push ${syncStr}`}
-      footerLeft={`updated whenever i push · ${dateStr}`}
-      footerRight="/now →"
-      footerLink={APP_ROUTES.now}
+      sub="math-cs @ ucsd, class of 2029 · previously st paul's london"
+      footerLeft="full record in /resume"
+      footerRight="/resume →"
+      footerLink={APP_ROUTES.resume}
     >
-      <Link
-        to={APP_ROUTES.now}
+      {/* Mirrors BUILT: main column left, log-style column right,
+          content at natural height — whitespace below is intentional. */}
+      <div
         style={{
-          textDecoration: "none",
-          color: "inherit",
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1.35fr 1fr",
+          gap: "clamp(0.8rem,1.8vw,1.6rem)",
+          alignItems: "flex-start",
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-            gridAutoRows: isMobile ? "auto" : "1fr",
-            flex: 1,
-            minHeight: 0,
-            borderTop: "1px solid rgba(0,0,0,0.18)",
-            borderLeft: "1px solid rgba(0,0,0,0.08)",
-            overflow: "hidden",
-          }}
-        >
-          <NowCell label="building">
-            {NOWDATA.building.map((b, i) => (
-              <NowItem key={i} idx={i + 1}>
-                {b}
-              </NowItem>
-            ))}
-          </NowCell>
-
-          {!isMobile && (
-            <NowCell label="learning">
-              {NOWDATA.learning.map((l, i) => (
-                <NowItem key={i} idx={i + 1}>
-                  {l}
-                </NowItem>
-              ))}
-            </NowCell>
-          )}
-
-          <NowCell label="consuming">
-            {NOWDATA.consuming.map((c, i) => (
-              <NowItem key={i} idx={i + 1}>
-                <span
-                  style={{
-                    color: "#999",
-                    fontSize: 9.5,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    marginRight: 6,
-                  }}
-                >
-                  {c.kind}
-                </span>
-                {c.val}
-              </NowItem>
-            ))}
-          </NowCell>
-
-          {!isMobile && (
-            <NowCell label="writing">
-              {NOWDATA.writing.map((w, i) => (
-                <NowItem key={i} idx={i + 1}>
-                  <span
-                    style={{
-                      fontSize: 9,
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase",
-                      color:
-                        w.state === "wip"
-                          ? "#000"
-                          : w.state === "stuck"
-                            ? "#a33"
-                            : "#999",
-                      border: "1px solid currentColor",
-                      padding: "1px 5px",
-                      marginRight: 7,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {w.state}
-                  </span>
-                  {w.val}
-                </NowItem>
-              ))}
-            </NowCell>
-          )}
-
-          {!isMobile && (
-            <NowCell label="this week">
-              {NOWDATA.thisWeek.map((d, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "32px 1fr auto",
-                    gap: 8,
-                    alignItems: "baseline",
-                  }}
-                >
-                  <span
-                    style={{
-                      color: "#999",
-                      fontSize: 9.5,
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {d.day}
-                  </span>
-                  <span style={{ fontSize: 12 }}>{d.val}</span>
-                  <span
-                    style={{
-                      fontSize: 9.5,
-                      color: "#888",
-                      letterSpacing: "0.04em",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {d.tag}
-                  </span>
-                </div>
-              ))}
-            </NowCell>
-          )}
-
-          <NowCell label="location" live>
-            {NOWDATA.location.map((l, i) => (
-              <NowItem key={i} idx={i + 1}>
-                {l}
-              </NowItem>
-            ))}
-            <div
-              style={{
-                fontSize: 10.5,
-                color: "#999",
-                letterSpacing: "0.04em",
-                marginTop: 4,
-              }}
-            >
-              local time ·{" "}
-              {time.toLocaleTimeString("en-US", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+        {/* Work + education — the meat */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <div>
+            <div style={{ marginBottom: 5 }}>
+              <Eyebrow color={DIM}>{'// work'}</Eyebrow>
             </div>
-          </NowCell>
+            <div style={{ borderTop: "1px solid #000" }}>
+              {EXPERIENCE.map((e) => (
+                <ExperienceRow key={e.role} e={e} />
+              ))}
+            </div>
+          </div>
+          <div>
+            <div style={{ marginBottom: 5 }}>
+              <Eyebrow color={DIM}>{'// education'}</Eyebrow>
+            </div>
+            <div style={{ borderTop: "1px solid #000" }}>
+              {EDUCATION.map((e) => (
+                <EducationRow key={e.school} e={e} />
+              ))}
+            </div>
+          </div>
         </div>
-      </Link>
+
+        {/* Trophies log + inline lists — desktop only */}
+        {!isMobile && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ marginBottom: 5 }}>
+                <Eyebrow color={DIM}>{'// trophies'}</Eyebrow>
+              </div>
+              <div style={{ borderTop: "1px solid #000" }}>
+                {TROPHIES.map((t) => (
+                  <TrophyRow key={t.label} t={t} />
+                ))}
+              </div>
+            </div>
+            <InlineList label="domains of attention" items={DOMAINS} />
+            <InlineList label="tongues" items={TONGUES} />
+          </div>
+        )}
+      </div>
+
+      {/* Live status — one door to /now */}
+      <NowStrip />
     </PanelChrome>
   );
 }
 
-const PANELS = [BuiltPanel, KnownPanel, NowPanel];
+const PANELS = [BuiltPanel, WritingPanel, ExperiencePanel];
+
+// WRITING carries a cream wash painted into the section itself, so the colour
+// scrolls in and out spatially with the content instead of the page bg
+// snapping on a scroll threshold.
+const CREAM = "rgb(235,225,200)";
+const PANEL_BGS = [
+  null,
+  `linear-gradient(180deg, rgba(235,225,200,0) 0%, ${CREAM} 32%, ${CREAM} 70%, rgba(235,225,200,0) 100%)`,
+  null,
+];
 
 // ── HomePreviewRail ───────────────────────────────────────────────────────────
-// Three full-viewport-height sections in normal document flow.
-// Sections are transparent — background color is driven by MainPage's pageBg,
-// which spans the full viewport width and fades white→cream→white as the
-// KNOWN panel scrolls through.
-
 const HomePreviewRail = ({ isMobile }) => (
   <>
     {PANELS.map((Panel, i) => (
@@ -1095,6 +1056,7 @@ const HomePreviewRail = ({ isMobile }) => (
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
+          background: PANEL_BGS[i] || "transparent",
         }}
       >
         <Panel isMobile={isMobile} />

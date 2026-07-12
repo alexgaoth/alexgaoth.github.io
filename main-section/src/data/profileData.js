@@ -1,8 +1,9 @@
+// Data for /about (ProfilePage). The aliases, facts, and searchable queries
+// exist for findability — keep them intact even if the presentation changes.
 export const profileData = {
-  title: 'About',
   intro: [
-    'I am Alex Gao. Across most of the internet I use alexgaoth.',
-    'This site is the structured version of that identity: projects, writing, quotes, poetry, and the things I am doing now.',
+    "i'm alex gao — tianhao on paper, alexgaoth everywhere else. the 'th' is my chinese first name, so you can find me easier.",
+    'math-cs at uc san diego. i build software, write about history and philosophy, and keep chinese poetry on the side. i like to think, and make others think.',
   ],
   aliases: [
     'Alex Gao',
@@ -11,24 +12,28 @@ export const profileData = {
     'Tianhao (Alex) Gao',
   ],
   focus: [
-    'Math-CS at UC San Diego',
-    'Building software and small systems that are worth using',
-    'Writing thoughts, poetry, and ci',
+    'math-cs @ ucsd',
+    'building signalor.app',
+    'helping around sdx @ ucsd',
+    'writing thoughts, poetry, and ci',
   ],
   facts: [
-    { label: 'Primary name', value: 'Alex Gao' },
-    { label: 'Primary handle', value: 'alexgaoth' },
-    { label: 'Website', value: 'alexgaoth.com' },
-    { label: 'Current focus', value: 'Software, writing, and mathematical thinking' },
+    { label: 'name', value: 'alex gao' },
+    { label: 'handle', value: 'alexgaoth' },
+    { label: 'site', value: 'alexgaoth.com' },
+    { label: 'school', value: 'uc san diego · math-cs' },
+    { label: 'focus', value: 'software, writing, mathematical thinking' },
   ],
   links: [
-    { label: 'Main site', href: 'https://alexgaoth.com/' },
-    { label: 'Legacy app redirect', href: 'https://app.alexgaoth.com/' },
-    { label: 'Personal site', href: 'https://intro.alexgaoth.com/' },
-    { label: 'GitHub', href: 'https://github.com/alexgaoth' },
-    { label: 'LinkedIn', href: 'https://linkedin.com/in/alexgaoth' },
-    { label: 'X / Twitter', href: 'https://twitter.com/alexgaoth' },
-    { label: 'Instagram', href: 'https://instagram.com/alexgaoth' },
+    { label: 'github', handle: 'alexgaoth', href: 'https://github.com/alexgaoth' },
+    { label: 'linkedin', handle: 'in/alexgaoth', href: 'https://linkedin.com/in/alexgaoth' },
+    { label: 'x / twitter', handle: '@alexgaoth', href: 'https://twitter.com/alexgaoth' },
+    { label: 'instagram', handle: '@alexgaoth', href: 'https://instagram.com/alexgaoth' },
+  ],
+  mirrors: [
+    { label: 'main site', href: 'https://alexgaoth.com/' },
+    { label: 'intro site', href: 'https://intro.alexgaoth.com/' },
+    { label: 'legacy redirect', href: 'https://app.alexgaoth.com/' },
   ],
   searchableQueries: [
     'Alex Gao',

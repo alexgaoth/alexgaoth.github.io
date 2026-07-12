@@ -7,6 +7,7 @@ export const NOW_FALLBACK = {
   location: "la jolla, california",
   why: "home for summer · sdx @ ucsd",
   tz: "pdt",
+  tzIana: "America/Los_Angeles",
   building: [
     { name: "signalor.app", detail: "v0.3 · google analytics for brands · in production", tag: "live" },
     { name: "sdx @ ucsd", detail: "design-engineering club · 3 brand pitches this week", tag: "wip" },

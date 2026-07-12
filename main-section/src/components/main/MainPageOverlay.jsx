@@ -78,8 +78,8 @@ const MainPageOverlay = ({
             <span style={{
               display: 'block',
               fontFamily: "'Space Mono', monospace",
-              fontSize: '0.65rem',
-              letterSpacing: '0.08em',
+              fontSize: '0.74rem',
+              letterSpacing: '0.1em',
               color: 'rgba(0,0,0,0.35)',
               marginBottom: '0.6rem',
             }}>{phrase.label}</span>
@@ -99,7 +99,7 @@ const MainPageOverlay = ({
                   if you found things here interesting, i will be just as interesting in person. <br />
                   reach me{' '}
                   <a
-                    href="https://intro.alexgaoth.com/?flip=1#about"
+                    href="https://intro.alexgaoth.com/#contact"
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{

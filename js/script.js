@@ -1,5 +1,46 @@
 const slides = document.querySelectorAll('.slide');
-let currentSlide = 0;
+
+// ── Step model ──
+// Navigation moves through "steps", not slides. Most slides are one step,
+// but the ID card (#about) is two: front and back. Advancing from the card
+// front flips it over; going back flips it to the front again.
+const aboutSlideIndex = [...slides].findIndex(s => s.id === 'about');
+const steps = [];
+slides.forEach((s, i) => {
+    steps.push({ slide: i, flipped: false });
+    if (i === aboutSlideIndex) steps.push({ slide: i, flipped: true });
+});
+const cardBackStep = steps.findIndex(st => st.flipped);
+let currentStep = 0;
+
+const REDUCE_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+// Flip the card to match a step's state (no-op if already there)
+function setCardFlipped(flipped, animate) {
+    const card = document.getElementById('dl-card');
+    if (!card || card.classList.contains('flipped') === flipped) return;
+    // Clear any hover-tilt inline style so CSS drives the flip
+    card.style.transition = '';
+    card.style.transform = '';
+    if (animate && !REDUCE_MOTION.matches) {
+        card.classList.add('flipping');
+        card.classList.toggle('flipped', flipped);
+        card.addEventListener('transitionend', function () {
+            card.classList.remove('flipping');
+        }, { once: true });
+    } else {
+        card.style.transition = 'none';
+        card.classList.toggle('flipped', flipped);
+        void card.offsetWidth; // flush styles so re-enabling doesn't animate
+        card.style.transition = '';
+    }
+}
+
+// Called by the card's own tap/click flip so scroll position stays in sync
+function syncCardStep(flipped) {
+    if (steps[currentStep].slide !== aboutSlideIndex) return;
+    currentStep = flipped ? cardBackStep : cardBackStep - 1;
+}
 
 // Navigation hints for mobile
 let hasSeenFirstSlide = false;
@@ -8,10 +49,10 @@ let downHint = null;
 let upHint = null;
 
 document.addEventListener('keydown', (e) => {
-    if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && currentSlide > 0) {
-        showSlide(currentSlide - 1);
+    if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && currentStep > 0) {
+        showStep(currentStep - 1);
     } else if ((e.key === 'ArrowDown' || e.key === 'ArrowRight')) {
-        showSlide(currentSlide + 1);
+        showStep(currentStep + 1);
     }
 });
 
@@ -35,9 +76,9 @@ function handleGesture() {
     if (Math.abs(diff) < MIN_SWIPE) return;
     isSwiping = true;
     if (diff > 0) {
-        showSlide(currentSlide + 1);
+        showStep(currentStep + 1);
     } else {
-        showSlide(currentSlide - 1);
+        showStep(currentStep - 1);
     }
     setTimeout(() => { isSwiping = false; }, 600);
 }
@@ -53,9 +94,9 @@ document.addEventListener('wheel', (e) => {
     isScrolling = true;
 
     if (e.deltaY > 0) {
-        showSlide(currentSlide + 1);
+        showStep(currentStep + 1);
     } else if (e.deltaY < 0) {
-        showSlide(currentSlide - 1);
+        showStep(currentStep - 1);
     }
 
     // Cancel any pending unlock and restart — keeps the lock alive while events keep firing
@@ -65,52 +106,87 @@ document.addEventListener('wheel', (e) => {
     }, 900);
 }, { passive: false });
 
-// Jump to slide by URL hash on load (e.g. #about)
-const hashSlide = [...slides].findIndex(s => s.id === window.location.hash.slice(1));
-if (hashSlide > 0) {
+// In the contact flow, advancing past the card back continues into the
+// contact slides instead of leaving for the main site. Entered via a
+// #contact link or the legacy ?flip=1 param.
+let contactFlow = window.location.search.includes('flip');
+
+// Map a URL hash to a step. #contact lands on the card back — the back of
+// the ID card is the contact slide.
+function stepForHash(hash) {
+    if (hash === 'contact') {
+        contactFlow = true;
+        return cardBackStep;
+    }
+    const slideIdx = [...slides].findIndex(s => s.id === hash);
+    if (slideIdx < 0) return -1;
+    return steps.findIndex(st => st.slide === slideIdx && !st.flipped);
+}
+
+// Jump to step by URL hash on load (e.g. #about, #contact)
+const hashStep = stepForHash(window.location.hash.slice(1));
+if (hashStep > 0) {
     slides[0].classList.remove('active'); // clear the hardcoded active on #home
-    currentSlide = hashSlide;
-}
-slides[currentSlide].classList.add('active');
-
-// Auto-flip the ID card when navigating via contact link (?flip=1#about)
-if (window.location.search.includes('flip') && slides[currentSlide].id === 'about') {
-    const dlCard = document.getElementById('dl-card');
-    if (dlCard) dlCard.classList.add('flipped');
-}
-
-const contactFlow = window.location.search.includes('flip');
-
-function showSlide(slideIndex) {
-    if (slideIndex >= slides.length) {
-        location.href = 'https://app.alexgaoth.com/';
+    currentStep = hashStep;
+    // Legacy contact links (?flip=1#about) land on the card back
+    if (contactFlow && steps[currentStep].slide === aboutSlideIndex) {
+        currentStep = cardBackStep;
     }
-    else if (slideIndex > currentSlide && slides[currentSlide].id === 'about' && !contactFlow) {
-        location.href = 'https://app.alexgaoth.com/';
+    // Mark earlier slides as passed so going back animates the right way
+    for (let i = 0; i < steps[currentStep].slide; i++) {
+        slides[i].classList.add('passed');
     }
-    else if (slideIndex >= 0){
+}
+slides[steps[currentStep].slide].classList.add('active');
+setCardFlipped(steps[currentStep].flipped, false);
+
+// In-page hash links (e.g. href="#contact") navigate through the engine
+window.addEventListener('hashchange', () => {
+    const step = stepForHash(window.location.hash.slice(1));
+    if (step >= 0 && step !== currentStep) showStep(step);
+});
+
+function showStep(stepIndex) {
+    if (stepIndex >= steps.length ||
+        (stepIndex > currentStep && currentStep === cardBackStep && !contactFlow)) {
+        // Advancing past the card back leaves for the main site
+        location.href = 'https://alexgaoth.com/';
+    }
+    else if (stepIndex >= 0 && stepIndex !== currentStep) {
         // Mark slides as seen before transition
-        if (currentSlide === 0) {
+        if (currentStep === 0) {
             hasSeenFirstSlide = true;
         }
-        if (currentSlide === 1) {
+        if (currentStep === 1) {
             hasSeenSecondSlide = true;
         }
-        
-        // Moving forward (down)
-        if (slideIndex > currentSlide) {
-            slides[currentSlide].classList.remove('active');
-            slides[currentSlide].classList.add('passed');
+
+        const from = steps[currentStep];
+        const to = steps[stepIndex];
+
+        if (to.slide !== from.slide) {
+            // Moving forward (down)
+            if (stepIndex > currentStep) {
+                for (let i = 0; i < to.slide; i++) {
+                    slides[i].classList.remove('active');
+                    slides[i].classList.add('passed');
+                }
+            }
+            // Moving backward (up)
+            else {
+                slides[from.slide].classList.remove('active');
+                for (let i = to.slide; i < slides.length; i++) {
+                    slides[i].classList.remove('passed');
+                }
+            }
+            slides[to.slide].classList.remove('passed');
+            slides[to.slide].classList.add('active');
         }
-        // Moving backward (up)
-        else if (slideIndex < currentSlide) {
-            slides[currentSlide].classList.remove('active');
-            slides[slideIndex].classList.remove('passed');
-        }
-        
-        slides[slideIndex].classList.add('active');
-        currentSlide = slideIndex;
-        
+
+        // Same slide, different step: this is the card flip
+        setCardFlipped(to.flipped, true);
+        currentStep = stepIndex;
+
         // Update hints after transition
         updateHints();
     }
@@ -120,13 +196,13 @@ function showSlide(slideIndex) {
 function updateHints() {
     if (!downHint || !upHint) return;
     
-    if (currentSlide === 0 && !hasSeenFirstSlide) {
+    if (currentStep === 0 && !hasSeenFirstSlide) {
         downHint.classList.add('visible');
     } else {
         downHint.classList.remove('visible');
     }
-    
-    if (currentSlide === 1 && !hasSeenSecondSlide) {
+
+    if (currentStep === 1 && !hasSeenSecondSlide) {
         upHint.classList.add('visible');
     } else {
         upHint.classList.remove('visible');
@@ -155,7 +231,7 @@ if (window.innerWidth <= 768) {
     
     // Show down hint on first slide after a delay
     setTimeout(() => {
-        if (currentSlide === 0) {
+        if (currentStep === 0) {
             downHint.classList.add('visible');
         }
     }, 500);
@@ -326,7 +402,7 @@ updateAgeCounter();
 // Click on name-highlight to go to next slide
 document.querySelectorAll('.name-highlight').forEach(el => {
     el.addEventListener('click', () => {
-        showSlide(currentSlide + 1);
+        showStep(currentStep + 1);
     });
 });
 
@@ -406,12 +482,18 @@ document.querySelectorAll('.name-highlight').forEach(el => {
         if (wasHeld) clearHeldTransform();
         if (!wasHeld && shouldFlip) {
             clearHeldTransform(); // clear any hover-tilt inline style so CSS drives the flip
-            card.classList.add('flipping');
-            card.classList.toggle('flipped');
-            card.addEventListener('transitionend', function () {
-                card.classList.remove('flipping');
-                if (card.classList.contains('hovering') && !isHeld) updateHoverTransform();
-            }, { once: true });
+            if (REDUCE_MOTION.matches) {
+                card.classList.toggle('flipped');
+            } else {
+                card.classList.add('flipping');
+                card.classList.toggle('flipped');
+                card.addEventListener('transitionend', function () {
+                    card.classList.remove('flipping');
+                    if (card.classList.contains('hovering') && !isHeld) updateHoverTransform();
+                }, { once: true });
+            }
+            // Keep the slide engine in sync: the card back is its own step
+            syncCardStep(card.classList.contains('flipped'));
         }
     }
 

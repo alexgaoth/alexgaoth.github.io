@@ -10,9 +10,6 @@ import MainPageOverlay from '../components/main/MainPageOverlay';
 import MainPageTitle from '../components/main/MainPageTitle';
 import { APP_ROUTES, SITE } from '../config/site';
 
-// KNOWN panel background rgb values — used for the scroll-driven bg fade
-const CREAM = [235, 225, 200];
-
 const MainPage = ({ content }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
@@ -66,14 +63,6 @@ const MainPage = ({ content }) => {
     opacity: titleOpacity,
   };
 
-  // Background fade: white → cream → white as the KNOWN panel scrolls through.
-  // Each panel is 100 vh. rawPanelT counts viewport-heights since panels began.
-  // panelIndex 0 = BUILT centre, 1 = KNOWN centre, 2 = NOW centre.
-  const rawPanelT  = (scrollY - introH) / winH;
-  const panelIndex = rawPanelT - 0.5;
-  const creamness  = Math.max(0, 1 - Math.abs(panelIndex - 1));
-  const pageBg     = `rgb(${Math.round(255 + (CREAM[0] - 255) * creamness)},${Math.round(255 + (CREAM[1] - 255) * creamness)},${Math.round(255 + (CREAM[2] - 255) * creamness)})`;
-
   // Return stage: overlay text plays while the directory scrolls naturally
   // into view from below. returnH is the extra spacer above the directory
   // that gives the text phrases their scroll distance.
@@ -121,7 +110,7 @@ const MainPage = ({ content }) => {
 
       <div
         className="page-container"
-        style={{ backgroundColor: pageBg, transition: 'background-color 0.3s ease' }}
+        style={{ backgroundColor: '#fff' }}
       >
         <NowButton />
 

@@ -7,6 +7,7 @@
   { "path": "/thoughts", "changefreq": "weekly", "priority": "0.8" },
   { "path": "/quotes", "changefreq": "monthly", "priority": "0.6" },
   { "path": "/art", "changefreq": "monthly", "priority": "0.6" },
+  { "path": "/gallery", "changefreq": "monthly", "priority": "0.5" },
   { "path": "/regents", "changefreq": "monthly", "priority": "0.5" },
   { "path": "/poetry", "changefreq": "monthly", "priority": "0.6" },
   { "path": "/poetry/en", "changefreq": "monthly", "priority": "0.5" },

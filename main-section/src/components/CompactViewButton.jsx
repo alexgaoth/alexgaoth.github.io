@@ -164,7 +164,7 @@ const CompactViewButton = ({ progress, setProgress, isProjectsPage = false }) =>
         }
       }}
     >
-      hold me to collapse posts
+      hold to collapse
       <div
         className="compact-progress-bar"
         style={{ width: `${progress * 100}%` }}

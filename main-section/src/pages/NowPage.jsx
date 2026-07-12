@@ -323,6 +323,18 @@ function Kind({ children }) {
   );
 }
 
+// ── Shared clock hook ─────────────────────────────────────────────
+function useClock(tzIana = "America/Los_Angeles") {
+  const [time, setTime] = React.useState(new Date());
+  React.useEffect(() => {
+    const id = setInterval(() => setTime(new Date()), 60000);
+    return () => clearInterval(id);
+  }, []);
+  return time
+    .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: tzIana })
+    .toLowerCase();
+}
+
 // ── Content cards ─────────────────────────────────────────────────
 function BuildingCard() {
   const now = React.useContext(NowCtx);
@@ -414,14 +426,7 @@ function QuickThoughtsCard() {
 
 function LocationCard() {
   const now = React.useContext(NowCtx);
-  const [time, setTime] = React.useState(new Date());
-  React.useEffect(() => {
-    const id = setInterval(() => setTime(new Date()), 60000);
-    return () => clearInterval(id);
-  }, []);
-  const fmt = time
-    .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
-    .toLowerCase();
+  const fmt = useClock(now.tzIana);
   return (
     <Card
       eyebrow="// at"
@@ -436,10 +441,14 @@ function LocationCard() {
   );
 }
 
-// ── Guest slip card (editable name + content, fixed label) ──────
-function GuestSlipCard({ content, onUpdate }) {
-  const { name = "", text = "" } = content || {};
+const SLIP_MAX = 600;
+const SLIP_WARN_AT = Math.round(SLIP_MAX * 0.95); // 570
+
+// ── Guest slip card (editable — "your slip") ─────────────────────
+function GuestSlipCard({ content, onUpdate, saveState, onWidthChange }) {
+  const { name = "", text = "", width } = content || {};
   const taRef = React.useRef(null);
+  const cardRef = React.useRef(null);
 
   React.useEffect(() => {
     const el = taRef.current;
@@ -457,8 +466,27 @@ function GuestSlipCard({ content, onUpdate }) {
     width: "100%",
   };
 
+  const onResizeDown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.clientX;
+    const startW = cardRef.current?.offsetWidth ?? 220;
+    const minW = 200, maxW = 640;
+    const onMove = (ev) => {
+      const w = Math.max(minW, Math.min(maxW, startW + ev.clientX - startX));
+      onWidthChange(w);
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+
   return (
     <div
+      ref={cardRef}
       style={{
         background: NB.card,
         border: `1px solid ${NB.ink}`,
@@ -467,6 +495,7 @@ function GuestSlipCard({ content, onUpdate }) {
         display: "flex",
         flexDirection: "column",
         width: "100%",
+        position: "relative",
       }}
     >
       {/* fixed drag handle — label cannot be changed */}
@@ -491,19 +520,20 @@ function GuestSlipCard({ content, onUpdate }) {
             color: NB.fade,
           }}
         >
-          {`// guest slip`}
+          {`// your slip`}
         </div>
-        <span
-          aria-hidden
-          style={{
-            color: NB.fade,
-            fontSize: 14,
-            letterSpacing: "-0.05em",
-            lineHeight: 1,
-          }}
-        >
-          ⠿
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+          {saveState === "saving" && (
+            <span style={{ fontSize: 8.5, letterSpacing: "0.18em", textTransform: "uppercase", color: NB.fade }}>saving…</span>
+          )}
+          {saveState === "saved" && (
+            <span style={{ fontSize: 8.5, letterSpacing: "0.18em", textTransform: "uppercase", color: "#4a7c59" }}>saved</span>
+          )}
+          {saveState === "error" && (
+            <span style={{ fontSize: 8.5, letterSpacing: "0.18em", textTransform: "uppercase", color: NB.red }}>error</span>
+          )}
+          <span aria-hidden style={{ color: NB.fade, fontSize: 14, letterSpacing: "-0.05em", lineHeight: 1 }}>⠿</span>
+        </div>
       </div>
 
       {/* editable name — styled like a card title */}
@@ -520,7 +550,7 @@ function GuestSlipCard({ content, onUpdate }) {
           maxLength={32}
           placeholder="your name"
           value={name}
-          onChange={(e) => onUpdate({ name: e.target.value, text })}
+          onChange={(e) => onUpdate({ name: e.target.value, text, width })}
           aria-label="your name"
           style={{
             ...baseInput,
@@ -540,9 +570,9 @@ function GuestSlipCard({ content, onUpdate }) {
           data-no-drag
           onPointerDown={(e) => e.stopPropagation()}
           rows={1}
-          maxLength={200}
+          maxLength={SLIP_MAX}
           value={text}
-          onChange={(e) => onUpdate({ name, text: e.target.value })}
+          onChange={(e) => onUpdate({ name, text: e.target.value, width })}
           aria-label="leave a note"
           style={{
             ...baseInput,
@@ -554,17 +584,123 @@ function GuestSlipCard({ content, onUpdate }) {
             display: "block",
           }}
         />
+        {text.length >= SLIP_WARN_AT && (
+          <div
+            style={{
+              fontSize: 9,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: text.length >= SLIP_MAX ? NB.red : NB.fade,
+              marginTop: 4,
+            }}
+          >
+            {text.length}/{SLIP_MAX}
+          </div>
+        )}
+      </div>
+
+      {/* right-edge resize handle */}
+      {onWidthChange && (
         <div
+          data-no-drag
+          onPointerDown={onResizeDown}
           style={{
-            fontSize: 9,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: NB.fade,
-            marginTop: 4,
+            position: "absolute",
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: 10,
+            cursor: "col-resize",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 2,
           }}
         >
-          {text.length}/200
+          <div style={{ width: 1, height: 14, background: NB.rule }} />
+          <div style={{ width: 1, height: 14, background: NB.rule }} />
         </div>
+      )}
+    </div>
+  );
+}
+
+// ── Log slip (read-only — displays recent visitor entries) ────────
+function fmtSlipDate(iso) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return null;
+  return d
+    .toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Los_Angeles" })
+    .toLowerCase();
+}
+
+function LogSlipCard({ slip }) {
+  const { name, content, updated_at } = slip || {};
+  const isEmpty = !name && !content;
+  const dateStr = fmtSlipDate(updated_at);
+
+  return (
+    <div
+      style={{
+        background: NB.card,
+        border: `1px solid ${NB.ink}`,
+        fontFamily: "'Space Mono', monospace",
+        color: NB.ink,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* Minimal drag strip — no label, just the grip icon */}
+      <div
+        data-drag-handle
+        style={{
+          cursor: "grab",
+          touchAction: "none",
+          userSelect: "none",
+          padding: "5px 10px",
+          borderBottom: `1px solid ${NB.hair}`,
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <span aria-hidden style={{ color: NB.rule, fontSize: 13, lineHeight: 1 }}>⠿</span>
+      </div>
+
+      <div style={{ padding: "10px 14px 12px 14px" }}>
+        {isEmpty ? (
+          <div style={{ color: NB.hair, fontSize: 11, letterSpacing: "0.1em" }}>—</div>
+        ) : (
+          <>
+            <div
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 600,
+                fontSize: 15,
+                letterSpacing: "-0.015em",
+                textTransform: "lowercase",
+                lineHeight: 1.2,
+                marginBottom: 5,
+              }}
+            >
+              {name || <span style={{ color: NB.fade }}>anonymous</span>}
+            </div>
+            <div style={{ fontSize: 11.5, lineHeight: 1.6 }}>{content}</div>
+            {dateStr && (
+              <div
+                style={{
+                  fontSize: 9,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: NB.fade,
+                  marginTop: 8,
+                }}
+              >
+                {dateStr}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
@@ -573,15 +709,7 @@ function GuestSlipCard({ content, onUpdate }) {
 // ── Page header ───────────────────────────────────────────────────
 function PageHeader({ onBack }) {
   const now = React.useContext(NowCtx);
-  const [time, setTime] = React.useState(new Date());
-  React.useEffect(() => {
-    // HH:MM display only — 60s interval is sufficient
-    const id = setInterval(() => setTime(new Date()), 60000);
-    return () => clearInterval(id);
-  }, []);
-  const fmt = time
-    .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
-    .toLowerCase();
+  const fmt = useClock(now.tzIana);
   return (
     <header
       style={{
@@ -745,7 +873,7 @@ function generateLayout(W) {
 }
 
 // ── Mobile fallback — simple stacked list, no drag ────────────────
-function MobileView({ guestContent, updateGuest }) {
+function MobileView({ logSlips, yourSlip, updateYourSlip, saveState }) {
   return (
     <div style={{ background: NB.paper, padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
       <BuildingCard />
@@ -754,39 +882,42 @@ function MobileView({ guestContent, updateGuest }) {
       <WritingCard />
       <QuickThoughtsCard />
       <LocationCard />
-      <div style={{ marginTop: "4px" }}>
-        {GUEST_IDS.slice(0, 2).map(id => (
-          <div key={id} style={{ marginBottom: "12px" }}>
-            <GuestSlipCard content={guestContent[id]} onUpdate={val => updateGuest(id, val)} />
-          </div>
+      <div style={{ marginTop: "4px", display: "flex", flexDirection: "column", gap: "12px" }}>
+        {logSlips.map((slip, i) => (
+          <LogSlipCard key={slip?.id || i} slip={slip} />
         ))}
+        <GuestSlipCard content={yourSlip} onUpdate={updateYourSlip} saveState={saveState} />
       </div>
     </div>
   );
 }
 
 // ── Board surface ─────────────────────────────────────────────────
-function BoardSurface({ guestContent, updateGuest, cw, ctx, boardPad }) {
+function BoardSurface({ logSlips, yourSlip, updateYourSlip, saveState, cw, ctx, boardPad }) {
   const { boardRef } = ctx;
   const [bh, setBh] = React.useState(1100);
 
   React.useEffect(() => {
     const heights = {
-      building: 230,
-      consuming: 260,
-      learning: 200,
-      quickthoughts: 210,
-      writing: 200,
-      location: 140,
+      building: 300,
+      consuming: 340,
+      learning: 260,
+      quickthoughts: 280,
+      writing: 260,
+      location: 200,
+      // first 4 GUEST_IDS = log slips (shorter, no inputs)
+      "gslip-1": 160, "gslip-2": 160, "gslip-3": 160, "gslip-4": 160,
+      // last = your slip (taller, has inputs)
+      "gslip-5": 250,
     };
     let maxBottom = 0;
     [...CONTENT_IDS, ...GUEST_IDS].forEach((id) => {
       const pos = ctx.layout[id] || {};
-      const h = heights[id] || 220;
+      const h = heights[id] || 180;
       const bottom = (pos.y || 0) + h;
       if (bottom > maxBottom) maxBottom = bottom;
     });
-    setBh(Math.max(1100, maxBottom + 80));
+    setBh(Math.max(1100, maxBottom + 120));
   }, [ctx.layout]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -833,14 +964,19 @@ function BoardSurface({ guestContent, updateGuest, cw, ctx, boardPad }) {
             <LocationCard />
           </Draggable>
 
-          {GUEST_IDS.map((id) => (
-            <Draggable key={id} id={id} width={cw.gslip}>
-              <GuestSlipCard
-                content={guestContent[id]}
-                onUpdate={(val) => updateGuest(id, val)}
-              />
+          {GUEST_IDS.slice(0, 4).map((posId, i) => (
+            <Draggable key={posId} id={posId} width={cw.gslip}>
+              <LogSlipCard slip={logSlips[i]} />
             </Draggable>
           ))}
+          <Draggable id={GUEST_IDS[4]} width={yourSlip.width || cw.gslip}>
+            <GuestSlipCard
+              content={yourSlip}
+              onUpdate={updateYourSlip}
+              saveState={saveState}
+              onWidthChange={(w) => updateYourSlip({ ...yourSlip, width: w })}
+            />
+          </Draggable>
         </div>
       </div>
     </div>
@@ -895,11 +1031,18 @@ function Board({ onBack, now }) {
     const mobile = window.innerWidth < 768;
     return { isMobile: mobile, boardPad: pad, ...generateLayout(window.innerWidth - pad * 2) };
   });
-  const [guestContent, setGuestContent] = React.useState({});
+  // logSlips: the 4 most-recently-updated rows (read-only display)
+  // yourSlip: the oldest row, assigned at page load for this visitor to fill in
+  const [logSlips, setLogSlips] = React.useState([]);
+  const [yourSlip, setYourSlip] = React.useState({ name: "", text: "" });
   const [syncStatus, setSyncStatus] = React.useState('connecting');
+  const [saveState, setSaveState] = React.useState('idle'); // 'idle'|'saving'|'saved'|'error'
   const debounceRef = React.useRef({});
+  // Ref mirrors yourSlipId so realtime/debounce closures always read the current value.
+  const yourSlipIdRef = React.useRef(null);
 
-  // Recompute layout on resize (debounced)
+  // Recompute layout on resize (debounced). Only regenerate card positions when
+  // crossing the mobile breakpoint — desktop resizes preserve dragged positions.
   React.useEffect(() => {
     let t;
     const onResize = () => {
@@ -907,7 +1050,12 @@ function Board({ onBack, now }) {
       t = setTimeout(() => {
         const pad = getBoardPadding();
         const mobile = window.innerWidth < 768;
-        setView({ isMobile: mobile, boardPad: pad, ...generateLayout(window.innerWidth - pad * 2) });
+        setView((prev) => {
+          if (mobile !== prev.isMobile) {
+            return { isMobile: mobile, boardPad: pad, ...generateLayout(window.innerWidth - pad * 2) };
+          }
+          return { ...prev, isMobile: mobile, boardPad: pad };
+        });
       }, 150);
     };
     window.addEventListener('resize', onResize);
@@ -915,17 +1063,30 @@ function Board({ onBack, now }) {
   }, []);
 
   React.useEffect(() => {
+    // No client (env vars missing at build time) → quiet offline state,
+    // guest slips stay empty and no save is ever attempted (yourSlipId stays null).
+    if (!supabase) { setSyncStatus('error'); return; }
+    // Fetch all rows sorted oldest-first.
+    // Oldest row → "your slip" slot (rotates naturally as visitors fill them).
+    // Remaining 4 sorted newest-first → log display.
+    // Secondary sort by id keeps order stable when updated_at values are equal (fresh DB).
     supabase
       .from("guest_slips")
-      .select("id, name, content")
+      .select("id, name, content, updated_at, meta")
+      .order("updated_at", { ascending: true })
+      .order("id",          { ascending: true })
       .then(({ data, error }) => {
         if (error) { setSyncStatus('error'); return; }
-        if (!data) return;
-        setGuestContent(
-          data.reduce((acc, row) => {
-            acc[row.id] = { name: row.name || "", text: row.content || "" };
-            return acc;
-          }, {})
+        if (!data || data.length === 0) return;
+        const [oldest, ...rest] = data;
+        yourSlipIdRef.current = oldest.id;
+        setYourSlip({
+          name: oldest.name || "",
+          text: oldest.content || "",
+          width: oldest.meta?.slipWidth ?? null,
+        });
+        setLogSlips(
+          [...rest].sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0))
         );
       });
 
@@ -935,11 +1096,20 @@ function Board({ onBack, now }) {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "guest_slips" },
         (payload) => {
-          const { id, name, content } = payload.new;
-          setGuestContent((prev) => ({
-            ...prev,
-            [id]: { name: name || "", text: content || "" },
-          }));
+          const { id, name, content, updated_at } = payload.new;
+          if (id === yourSlipIdRef.current) {
+            // Don't clobber in-progress local typing.
+            if (!debounceRef.current[id]) {
+              setYourSlip((prev) => ({ ...prev, name: name || "", text: content || "" }));
+            }
+          } else {
+            setLogSlips((prev) => {
+              const next = prev.map((s) =>
+                s.id === id ? { ...s, name, content, updated_at } : s
+              );
+              return next.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
+            });
+          }
         },
       )
       .subscribe((status) => {
@@ -955,15 +1125,25 @@ function Board({ onBack, now }) {
     };
   }, []);
 
-  const updateGuest = React.useCallback((id, val) => {
-    setGuestContent((prev) => ({ ...prev, [id]: val }));
+  const updateYourSlip = React.useCallback((val) => {
+    setYourSlip(val);
+    const id = yourSlipIdRef.current;
+    if (!id) return;
+    setSaveState('saving');
     clearTimeout(debounceRef.current[id]);
     debounceRef.current[id] = setTimeout(async () => {
+      debounceRef.current[id] = null;
+      const meta = val.width != null ? { slipWidth: Math.round(val.width) } : {};
       const { error } = await supabase
         .from("guest_slips")
-        .update({ name: val.name, content: val.text, updated_at: new Date().toISOString() })
-        .eq("id", id);
-      if (error) setSyncStatus("error");
+        .upsert({ id, name: val.name, content: val.text, meta, updated_at: new Date().toISOString() });
+      if (error) {
+        setSyncStatus("error");
+        setSaveState("error");
+      } else {
+        setSaveState("saved");
+        setTimeout(() => setSaveState("idle"), 2000);
+      }
     }, 800);
   }, []);
 
@@ -974,7 +1154,7 @@ function Board({ onBack, now }) {
       {isMobile ? (
         <>
           <PageHeader onBack={onBack} />
-          <MobileView guestContent={guestContent} updateGuest={updateGuest} />
+          <MobileView logSlips={logSlips} yourSlip={yourSlip} updateYourSlip={updateYourSlip} saveState={saveState} />
           <Footer syncStatus={syncStatus} />
         </>
       ) : (
@@ -984,8 +1164,10 @@ function Board({ onBack, now }) {
               <>
                 <PageHeader onBack={onBack} />
                 <BoardSurface
-                  guestContent={guestContent}
-                  updateGuest={updateGuest}
+                  logSlips={logSlips}
+                  yourSlip={yourSlip}
+                  updateYourSlip={updateYourSlip}
+                  saveState={saveState}
                   cw={cw}
                   ctx={ctx}
                   boardPad={boardPad}
@@ -1006,13 +1188,12 @@ const NowPage = () => {
   const [now, setNow] = React.useState(NOW_FALLBACK);
 
   React.useEffect(() => {
-    fetch("/profile.json")
+    fetch(`/profile.json?v=${Date.now()}`)
       .then((r) => r.json())
-      .then((data) => {
-        if (data.now) setNow(data.now);
-      })
-      .catch(() => {}); // keep fallback on error
+      .then((data) => { if (data.now) setNow(data.now); })
+      .catch(() => {});
   }, []);
+
 
   // swap body background to cream while on this page
   React.useEffect(() => {
