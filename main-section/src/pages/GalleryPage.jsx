@@ -50,45 +50,21 @@ function Eyebrow({ children, color = '#888' }) {
 }
 
 function Photo({ photo, onOpen }) {
-  const [hover, setHover] = useState(false);
-  const line = captionLine(photo);
   return (
-    <figure
+    <img
+      src={photo.src}
+      alt={photo.alt || 'photograph'}
+      loading="lazy"
       onClick={onOpen}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
       style={{
-        margin: 0,
-        border: '1px solid #000',
-        background: hover ? '#000' : '#fff',
-        color: hover ? '#fff' : '#000',
-        transition: 'background 0.15s, color 0.15s',
+        display: 'block',
+        width: '100%',
+        height: 'auto',
+        marginBottom: 10,
+        breakInside: 'avoid',
         cursor: 'zoom-in',
       }}
-    >
-      <img
-        src={photo.src}
-        alt={photo.caption || 'photograph'}
-        loading="lazy"
-        style={{ display: 'block', width: '100%', height: 'auto' }}
-      />
-      {line && (
-        <figcaption
-          style={{
-            borderTop: `1px solid ${hover ? '#fff' : '#000'}`,
-            padding: '7px 10px',
-            fontFamily: MONO,
-            fontSize: 10,
-            letterSpacing: '0.06em',
-            textTransform: 'lowercase',
-            color: hover ? 'rgba(255,255,255,0.75)' : '#888',
-            lineHeight: 1.5,
-          }}
-        >
-          {line}
-        </figcaption>
-      )}
-    </figure>
+    />
   );
 }
 
@@ -114,7 +90,7 @@ const GalleryPage = () => {
         if (keys.length > 0) {
           setPhotos(keys.map((key) => ({
             src: `${GALLERY_BASE_URL}/${encodeURI(key)}`,
-            caption: captionFromName(key),
+            alt: altFromName(key),
           })));
           setStatus('ready');
         } else {
@@ -240,14 +216,13 @@ const GalleryPage = () => {
           </header>
 
           {status === 'ready' ? (
+            /* Masonry via CSS columns: each photo keeps its aspect ratio at a
+               reasonable column width; column count auto-fits the page. */
             <main
               style={{
                 flex: 1,
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(min(240px, 100%), 1fr))',
-                gap: 10,
-                alignItems: 'start',
-                alignContent: 'start',
+                columnWidth: 300,
+                columnGap: 10,
               }}
             >
               {photos.map((photo, index) => (
@@ -322,35 +297,17 @@ const GalleryPage = () => {
             onClick={closeLightbox}
             role="dialog"
             aria-modal="true"
-            aria-label={activePhoto.caption || 'photograph'}
+            aria-label={activePhoto.alt || 'photograph'}
           >
             <img
               src={activePhoto.src}
-              alt={activePhoto.caption || 'photograph'}
+              alt={activePhoto.alt || 'photograph'}
               style={{
                 maxWidth: '100%',
-                maxHeight: '82vh',
+                maxHeight: '88vh',
                 display: 'block',
-                border: '1px solid #000',
               }}
             />
-            {captionLine(activePhoto) && (
-              <div
-                style={{
-                  marginTop: '1rem',
-                  fontFamily: MONO,
-                  fontSize: 10,
-                  letterSpacing: '0.1em',
-                  textTransform: 'lowercase',
-                  color: '#555',
-                  textAlign: 'center',
-                  maxWidth: '48ch',
-                  lineHeight: 1.7,
-                }}
-              >
-                {captionLine(activePhoto)}
-              </div>
-            )}
           </div>
         )}
       </div>

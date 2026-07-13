@@ -215,6 +215,9 @@ function PanelChrome({
         flexDirection: "column",
         fontFamily: MONO,
         overflow: "hidden",
+        // keep panel content above the absolutely-positioned DitherWash
+        position: "relative",
+        zIndex: 1,
       }}
     >
       <header
@@ -1035,48 +1038,88 @@ function ExperiencePanel({ isMobile }) {
   );
 }
 
-const PANELS = [BuiltPanel, WritingPanel, ExperiencePanel];
-
-// WRITING carries a cream wash painted into the section itself, so the colour
-// scrolls in and out spatially with the content instead of the page bg
-// snapping on a scroll threshold. The band is top-weighted: the panel's content
-// sits in the upper part of the 100vh section, so the cream must peak there,
-// not at the section's geometric middle.
+// ── WRITING transition: 1-bit dither zones ───────────────────────────────────
+// The cream lives in the document, not on the screen: WRITING is a solid
+// cream section, and dedicated transition zones sit between it and its
+// neighbours. Each zone is a ramp of dither bands (25% → 50% → 75% cream
+// pixels), so scrolling through it sweeps the screen's cream coverage up
+// continuously, pixel-locked to the scroll — no thresholds, no lag, and no
+// bleed over the neighbouring panels' content. The pixels themselves tick
+// between dither phases (.dither-band in components.css) so the surface
+// reads as live signal, not static paint.
 const CREAM = "rgb(235,225,200)";
-const PANEL_BGS = [
-  null,
-  `linear-gradient(180deg, rgba(235,225,200,0) 0%, ${CREAM} 16%, ${CREAM} 52%, rgba(235,225,200,0) 92%)`,
-  null,
-];
-// On mobile the section collapses to natural height (content fills it), so the
-// band can cover most of the section and just fade at the edges.
-const PANEL_BGS_MOBILE = [
-  null,
-  `linear-gradient(180deg, rgba(235,225,200,0) 0%, ${CREAM} 14%, ${CREAM} 72%, rgba(235,225,200,0) 100%)`,
-  null,
-];
+const CELL = 8; // dither pixel size (px) — keep in sync with --dither-cell in components.css
+
+// conic-gradient tiles: what fraction of each CELL×CELL pixel is cream
+const DITHER_TILES = {
+  25: `conic-gradient(${CREAM} 25%, rgba(0,0,0,0) 0)`,
+  50: `conic-gradient(${CREAM} 25%, rgba(0,0,0,0) 0 50%, ${CREAM} 0 75%, rgba(0,0,0,0) 0)`,
+  75: `conic-gradient(rgba(0,0,0,0) 25%, ${CREAM} 0)`,
+};
+
+// A spacer that dissolves white → cream (or the reverse) between sections.
+function DitherZone({ reverse }) {
+  const steps = reverse ? [75, 50, 25] : [25, 50, 75];
+  return (
+    <div
+      aria-hidden
+      style={{
+        height: "clamp(160px, 36vh, 400px)",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {steps.map((coverage, i) => (
+        <div
+          key={coverage}
+          className="dither-band"
+          style={{
+            flex: 1,
+            backgroundImage: DITHER_TILES[coverage],
+            backgroundSize: `${CELL}px ${CELL}px`,
+            // stagger alternate bands half a cell so it reads as dithering
+            backgroundPosition: i % 2 ? `${CELL / 2}px 0` : "0 0",
+            // staggered bands need a matching animation end so the tick stays
+            // a clean half-cell phase flip (see dither-tick in components.css)
+            "--dither-cell": i % 2 ? `${CELL * 1.5}px` : `${CELL}px`,
+            // alternate tick direction for an organic crawl
+            animationDirection: i % 2 ? "reverse" : "normal",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function PanelSection({ Panel, isMobile, background }) {
+  return (
+    <section
+      style={{
+        width: "100%",
+        minHeight: isMobile ? "auto" : "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: background || "transparent",
+      }}
+    >
+      <Panel isMobile={isMobile} />
+    </section>
+  );
+}
 
 // ── HomePreviewRail ───────────────────────────────────────────────────────────
 // Desktop: each panel locks to a full viewport with the footer rail pinned at
 // the bottom. Mobile: panels collapse to natural height so content → footer →
 // next panel reads continuously, with no dead half-screens. MainPage measures
-// the rail's real height for its scroll math, so this is safe.
+// the rail's real height for its scroll math, so the dither zones' extra
+// height is safe.
 const HomePreviewRail = ({ isMobile }) => (
   <>
-    {PANELS.map((Panel, i) => (
-      <section
-        key={i}
-        style={{
-          width: "100%",
-          minHeight: isMobile ? "auto" : "100vh",
-          display: "flex",
-          flexDirection: "column",
-          background: (isMobile ? PANEL_BGS_MOBILE : PANEL_BGS)[i] || "transparent",
-        }}
-      >
-        <Panel isMobile={isMobile} />
-      </section>
-    ))}
+    <PanelSection Panel={BuiltPanel} isMobile={isMobile} />
+    <DitherZone />
+    <PanelSection Panel={WritingPanel} isMobile={isMobile} background={CREAM} />
+    <DitherZone reverse />
+    <PanelSection Panel={ExperiencePanel} isMobile={isMobile} />
   </>
 );
 

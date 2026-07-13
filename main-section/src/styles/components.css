@@ -2548,3 +2548,24 @@
     font-size: 0.8rem;
   }
 }
+
+/* ── Home rail dither zones ──────────────────────────────────────────────
+   The bands tick between two ordered-dither phases (a half-cell shift) so
+   the transition reads as live signal rather than static paint. Cell size
+   must match CELL in HomePreviewRail.jsx. */
+.dither-band {
+  --dither-cell: 8px;
+  animation: dither-tick 1.6s steps(2) infinite;
+}
+
+@keyframes dither-tick {
+  to {
+    background-position-x: var(--dither-cell);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dither-band {
+    animation: none;
+  }
+}
