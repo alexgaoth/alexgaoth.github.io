@@ -1,0 +1,21 @@
+# Deploys the gallery list worker (see worker.js for what it does).
+#
+# First time:
+#   npx wrangler login          # opens browser
+#   npx wrangler r2 bucket list # find the bucket name, put it below
+#   npx wrangler deploy
+# After that, `npx wrangler deploy` from this directory is all it takes.
+
+name = "gallery-list"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+
+# Intercepts only this exact path; every other photos.alexgaoth.com URL
+# keeps serving straight from the R2 custom domain.
+routes = [
+  { pattern = "photos.alexgaoth.com/list.json", zone_name = "alexgaoth.com" }
+]
+
+[[r2_buckets]]
+binding = "GALLERY"
+bucket_name = "gallery"

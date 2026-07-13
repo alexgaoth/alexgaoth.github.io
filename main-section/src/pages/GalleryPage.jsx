@@ -4,40 +4,33 @@ import SEO from '../components/SEO';
 import { APP_ROUTES } from '../config/site';
 
 /**
- * /gallery — photos served from a Cloudflare R2 public bucket.
+ * /gallery — raw pictures served from the Cloudflare R2 bucket behind
+ * https://photos.alexgaoth.com. No manifest to maintain: R2 doesn't allow
+ * anonymous bucket listing, so a tiny Worker (workers/gallery-list/)
+ * answers GET photos.alexgaoth.com/list.json with the bucket contents.
+ * Whatever images are in the bucket appear here, newest upload first —
+ * adding a photo is just an upload, nothing else.
  *
- * Configuration (Vercel → Project → Settings → Environment Variables):
- *   REACT_APP_GALLERY_BASE_URL
- *     Public base URL of the bucket (no trailing slash needed), e.g.
- *       https://pub-xxxxxxxxxxxxxxxx.r2.dev
- *     or a custom domain like https://photos.alexgaoth.com
- *     Being a REACT_APP_* var it is baked in at build time — redeploy after setting it.
- *
- * Bucket contract — upload alongside the images a `manifest.json` at the base URL
- * (`${REACT_APP_GALLERY_BASE_URL}/manifest.json`), a JSON array, newest first:
- *   [
- *     { "src": "kyoto-alley.jpg", "caption": "kyoto, off the philosopher's path", "date": "2026-05" },
- *     { "src": "https://elsewhere.example/full-url-also-ok.jpg" }
- *   ]
- *   - src      required — filename relative to the base URL, or an absolute URL
- *   - caption  optional — shown under the photo and in the lightbox
- *   - date     optional — free-form string, shown next to the caption
- * The bucket needs public read access and CORS allowing GET from https://alexgaoth.com
- * (manifest.json is fetched cross-origin; the <img> tags themselves don't need CORS).
- *
- * Until the env var is set and the manifest exists, the page renders a quiet
- * "gallery loading soon" empty state — no errors, nothing broken.
+ * Pictures render bare — no borders, no names shown. Filenames only feed
+ * the images' alt text. Until the worker route exists and the bucket has
+ * images, the page renders a quiet "gallery loading soon" empty state.
  */
 
-const GALLERY_BASE_URL = (process.env.REACT_APP_GALLERY_BASE_URL || '').replace(/\/+$/, '');
+const GALLERY_BASE_URL = 'https://photos.alexgaoth.com';
+const LIST_URL = `${GALLERY_BASE_URL}/list.json`;
 
-const resolveSrc = (src) => (/^https?:\/\//.test(src) ? src : `${GALLERY_BASE_URL}/${src}`);
+const IMAGE_RE = /\.(jpe?g|png|webp|gif|avif)$/i;
+// camera-roll style names carry no meaning — generic alt for them
+const NOISE_RE = /^(img|dsc|pxl|screenshot|photo|image)[-_ ]?\d/i;
+
+const altFromName = (key) => {
+  const base = key.split('/').pop().replace(IMAGE_RE, '');
+  if (NOISE_RE.test(base)) return '';
+  return base.replace(/[-_]+/g, ' ').trim();
+};
 
 const MONO = "'Space Mono', monospace";
 const GROTESK = "'Space Grotesk', sans-serif";
-
-const captionLine = (photo) =>
-  [photo.caption, photo.date].filter(Boolean).join(' · ');
 
 function Eyebrow({ children, color = '#888' }) {
   return (
@@ -74,7 +67,7 @@ function Photo({ photo, onOpen }) {
       }}
     >
       <img
-        src={resolveSrc(photo.src)}
+        src={photo.src}
         alt={photo.caption || 'photograph'}
         loading="lazy"
         style={{ display: 'block', width: '100%', height: 'auto' }}
@@ -100,31 +93,36 @@ function Photo({ photo, onOpen }) {
 }
 
 const GalleryPage = () => {
-  // 'loading' | 'ready' | 'empty' — with no base URL configured we are 'empty' from the start.
-  const [status, setStatus] = useState(GALLERY_BASE_URL ? 'loading' : 'empty');
+  // 'loading' | 'ready' | 'empty'
+  const [status, setStatus] = useState('loading');
   const [photos, setPhotos] = useState([]);
   const [active, setActive] = useState(null); // index into photos, or null
 
   useEffect(() => {
-    if (!GALLERY_BASE_URL) return undefined;
     let cancelled = false;
 
-    fetch(`${GALLERY_BASE_URL}/manifest.json`)
+    fetch(LIST_URL)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (cancelled) return;
-        const valid = Array.isArray(data)
-          ? data.filter((item) => item && typeof item.src === 'string' && item.src)
+        // Worker returns [{ key, uploaded }] newest first; tolerate bare strings too.
+        const keys = Array.isArray(data)
+          ? data
+              .map((item) => (typeof item === 'string' ? item : item && item.key))
+              .filter((key) => typeof key === 'string' && IMAGE_RE.test(key))
           : [];
-        if (valid.length > 0) {
-          setPhotos(valid);
+        if (keys.length > 0) {
+          setPhotos(keys.map((key) => ({
+            src: `${GALLERY_BASE_URL}/${encodeURI(key)}`,
+            caption: captionFromName(key),
+          })));
           setStatus('ready');
         } else {
           setStatus('empty');
         }
       })
       .catch(() => {
-        // Bucket not configured yet, offline, CORS, bad JSON — all land on the quiet empty state.
+        // Worker route not deployed yet, offline, CORS — all land on the quiet empty state.
         if (!cancelled) setStatus('empty');
       });
 
@@ -208,7 +206,7 @@ const GalleryPage = () => {
                 marginBottom: '0.6rem',
               }}
             >
-              <Eyebrow>{'// what i saw'}</Eyebrow>
+              <Eyebrow>{'// '}</Eyebrow>
               {status === 'ready' && (
                 <Eyebrow color="#bbb">
                   {photos.length} frame{photos.length === 1 ? '' : 's'}
@@ -237,7 +235,7 @@ const GalleryPage = () => {
                 lineHeight: 1.5,
               }}
             >
-              photographs, newest first. proof i sometimes look up from the screen.
+
             </p>
           </header>
 
@@ -327,7 +325,7 @@ const GalleryPage = () => {
             aria-label={activePhoto.caption || 'photograph'}
           >
             <img
-              src={resolveSrc(activePhoto.src)}
+              src={activePhoto.src}
               alt={activePhoto.caption || 'photograph'}
               style={{
                 maxWidth: '100%',
