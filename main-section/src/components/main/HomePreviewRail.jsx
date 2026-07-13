@@ -298,7 +298,7 @@ function PanelChrome({
 
 // ── 01 BUILT ─────────────────────────────────────────────────────────────────
 
-function BuildLogRow({ ship, onHover }) {
+function BuildLogRow({ ship, onHover, isMobile }) {
   const [hover, setHover] = useState(false);
   const to = ship.anchor
     ? `${APP_ROUTES.projects}#project-${ship.anchor}`
@@ -322,7 +322,7 @@ function BuildLogRow({ ship, onHover }) {
           display: "grid",
           gridTemplateColumns: "44px 1fr auto",
           gap: 10,
-          padding: "6px 6px",
+          padding: isMobile ? "10px 6px" : "6px 6px",
           borderBottom: "1px solid #eee",
           background: hover ? "#000" : "transparent",
           color: hover ? "#fff" : "#000",
@@ -584,10 +584,12 @@ function BuiltPanel({ isMobile }) {
             <span>status</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            {(isMobile ? SHIPS : rest).map((s) => (
+            {/* Mobile shows a capped log — the footer rail carries the rest. */}
+            {(isMobile ? SHIPS.slice(0, 5) : rest).map((s) => (
               <BuildLogRow
                 key={s.name}
                 ship={s}
+                isMobile={isMobile}
                 onHover={!isMobile ? setHoveredShip : undefined}
               />
             ))}
@@ -734,7 +736,7 @@ function InlineList({ label, items }) {
   );
 }
 
-function DoorRow({ d }) {
+function DoorRow({ d, isMobile }) {
   const [hover, setHover] = useState(false);
   return (
     <Link
@@ -746,7 +748,7 @@ function DoorRow({ d }) {
         gridTemplateColumns: "auto 1fr auto",
         gap: 12,
         alignItems: "center",
-        padding: "9px 10px",
+        padding: isMobile ? "12px 10px" : "9px 10px",
         border: "1px solid #000",
         background: hover ? "#000" : "transparent",
         color: hover ? "#fff" : "#000",
@@ -831,7 +833,7 @@ function WritingPanel({ isMobile }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <Eyebrow color={DIM}>{'// the personal side'}</Eyebrow>
           {DOORS.map((d) => (
-            <DoorRow key={d.label} d={d} />
+            <DoorRow key={d.label} d={d} isMobile={isMobile} />
           ))}
         </div>
       </div>
@@ -918,7 +920,7 @@ function EducationRow({ e }) {
 
 // Single entry point to the live /now page — the live grid moved off the
 // home rail; NowPage still fetches profile.json itself.
-function NowStrip() {
+function NowStrip({ isMobile }) {
   const [hover, setHover] = useState(false);
   return (
     <Link
@@ -929,7 +931,7 @@ function NowStrip() {
         display: "flex",
         alignItems: "center",
         gap: 10,
-        padding: "8px 10px",
+        padding: isMobile ? "12px 10px" : "8px 10px",
         border: "1px solid #000",
         background: hover ? "#000" : "transparent",
         color: hover ? "#fff" : "#000",
@@ -1028,7 +1030,7 @@ function ExperiencePanel({ isMobile }) {
       </div>
 
       {/* Live status — one door to /now */}
-      <NowStrip />
+      <NowStrip isMobile={isMobile} />
     </PanelChrome>
   );
 }
@@ -1037,15 +1039,28 @@ const PANELS = [BuiltPanel, WritingPanel, ExperiencePanel];
 
 // WRITING carries a cream wash painted into the section itself, so the colour
 // scrolls in and out spatially with the content instead of the page bg
-// snapping on a scroll threshold.
+// snapping on a scroll threshold. The band is top-weighted: the panel's content
+// sits in the upper part of the 100vh section, so the cream must peak there,
+// not at the section's geometric middle.
 const CREAM = "rgb(235,225,200)";
 const PANEL_BGS = [
   null,
-  `linear-gradient(180deg, rgba(235,225,200,0) 0%, ${CREAM} 32%, ${CREAM} 70%, rgba(235,225,200,0) 100%)`,
+  `linear-gradient(180deg, rgba(235,225,200,0) 0%, ${CREAM} 16%, ${CREAM} 52%, rgba(235,225,200,0) 92%)`,
+  null,
+];
+// On mobile the section collapses to natural height (content fills it), so the
+// band can cover most of the section and just fade at the edges.
+const PANEL_BGS_MOBILE = [
+  null,
+  `linear-gradient(180deg, rgba(235,225,200,0) 0%, ${CREAM} 14%, ${CREAM} 72%, rgba(235,225,200,0) 100%)`,
   null,
 ];
 
 // ── HomePreviewRail ───────────────────────────────────────────────────────────
+// Desktop: each panel locks to a full viewport with the footer rail pinned at
+// the bottom. Mobile: panels collapse to natural height so content → footer →
+// next panel reads continuously, with no dead half-screens. MainPage measures
+// the rail's real height for its scroll math, so this is safe.
 const HomePreviewRail = ({ isMobile }) => (
   <>
     {PANELS.map((Panel, i) => (
@@ -1053,10 +1068,10 @@ const HomePreviewRail = ({ isMobile }) => (
         key={i}
         style={{
           width: "100%",
-          minHeight: "100vh",
+          minHeight: isMobile ? "auto" : "100vh",
           display: "flex",
           flexDirection: "column",
-          background: PANEL_BGS[i] || "transparent",
+          background: (isMobile ? PANEL_BGS_MOBILE : PANEL_BGS)[i] || "transparent",
         }}
       >
         <Panel isMobile={isMobile} />

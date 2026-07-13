@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
 import SEO from '../components/SEO';
 import { APP_ROUTES } from '../config/site';
 
@@ -34,119 +33,71 @@ const GALLERY_BASE_URL = (process.env.REACT_APP_GALLERY_BASE_URL || '').replace(
 
 const resolveSrc = (src) => (/^https?:\/\//.test(src) ? src : `${GALLERY_BASE_URL}/${src}`);
 
-const MONO = "'IBM Plex Mono', 'Space Mono', 'Roboto Mono', monospace";
-
-const styles = {
-  page: {
-    minHeight: '100vh',
-    background: '#FCFBF8',
-    color: '#1A1A1A',
-    fontFamily: MONO,
-    padding: '5.5rem 2.2rem 4rem',
-    boxSizing: 'border-box',
-  },
-  back: {
-    position: 'fixed',
-    top: '2rem',
-    left: '2.2rem',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.45em',
-    fontFamily: MONO,
-    fontSize: '0.63rem',
-    letterSpacing: '0.18em',
-    textTransform: 'lowercase',
-    color: '#1A1A1A',
-    textDecoration: 'none',
-    opacity: 0.32,
-    transition: 'opacity 0.25s ease',
-    zIndex: 12,
-  },
-  header: {
-    maxWidth: '1100px',
-    margin: '0 auto 2.6rem',
-  },
-  title: {
-    fontSize: '0.72rem',
-    fontWeight: 400,
-    letterSpacing: '0.3em',
-    textTransform: 'lowercase',
-    opacity: 0.75,
-    margin: 0,
-  },
-  grid: {
-    maxWidth: '1100px',
-    margin: '0 auto',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(min(240px, 100%), 1fr))',
-    gap: '1.6rem 1.4rem',
-    alignItems: 'start',
-  },
-  figure: {
-    margin: 0,
-    cursor: 'zoom-in',
-  },
-  img: {
-    display: 'block',
-    width: '100%',
-    height: 'auto',
-    filter: 'grayscale(0.08)',
-  },
-  figcaption: {
-    marginTop: '0.55rem',
-    fontSize: '0.6rem',
-    letterSpacing: '0.14em',
-    textTransform: 'lowercase',
-    opacity: 0.45,
-    lineHeight: 1.6,
-  },
-  empty: {
-    minHeight: '55vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: {
-    fontSize: '0.66rem',
-    letterSpacing: '0.24em',
-    textTransform: 'lowercase',
-    opacity: 0.35,
-  },
-  lightbox: {
-    position: 'fixed',
-    inset: 0,
-    zIndex: 100,
-    background: 'rgba(252, 251, 248, 0.96)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '3rem 1.5rem',
-    boxSizing: 'border-box',
-    cursor: 'zoom-out',
-  },
-  lightboxImg: {
-    maxWidth: '100%',
-    maxHeight: '82vh',
-    display: 'block',
-    boxShadow: '0 8px 40px rgba(26, 26, 26, 0.12)',
-  },
-  lightboxCaption: {
-    marginTop: '1.1rem',
-    fontFamily: MONO,
-    fontSize: '0.62rem',
-    letterSpacing: '0.16em',
-    textTransform: 'lowercase',
-    color: '#1A1A1A',
-    opacity: 0.55,
-    textAlign: 'center',
-    maxWidth: '48ch',
-    lineHeight: 1.7,
-  },
-};
+const MONO = "'Space Mono', monospace";
+const GROTESK = "'Space Grotesk', sans-serif";
 
 const captionLine = (photo) =>
   [photo.caption, photo.date].filter(Boolean).join(' · ');
+
+function Eyebrow({ children, color = '#888' }) {
+  return (
+    <span
+      style={{
+        fontFamily: MONO,
+        fontSize: 10,
+        letterSpacing: '0.22em',
+        textTransform: 'uppercase',
+        color,
+        fontWeight: 400,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function Photo({ photo, onOpen }) {
+  const [hover, setHover] = useState(false);
+  const line = captionLine(photo);
+  return (
+    <figure
+      onClick={onOpen}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        margin: 0,
+        border: '1px solid #000',
+        background: hover ? '#000' : '#fff',
+        color: hover ? '#fff' : '#000',
+        transition: 'background 0.15s, color 0.15s',
+        cursor: 'zoom-in',
+      }}
+    >
+      <img
+        src={resolveSrc(photo.src)}
+        alt={photo.caption || 'photograph'}
+        loading="lazy"
+        style={{ display: 'block', width: '100%', height: 'auto' }}
+      />
+      {line && (
+        <figcaption
+          style={{
+            borderTop: `1px solid ${hover ? '#fff' : '#000'}`,
+            padding: '7px 10px',
+            fontFamily: MONO,
+            fontSize: 10,
+            letterSpacing: '0.06em',
+            textTransform: 'lowercase',
+            color: hover ? 'rgba(255,255,255,0.75)' : '#888',
+            lineHeight: 1.5,
+          }}
+        >
+          {line}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
 
 const GalleryPage = () => {
   // 'loading' | 'ready' | 'empty' — with no base URL configured we are 'empty' from the start.
@@ -207,47 +158,169 @@ const GalleryPage = () => {
         path={APP_ROUTES.gallery}
       />
 
-      <div style={styles.page}>
-        <Link to={APP_ROUTES.home} style={styles.back}>
-          <ArrowLeft size={13} strokeWidth={1} />
-          <span>back</span>
-        </Link>
+      <div
+        style={{
+          minHeight: '100vh',
+          background: '#fff',
+          color: '#000',
+          fontFamily: MONO,
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          padding:
+            'clamp(1.4rem,2.6vw,2.4rem) clamp(1.2rem,2.5vw,2.5rem) clamp(1rem,1.8vw,1.8rem)',
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            maxWidth: '1152px',
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+          }}
+        >
+          <Link
+            to={APP_ROUTES.home}
+            state={{ skipParallax: true }}
+            style={{
+              alignSelf: 'flex-start',
+              fontFamily: MONO,
+              fontSize: 10,
+              letterSpacing: '0.18em',
+              textTransform: 'lowercase',
+              color: '#000',
+              textDecoration: 'none',
+              opacity: 0.4,
+              marginBottom: '1.4rem',
+            }}
+          >
+            ← back
+          </Link>
 
-        <header style={styles.header}>
-          <h1 style={styles.title}>影 — gallery</h1>
-        </header>
+          <header style={{ marginBottom: 'clamp(1rem,1.8vw,1.8rem)' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'baseline',
+                marginBottom: '0.6rem',
+              }}
+            >
+              <Eyebrow>{'// what i saw'}</Eyebrow>
+              {status === 'ready' && (
+                <Eyebrow color="#bbb">
+                  {photos.length} frame{photos.length === 1 ? '' : 's'}
+                </Eyebrow>
+              )}
+            </div>
+            <h1
+              style={{
+                fontFamily: GROTESK,
+                fontWeight: 600,
+                fontSize: 'clamp(1.8rem, 4.8vw, 3.8rem)',
+                letterSpacing: '-0.035em',
+                lineHeight: 0.95,
+                margin: '0 0 0.7rem',
+              }}
+            >
+              GALLERY<span style={{ color: '#ccc' }}>.</span>
+            </h1>
+            <p
+              style={{
+                fontSize: 'clamp(0.68rem,0.82vw,0.82rem)',
+                color: '#888',
+                margin: 0,
+                letterSpacing: '0.02em',
+                maxWidth: '70ch',
+                lineHeight: 1.5,
+              }}
+            >
+              photographs, newest first. proof i sometimes look up from the screen.
+            </p>
+          </header>
 
-        {status === 'ready' ? (
-          <main style={styles.grid}>
-            {photos.map((photo, index) => (
-              <figure
-                key={`${photo.src}-${index}`}
-                style={styles.figure}
-                onClick={() => setActive(index)}
-              >
-                <img
-                  src={resolveSrc(photo.src)}
-                  alt={photo.caption || 'photograph'}
-                  loading="lazy"
-                  style={styles.img}
+          {status === 'ready' ? (
+            <main
+              style={{
+                flex: 1,
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(min(240px, 100%), 1fr))',
+                gap: 10,
+                alignItems: 'start',
+                alignContent: 'start',
+              }}
+            >
+              {photos.map((photo, index) => (
+                <Photo
+                  key={`${photo.src}-${index}`}
+                  photo={photo}
+                  onOpen={() => setActive(index)}
                 />
-                {captionLine(photo) && (
-                  <figcaption style={styles.figcaption}>{captionLine(photo)}</figcaption>
-                )}
-              </figure>
-            ))}
-          </main>
-        ) : (
-          <main style={styles.empty}>
-            <span style={styles.emptyText}>
-              {status === 'loading' ? 'developing…' : 'gallery loading soon'}
-            </span>
-          </main>
-        )}
+              ))}
+            </main>
+          ) : (
+            <main
+              style={{
+                flex: 1,
+                minHeight: '40vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Eyebrow color="#bbb">
+                {status === 'loading' ? 'developing…' : 'gallery loading soon'}
+              </Eyebrow>
+            </main>
+          )}
+
+          <footer
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
+              gap: 12,
+              marginTop: 'clamp(1.2rem,2vw,2rem)',
+              paddingTop: '0.45rem',
+              borderTop: '1px solid rgba(0,0,0,0.08)',
+            }}
+          >
+            <Eyebrow>shot on whatever was on hand</Eyebrow>
+            <Link
+              to={APP_ROUTES.home}
+              state={{ skipParallax: true }}
+              style={{
+                fontSize: 11,
+                color: '#000',
+                letterSpacing: '0.04em',
+                textDecoration: 'none',
+                opacity: 0.85,
+                fontFamily: MONO,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              / →
+            </Link>
+          </footer>
+        </div>
 
         {activePhoto && (
           <div
-            style={styles.lightbox}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 100,
+              background: 'rgba(255, 255, 255, 0.97)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '3rem 1.5rem',
+              boxSizing: 'border-box',
+              cursor: 'zoom-out',
+            }}
             onClick={closeLightbox}
             role="dialog"
             aria-modal="true"
@@ -256,10 +329,29 @@ const GalleryPage = () => {
             <img
               src={resolveSrc(activePhoto.src)}
               alt={activePhoto.caption || 'photograph'}
-              style={styles.lightboxImg}
+              style={{
+                maxWidth: '100%',
+                maxHeight: '82vh',
+                display: 'block',
+                border: '1px solid #000',
+              }}
             />
             {captionLine(activePhoto) && (
-              <div style={styles.lightboxCaption}>{captionLine(activePhoto)}</div>
+              <div
+                style={{
+                  marginTop: '1rem',
+                  fontFamily: MONO,
+                  fontSize: 10,
+                  letterSpacing: '0.1em',
+                  textTransform: 'lowercase',
+                  color: '#555',
+                  textAlign: 'center',
+                  maxWidth: '48ch',
+                  lineHeight: 1.7,
+                }}
+              >
+                {captionLine(activePhoto)}
+              </div>
             )}
           </div>
         )}

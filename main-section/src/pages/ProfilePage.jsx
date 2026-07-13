@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import ContentPage from '../components/layout/ContentPage';
@@ -53,7 +53,7 @@ function Eyebrow({ children, color = '#888' }) {
   );
 }
 
-function ElsewhereRow({ link }) {
+function ElsewhereRow({ link, isMobile }) {
   const [hover, setHover] = useState(false);
   return (
     <a
@@ -66,7 +66,7 @@ function ElsewhereRow({ link }) {
         display: 'grid',
         gridTemplateColumns: '96px 1fr auto',
         gap: 10,
-        padding: '7px 6px',
+        padding: isMobile ? '11px 6px' : '7px 6px',
         borderBottom: '1px solid #eee',
         alignItems: 'baseline',
         textDecoration: 'none',
@@ -202,7 +202,15 @@ function Block({ label, children, style }) {
 
 // ── page ─────────────────────────────────────────────────────────────────────
 
-const ProfilePage = () => (
+const ProfilePage = () => {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  return (
   <>
     <SEO
       title="About — Alex Gao (alexgaoth)"
@@ -289,10 +297,13 @@ const ProfilePage = () => (
             </Block>
 
             <Block label="doors">
+              {/* Full-width tap bars on mobile — two 150px columns get cramped. */}
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                  gridTemplateColumns: isMobile
+                    ? '1fr'
+                    : 'repeat(auto-fit, minmax(150px, 1fr))',
                   gap: 8,
                 }}
               >
@@ -308,7 +319,7 @@ const ProfilePage = () => (
             <Block label="elsewhere">
               <div style={{ borderTop: '1px solid #000' }}>
                 {profileData.links.map((link) => (
-                  <ElsewhereRow key={link.href} link={link} />
+                  <ElsewhereRow key={link.href} link={link} isMobile={isMobile} />
                 ))}
               </div>
             </Block>
@@ -348,6 +359,7 @@ const ProfilePage = () => (
         <footer
           style={{
             display: 'flex',
+            flexWrap: 'wrap',
             justifyContent: 'space-between',
             alignItems: 'baseline',
             gap: 12,
@@ -393,6 +405,7 @@ const ProfilePage = () => (
       </div>
     </ContentPage>
   </>
-);
+  );
+};
 
 export default ProfilePage;

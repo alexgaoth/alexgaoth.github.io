@@ -68,9 +68,9 @@ Defined as CSS vars in `global.css`:
   (`live`, `wip`, `stuck`).
 - **Inline lists**: items joined by `·` in `#bbb`, `white-space: nowrap` per item.
 - **Numbered items**: `01` `02` index in `#bbb` before each line (NOW cells).
-- **Natural height + intentional whitespace**: content sits at its own height inside
-  a `min-height: 100vh` section; the empty space below is deliberate. Don't stretch
-  content to fill.
+- **Natural height + intentional whitespace** (desktop): content sits at its own
+  height inside a `min-height: 100vh` section; the empty space below is deliberate.
+  Don't stretch content to fill. On mobile the 100vh lock is dropped — see Mobile.
 
 ## Spacing & density
 
@@ -86,11 +86,42 @@ Defined as CSS vars in `global.css`:
 - Comments-as-labels (`// who`, `// elsewhere`) instead of headings like "Where To Find Me".
 - Prefer deleting a sentence to adding one. Nothing that reads AI-generated.
 
-## Responsiveness
+## Mobile (<768px)
 
-- App-level pages get an `isMobile` width check (≤768px) or plain responsive CSS.
-  Prefer plain CSS (`repeat(auto-fit, minmax(...))`, clamp(), collapsing grids) for
-  new pages. On mobile: one column, drop the secondary/meta column if it crowds.
+One breakpoint: `window.innerWidth < 768`. App-level pages track it in state
+(`isMobile`, passed down from MainPage or checked locally); prefer plain CSS
+(`repeat(auto-fit, minmax(...))`, `clamp()`, collapsing grids) where it suffices.
+The mobile rule in one line: **simplify layout, never content — cut columns and
+rows, keep every fact.**
+
+- **Panels unlock their height.** Desktop panels are `min-height: 100vh` with the
+  footer rail pinned at the viewport bottom; on mobile they collapse to natural
+  height (`min-height: auto`) so content → footer rail → next panel reads as one
+  continuous ledger. No dead half-screens between compact content and a far-away
+  footer. MainPage measures the rail's real height (ResizeObserver) for its
+  scroll math — never reintroduce a `winH * 3` assumption.
+- **One column.** The `1.35fr 1fr` split collapses and the secondary/meta column
+  is dropped entirely if it crowds (BUILT drops the hero card, EXPERIENCE drops
+  trophies/domains/tongues). Cut, don't cram.
+- **Fewer rows, not smaller type.** Cap logs at ~5 entries on mobile (BUILT shows
+  `SHIPS.slice(0, 5)`); the footer rail ("see them all · /projects →") carries
+  the rest.
+- **Tap, not hover.** Hover-invert has no mobile equivalent, so anything tappable
+  must read as tappable at rest: full-width, bordered or ruled, trailing `→`.
+  Information that only appears on hover (the BUILT hero image swap) is
+  desktop-only by definition — never gate content behind it on mobile.
+  Vertical padding on tappable rows goes up on mobile (~10–12px v. 6–9px) so
+  targets clear roughly 40px.
+- **Type floors.** Mono text never below ~10px on mobile; mega titles bottom out
+  at their clamp minimum (1.8–2rem); sub lines stay one sentence. Inline `·`
+  lists may wrap — each item stays `white-space: nowrap` so items break between
+  dots, not mid-word.
+- **About page**: single column (auto-fit grid collapses), doors become
+  full-width tap bars instead of a 2-up grid, footer mirrors wrap. Every
+  SEO-bearing block (facts, aliases, searchable queries) stays.
+- **Cream wash**: gradient stops are percentages of section height — keep the
+  band where the content actually sits (top-weighted on desktop's 100vh
+  sections; wider on mobile's natural-height sections, fading at the edges).
 
 ## Site structure / roles
 

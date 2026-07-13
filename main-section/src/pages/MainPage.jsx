@@ -16,7 +16,22 @@ const MainPage = ({ content }) => {
   const [winH, setWinH] = useState(() => window.innerHeight);
   const titleRef = useRef(null);
   const [titleHeight, setTitleHeight] = useState(130);
+  const railRef = useRef(null);
+  const [railH, setRailH] = useState(0);
   const location = useLocation();
+
+  // The preview rail is 3 × 100vh on desktop but natural height on mobile,
+  // so its real height must be measured — never assume winH * 3.
+  useEffect(() => {
+    const el = railRef.current;
+    if (!el) return undefined;
+    const measure = () => setRailH(el.offsetHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);
@@ -67,15 +82,16 @@ const MainPage = ({ content }) => {
   // into view from below. returnH is the extra spacer above the directory
   // that gives the text phrases their scroll distance.
   const returnH        = winH * 1.1;
-  const returnStart    = introH + winH * 3;
+  const panelsH        = railH || winH * 3;
+  const returnStart    = introH + panelsH;
   const returnProgress = Math.min(1, Math.max(0, (scrollY - returnStart) / returnH));
   const inReturn       = scrollY >= returnStart && returnProgress < 1;
   // Ease used for the directory's entrance translateY — only activates in back half
   const cardP    = Math.max(0, (returnProgress - 0.5) / 0.5);
   const cardEase = 1 - Math.pow(1 - cardP, 3);
 
-  // Left-edge progress rail covers intro + 3 panels + return spacer
-  const totalTracked    = introH + winH * 3 + returnH;
+  // Left-edge progress rail covers intro + panels + return spacer
+  const totalTracked    = introH + panelsH + returnH;
   const overallProgress = Math.min(1, scrollY / totalTracked);
 
   // Scroll hint: appears after 5 s idle, hidden immediately on scroll
@@ -152,7 +168,9 @@ const MainPage = ({ content }) => {
         {/* ── Preview panels ─────────────────────────────────────────────────
             Real scrollable sections, full viewport width.
             No fixed positioning, no translateY tricks. */}
-        <HomePreviewRail isMobile={isMobile} />
+        <div ref={railRef}>
+          <HomePreviewRail isMobile={isMobile} />
+        </div>
 
         {/* ── Return stage spacer ────────────────────────────────────────────
             Scroll distance for the MainPageOverlay text phrases.
