@@ -1,0 +1,347 @@
+---
+// Static port of the CRA MainPage: same content (title, BUILT → WRITING →
+// EXPERIENCE rail, directory cards, footer strips) rendered as source HTML.
+// The scroll-parallax choreography stays client-side-only in the CRA app and
+// can return later as an island; content and links must not depend on it.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, APP_ROUTES } from '../config/site.js';
+import { content } from '../../../main-section/src/data/content.js';
+import {
+  SHIPS,
+  TROPHIES,
+  WRITINGS,
+  DOORS,
+  EXPERIENCE,
+  EDUCATION,
+  DOMAINS,
+  TONGUES,
+} from '../../../main-section/src/data/homeRailData.js';
+
+const CARD_DESCRIPTIONS = {
+  resume: 'My professional experience and skills',
+  projects: 'Creative projects funded by my relentless mind',
+  thoughts: 'Ideas worth saying - maybe worth reading',
+  quotes: 'The good and the bad',
+};
+
+const shipHref = (ship) =>
+  ship.anchor ? `${APP_ROUTES.projects}#project-${ship.anchor}` : APP_ROUTES.projects;
+---
+
+<BaseLayout
+  title={SITE.title}
+  description={SITE.description}
+  keywords={SITE.keywords}
+  path={APP_ROUTES.home}
+>
+  <div class="page-container" style="background-color:#fff">
+    <div class="content-wrapper" style="padding-top:2.5rem;padding-bottom:3rem">
+
+      <header class="title-section-parallax" style="position:relative">
+        <h1 class="title-main">alex gaoth's directory</h1>
+        <div class="title-sub" style="padding-top:0.4rem">
+          <p>I am alex gao, the additional 'th' is here so you can find me easier</p>
+          <p class="reverse-hidden">'th' is the initials of my chinese first name, and u can find me elsewhere all by alexgaoth</p>
+          <p class="hidden">mobile-first redesign coming — works better on desktop for now</p>
+        </div>
+      </header>
+
+      <!-- ── 01 BUILT ── -->
+      <section class="rail-panel">
+        <span class="rail-eyebrow">// what i have</span>
+        <h2 class="rail-title">BUILT<span style="color:#ccc">.</span></h2>
+        <p class="rail-sub">the true answers is uncountable many things but few of value</p>
+        <ul class="ship-list">
+          {SHIPS.map((ship) => (
+            <li>
+              <a href={shipHref(ship)} class="ship-row">
+                <span class="ship-year">{ship.year}</span>
+                <span class="ship-main">
+                  <span class="ship-name">{ship.name}</span>
+                  <span class="ship-tech">{ship.tech}</span>
+                </span>
+                <span class="ship-status">{ship.status}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <footer class="rail-footer">
+          <span class="rail-eyebrow">see them all · github.com/alexgaoth</span>
+          <a href={APP_ROUTES.projects} class="rail-footer-link">/projects →</a>
+        </footer>
+      </section>
+
+      <!-- ── 02 WRITING ── -->
+      <section class="rail-panel">
+        <span class="rail-eyebrow">// what i think</span>
+        <h2 class="rail-title">WRITING<span style="color:rgba(0,0,0,0.18)">.</span></h2>
+        <p class="rail-sub">i like to think, and make others think.</p>
+
+        <span class="rail-eyebrow">// recent thoughts</span>
+        <div class="writing-cards">
+          {WRITINGS.map((w) => (
+            <a href={`${APP_ROUTES.thoughts}/${w.slug}`} class="writing-card">
+              <span class="writing-pull">{w.pull}</span>
+              <span class="writing-title">{w.title}</span>
+              <span class="writing-meta">{w.date} · {w.tag} · {w.read}</span>
+            </a>
+          ))}
+        </div>
+
+        <span class="rail-eyebrow">// the personal side</span>
+        <div class="door-rows">
+          {DOORS.map((d) => (
+            <a href={d.to} class="door-row">
+              <span class="door-glyph">{d.glyph}</span>
+              <span class="door-label">{d.label}</span>
+              <span class="door-note">{d.note}</span>
+              <span class="door-arrow">→</span>
+            </a>
+          ))}
+        </div>
+
+        <footer class="rail-footer">
+          <span class="rail-eyebrow">the long version is in /thoughts</span>
+          <a href={APP_ROUTES.thoughts} class="rail-footer-link">/thoughts →</a>
+        </footer>
+      </section>
+
+      <!-- ── 03 EXPERIENCE ── -->
+      <section class="rail-panel">
+        <span class="rail-eyebrow">// on paper</span>
+        <h2 class="rail-title">EXPERIENCE<span style="color:#ccc">.</span></h2>
+        <p class="rail-sub">math-cs @ ucsd, class of 2029 · previously st paul's london</p>
+
+        <div class="exp-grid">
+          <div>
+            <span class="rail-eyebrow">// work</span>
+            {EXPERIENCE.map((e) => (
+              <div class="exp-row">
+                <span class="exp-role">{e.role}</span>
+                <span class="exp-org">{e.org} · {e.period}</span>
+                <span class="exp-desc">{e.desc}</span>
+              </div>
+            ))}
+            <span class="rail-eyebrow">// education</span>
+            {EDUCATION.map((e) => (
+              <div class="exp-row">
+                <span class="exp-role">{e.school}</span>
+                <span class="exp-desc">{e.detail}</span>
+              </div>
+            ))}
+          </div>
+          <div>
+            <span class="rail-eyebrow">// trophies</span>
+            {TROPHIES.map((t) => (
+              <div class="exp-row">
+                <span class="exp-role">{t.stamp} — {t.label}</span>
+                <span class="exp-desc">{t.year}</span>
+              </div>
+            ))}
+            <div class="inline-list">
+              <span class="rail-eyebrow">// domains of attention</span>
+              <span class="exp-desc">{DOMAINS.join(' · ')}</span>
+            </div>
+            <div class="inline-list">
+              <span class="rail-eyebrow">// tongues</span>
+              <span class="exp-desc">{TONGUES.join(' · ')}</span>
+            </div>
+          </div>
+        </div>
+
+        <a href={APP_ROUTES.now} class="now-strip">
+          <span class="now-dot rail-pulse"></span>
+          <span class="now-strip-label">what i'm doing right now, updated from my phone</span>
+          <span>→</span>
+        </a>
+
+        <footer class="rail-footer">
+          <span class="rail-eyebrow">full record in /resume</span>
+          <a href={APP_ROUTES.resume} class="rail-footer-link">/resume →</a>
+        </footer>
+      </section>
+
+      <!-- ── Directory cards ── -->
+      <div class="cards-section-parallax" style="position:relative">
+        <div class="grid-2col">
+          {Object.entries(content).map(([key, data]) => (
+            <a href={`/${key}`} class="card">
+              <div class="card-image">
+                <img src={data.previewImage} alt={`${data.title} preview`} loading="lazy" />
+              </div>
+              <h3 class="title-card">{data.title}</h3>
+              <p class="card-description">{CARD_DESCRIPTIONS[key]}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- ── Footer strips ── -->
+      <div class="mainpage-footer">
+        <a href={APP_ROUTES.art} class="art-strip mainpage-footer-strip">
+          <span class="art-strip-label">/art</span>
+          <span class="art-strip-arrow">→</span>
+        </a>
+        <a href={APP_ROUTES.gallery} class="art-strip mainpage-footer-strip" style="margin-top:0.5rem">
+          <span class="art-strip-label">/gallery</span>
+          <span class="art-strip-arrow">→</span>
+        </a>
+        <a href={APP_ROUTES.about} class="art-strip mainpage-footer-strip" style="margin-top:0.5rem">
+          <span class="art-strip-label">/about</span>
+          <span class="art-strip-arrow">→</span>
+        </a>
+        <a href={SITE.personalUrl} class="art-strip mainpage-footer-strip" style="margin-top:0.5rem">
+          <span class="art-strip-label">#contact</span>
+          <span class="art-strip-arrow">→</span>
+        </a>
+        <div class="footer">
+          <p>this page is written with React @2022 (now deprecated)</p>
+          <p>No rights reserved – this work by alex is free to use for any purpose.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .rail-panel {
+    margin: clamp(2rem, 5vw, 4rem) 0;
+    font-family: 'Space Mono', monospace;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .rail-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #888;
+  }
+  .rail-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.8rem, 4.8vw, 3.8rem);
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    margin: 0;
+    color: #000;
+  }
+  .rail-sub {
+    font-size: clamp(0.68rem, 0.82vw, 0.82rem);
+    color: #888;
+    margin: 0 0 0.4rem;
+    letter-spacing: 0.02em;
+    max-width: 70ch;
+    line-height: 1.5;
+  }
+  .rail-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 0.45rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .rail-footer-link {
+    font-size: 11px;
+    color: #000;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    opacity: 0.85;
+  }
+  .ship-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ship-row {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    gap: 10px;
+    padding: 8px 6px;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+    text-decoration: none;
+    color: #000;
+    transition: background 0.12s, color 0.12s;
+  }
+  .ship-row:hover { background: #000; color: #fff; }
+  .ship-year { font-size: 10.5px; font-weight: 600; color: #999; }
+  .ship-row:hover .ship-year,
+  .ship-row:hover .ship-tech { color: rgba(255, 255, 255, 0.6); }
+  .ship-main { display: flex; flex-direction: column; min-width: 0; }
+  .ship-name { font-size: 12.5px; font-weight: 500; }
+  .ship-tech { font-size: 9.5px; color: #888; letter-spacing: 0.02em; }
+  .ship-status {
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    padding: 2px 5px;
+    white-space: nowrap;
+  }
+  .writing-cards { display: flex; flex-direction: column; gap: 8px; }
+  .writing-card {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 8px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+    color: #000;
+    transition: background 0.12s, color 0.12s;
+  }
+  .writing-card:hover { background: #000; color: #fff; }
+  .writing-pull { font-size: 11px; color: #888; font-style: italic; }
+  .writing-card:hover .writing-pull,
+  .writing-card:hover .writing-meta { color: rgba(255, 255, 255, 0.6); }
+  .writing-title { font-size: 13px; font-weight: 600; }
+  .writing-meta { font-size: 10px; color: #888; letter-spacing: 0.06em; }
+  .door-rows { display: flex; flex-direction: column; gap: 8px; }
+  .door-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 8px;
+    border: 1px solid #000;
+    text-decoration: none;
+    color: #000;
+    transition: background 0.12s, color 0.12s;
+  }
+  .door-row:hover { background: #000; color: #fff; }
+  .door-glyph { font-size: 20px; }
+  .door-label { font-size: 12px; font-weight: 600; }
+  .door-note { font-size: 10px; color: #888; flex: 1; }
+  .door-row:hover .door-note { color: rgba(255, 255, 255, 0.6); }
+  .exp-grid { display: grid; grid-template-columns: 1fr; gap: 1.2rem; }
+  @media (min-width: 768px) {
+    .exp-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .exp-row { display: flex; flex-direction: column; padding: 8px 6px; border-bottom: 1px solid #eee; }
+  .exp-role { font-size: 12.5px; font-weight: 600; }
+  .exp-org { font-size: 10.5px; color: #888; }
+  .exp-desc { font-size: 10.5px; color: #666; }
+  .inline-list { display: flex; flex-direction: column; padding: 8px 6px; }
+  .now-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid #000;
+    color: #000;
+    text-decoration: none;
+    transition: background 0.12s, color 0.12s;
+    margin-top: 0.6rem;
+  }
+  .now-strip:hover { background: #000; color: #fff; }
+  .now-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #0a7;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .now-strip:hover .now-dot { background: #0f6; }
+  .now-strip-label { font-size: 11px; letter-spacing: 0.04em; flex: 1; }
+</style>

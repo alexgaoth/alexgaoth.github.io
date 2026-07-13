@@ -1,0 +1,11 @@
+---
+// Static port of main-section/src/components/layout/ContentPage.jsx.
+import NavigationBar from './NavigationBar.astro';
+
+const { pageClassName = 'page-container', wrapperClassName = 'content-wrapper-narrow' } = Astro.props;
+---
+
+<NavigationBar />
+<div class={pageClassName}>
+  <div class={wrapperClassName}><slot /></div>
+</div>

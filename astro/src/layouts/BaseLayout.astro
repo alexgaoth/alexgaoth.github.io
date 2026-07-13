@@ -1,0 +1,113 @@
+---
+// Static head for every page — the fix for the CRA empty-shell problem.
+// Mirrors main-section/src/components/SEO.jsx, but rendered at build time so
+// crawlers, social bots, and LLM fetchers see it without executing JS.
+import { SITE, buildAppUrl, buildAssetUrl } from '../config/site.js';
+import '../../../main-section/src/styles/global.css';
+import '../../../main-section/src/styles/components.css';
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+  keywords = SITE.keywords,
+  image,
+  imagePath = SITE.defaultImagePath,
+  path = '/',
+  type = 'website',
+  structuredData = [],
+  alternates = [],
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
+
+const keywordList = Array.isArray(keywords)
+  ? keywords
+  : `${keywords}`.split(',').map((k) => k.trim()).filter(Boolean);
+
+const canonicalUrl = buildAppUrl(path);
+const imageUrl = image || buildAssetUrl(imagePath);
+
+// Base entity schemas live here and only here (SEO-PLAN 0.3: one copy, the
+// richer one). Article/page-specific schemas come in via `structuredData`.
+const baseStructuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: SITE.name,
+    alternateName: [SITE.handle],
+    url: SITE.rootUrl,
+    sameAs: SITE.socialProfiles,
+    jobTitle: 'Student Builder',
+    affiliation: { '@type': 'Organization', name: 'UC San Diego' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE.name,
+    alternateName: SITE.handle,
+    url: SITE.appUrl,
+    author: { '@type': 'Person', name: SITE.name },
+  },
+];
+
+const allStructuredData = [...baseStructuredData, ...structuredData];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/logo.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywordList.join(', ')} />
+    <meta name="author" content={SITE.name} />
+    <meta name="creator" content={SITE.handle} />
+    <meta name="publisher" content={SITE.name} />
+    <meta name="robots" content="index, follow" />
+    <meta name="application-name" content={SITE.name} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title="Alex Gao Thoughts RSS" href="/rss.xml" />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageUrl} />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={imageUrl} />
+    <meta property="twitter:creator" content={SITE.twitterHandle} />
+
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+    {type === 'article' && keywordList.map((keyword) => (
+      <meta property="article:tag" content={keyword} />
+    ))}
+
+    {alternates.map(({ href, hrefLang }) => (
+      <link rel="alternate" hreflang={hrefLang} href={href} />
+    ))}
+    {SITE.socialProfiles.map((profileUrl) => (
+      <link rel="me" href={profileUrl} />
+    ))}
+
+    {allStructuredData.map((item) => (
+      <script type="application/ld+json" set:html={JSON.stringify(item)} />
+    ))}
+
+    <link rel="apple-touch-icon" href="/logo.jpg" />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

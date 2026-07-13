@@ -10,6 +10,10 @@ deployed surfaces:
 
 `app.alexgaoth.com` is a legacy hostname that redirects to `alexgaoth.com`.
 
+`/astro` is the in-progress Astro migration of the main site (SEO-PLAN.md Phase 1+). It is
+not deployed yet; it imports config, data, and styles from `/main-section` so there is one
+source of truth until cutover. Build it with `cd astro && npm install && npm run build`.
+
 ## Repo Layout
 
 ```text
@@ -119,4 +123,5 @@ Cloudflare Worker in `main-section/workers/gallery-list/`, which reads from an R
 The main site is still a CRA single-page app. It uses `react-helmet-async` for route metadata,
 and build scripts generate `sitemap.xml` and `rss.xml`, but crawlers that do not execute
 JavaScript still receive the same empty HTML shell for app routes. See `SEO-PLAN.md` for the
-current migration and cleanup plan.
+current migration and cleanup plan; Phase 1 (static `/`, `/about`, `/resume`, `/projects`,
+`/quotes` in `/astro`) is built but not yet deployed.

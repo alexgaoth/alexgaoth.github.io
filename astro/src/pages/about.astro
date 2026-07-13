@@ -1,0 +1,431 @@
+---
+// Static port of main-section/src/pages/ProfilePage.jsx (/about).
+// Inline JSX style objects converted to the scoped <style> block below;
+// React hover state -> CSS :hover; isMobile state -> 768px media query.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContentPage from '../components/ContentPage.astro';
+import { APP_ROUTES, SITE, buildAppUrl } from '../config/site.js';
+import { profileData } from '../../../main-section/src/data/profileData.js';
+
+const profileStructuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    name: `${SITE.name} (${SITE.handle})`,
+    url: buildAppUrl(APP_ROUTES.about),
+    mainEntity: {
+      '@type': 'Person',
+      name: SITE.name,
+      alternateName: profileData.aliases,
+      url: SITE.rootUrl,
+      sameAs: SITE.socialProfiles,
+      description: SITE.description,
+    },
+  },
+];
+
+const DOORS = [
+  { path: APP_ROUTES.resume, label: '/resume', desc: 'the formal record' },
+  { path: APP_ROUTES.projects, label: '/projects', desc: 'things i made' },
+  { path: APP_ROUTES.thoughts, label: '/thoughts', desc: 'history, lacan, ai' },
+  { path: APP_ROUTES.art, label: '/art', desc: 'poetry, ci, regents' },
+  { path: APP_ROUTES.gallery, label: '/gallery', desc: 'photographs' },
+  { path: APP_ROUTES.now, label: '/now', desc: 'this month, live', live: true },
+];
+---
+
+<BaseLayout
+  title="About — Alex Gao (alexgaoth)"
+  description="Alex Gao (alexgaoth) — Math-CS at UC San Diego. Who he is, what he builds and writes, and where to find him."
+  keywords={[...profileData.searchableQueries, 'about', 'profile', 'Tianhao Gao']}
+  path={APP_ROUTES.about}
+  structuredData={profileStructuredData}
+>
+  <ContentPage wrapperClassName="content-wrapper">
+    <div class="profile-root">
+      {/* header stack: eyebrow → mega title → sub */}
+      <header class="profile-header">
+        <div class="profile-eyebrow-slot">
+          <span class="eyebrow">{'// who'}</span>
+        </div>
+        <h1 class="profile-title">
+          ALEX GAO<span class="profile-title-dot">.</span>
+        </h1>
+        <div class="profile-intro">
+          {profileData.intro.map((paragraph) => (
+            <p class="profile-intro-p">{paragraph}</p>
+          ))}
+        </div>
+      </header>
+
+      {/* two columns on desktop, one on mobile */}
+      <div class="profile-columns">
+        {/* left — focus + doors */}
+        <div class="profile-col">
+          <div class="block">
+            <div class="block-label">
+              <span class="eyebrow">{'// focus'}</span>
+            </div>
+            <div class="rule-top">
+              {profileData.focus.map((item, i) => (
+                <div class="focus-row">
+                  <span class="focus-index">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="focus-text">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label">
+              <span class="eyebrow">{'// doors'}</span>
+            </div>
+            <div class="doors-grid">
+              {DOORS.map((door) => (
+                <a href={door.path} class="door-card">
+                  <div class="door-head">
+                    <span class="door-label">
+                      {door.label}
+                      {door.live && <span class="rail-pulse door-live-dot" />}
+                    </span>
+                    <span class="door-arrow">→</span>
+                  </div>
+                  <span class="door-desc">{door.desc}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* right — elsewhere + record */}
+        <div class="profile-col">
+          <div class="block">
+            <div class="block-label">
+              <span class="eyebrow">{'// elsewhere'}</span>
+            </div>
+            <div class="rule-top">
+              {profileData.links.map((link) => (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="elsewhere-row"
+                >
+                  <span class="elsewhere-label">{link.label}</span>
+                  <span class="elsewhere-handle">{link.handle}</span>
+                  <span class="elsewhere-arrow">→</span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label">
+              <span class="eyebrow">{'// on record'}</span>
+            </div>
+            <div class="rule-top">
+              {profileData.facts.map((fact) => (
+                <div class="fact-row">
+                  <span class="fact-label">{fact.label}</span>
+                  <span class="fact-value">{fact.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label">
+              <span class="eyebrow">{'// also answers to'}</span>
+            </div>
+            <p class="aliases">
+              {profileData.aliases.map((alias, i) => (
+                <span class="alias">
+                  {alias}
+                  {i < profileData.aliases.length - 1 && (
+                    <span class="alias-sep"> &nbsp;·&nbsp; </span>
+                  )}
+                </span>
+              ))}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* footer rail */}
+      <footer class="profile-footer">
+        <span class="mirrors">
+          {profileData.mirrors.map((m, i) => (
+            <span class="mirror">
+              <a href={m.href} class="mirror-link">{m.label}</a>
+              {i < profileData.mirrors.length - 1 && ' · '}
+            </span>
+          ))}
+        </span>
+        <a href={APP_ROUTES.home} class="home-link">/ →</a>
+      </footer>
+    </div>
+  </ContentPage>
+</BaseLayout>
+
+<style>
+  .profile-root {
+    font-family: 'Space Mono', monospace;
+    color: #000;
+  }
+
+  .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #888;
+    font-weight: 400;
+  }
+
+  /* ── header ── */
+  .profile-header {
+    margin-bottom: clamp(1.6rem, 3vw, 2.6rem);
+  }
+  .profile-eyebrow-slot {
+    margin-bottom: 0.6rem;
+  }
+  .profile-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 5.2vw, 3.8rem);
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    margin: 0 0 0.9rem;
+  }
+  .profile-title-dot {
+    color: #ccc;
+  }
+  .profile-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    max-width: 62ch;
+  }
+  .profile-intro-p {
+    margin: 0;
+    font-size: clamp(0.72rem, 0.9vw, 0.85rem);
+    line-height: 1.7;
+    color: #555;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── layout ── */
+  .profile-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: clamp(1.6rem, 3vw, 2.6rem);
+    align-items: start;
+  }
+  .profile-col {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.4rem, 2.4vw, 2rem);
+  }
+  .block {
+    display: flex;
+    flex-direction: column;
+  }
+  .block-label {
+    margin-bottom: 7px;
+  }
+  .rule-top {
+    border-top: 1px solid #000;
+  }
+
+  /* ── focus ── */
+  .focus-row {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    padding: 7px 6px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .focus-index {
+    color: #bbb;
+    font-size: 10px;
+    min-width: 16px;
+  }
+  .focus-text {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* ── doors ── */
+  .doors-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* full-width tap bars on mobile */
+    gap: 8px;
+  }
+  @media (min-width: 768px) {
+    .doors-grid {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+  }
+  .door-card {
+    border: 1px solid #000;
+    padding: 12px 14px;
+    background: transparent;
+    color: #000;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: 'Space Mono', monospace;
+  }
+  .door-card:hover {
+    background: #000;
+    color: #fff;
+  }
+  .door-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .door-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.015em;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .door-live-dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    background: #0a7;
+    border-radius: 50%;
+  }
+  .door-card:hover .door-live-dot {
+    background: #0f6;
+  }
+  .door-arrow {
+    font-size: 12px;
+  }
+  .door-desc {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: #888;
+  }
+  .door-card:hover .door-desc {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* ── elsewhere ── */
+  .elsewhere-row {
+    display: grid;
+    grid-template-columns: 96px 1fr auto;
+    gap: 10px;
+    padding: 11px 6px; /* mobile */
+    border-bottom: 1px solid #eee;
+    align-items: baseline;
+    text-decoration: none;
+    background: transparent;
+    color: #000;
+    transition: background 0.12s, color 0.12s;
+    font-family: 'Space Mono', monospace;
+  }
+  @media (min-width: 768px) {
+    .elsewhere-row {
+      padding: 7px 6px;
+    }
+  }
+  .elsewhere-row:hover {
+    background: #000;
+    color: #fff;
+  }
+  .elsewhere-label {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999;
+    white-space: nowrap;
+  }
+  .elsewhere-row:hover .elsewhere-label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .elsewhere-handle {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .elsewhere-arrow {
+    font-size: 12px;
+  }
+
+  /* ── on record ── */
+  .fact-row {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 10px;
+    padding: 6px 6px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    align-items: baseline;
+    font-family: 'Space Mono', monospace;
+  }
+  .fact-label {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999;
+  }
+  .fact-value {
+    font-size: 11.5px;
+    line-height: 1.4;
+  }
+
+  /* ── aliases ── */
+  .aliases {
+    margin: 0;
+    font-size: 11.5px;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+  }
+  .alias {
+    white-space: nowrap;
+  }
+  .alias-sep {
+    color: #bbb;
+  }
+
+  /* ── footer rail ── */
+  .profile-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: clamp(2rem, 4vw, 3.2rem);
+    padding-top: 0.45rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .mirrors {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #888;
+  }
+  .mirror {
+    white-space: nowrap;
+  }
+  .mirror-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .home-link {
+    font-size: 11px;
+    color: #000;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    opacity: 0.85;
+    white-space: nowrap;
+  }
+</style>

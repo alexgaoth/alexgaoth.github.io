@@ -1,0 +1,57 @@
+---
+// Static port of main-section/src/pages/ProjectsPage.jsx (data={content.projects}).
+// The compact-view toggle (CompactViewButton + compacting grid) is a JS-only
+// visual nicety and is intentionally dropped; the default expanded layout is
+// what the CRA page renders on load.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContentPage from '../components/ContentPage.astro';
+import ProjectCard from '../components/projects/ProjectCard.astro';
+import { APP_ROUTES } from '../config/site.js';
+import { content } from '../../../main-section/src/data/content.js';
+
+// Must match projectSlug() in ProjectsPage.jsx exactly — other pages deep-link
+// to these /projects#project-<slug> anchors.
+const projectSlug = (name) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+const data = content.projects;
+---
+
+<BaseLayout
+  title="Projects — Alex Gao"
+  description="Things Alex Gao (alexgaoth) has built."
+  keywords={['Alex Gao', 'alexgaoth', 'Student Builder', 'projects']}
+  path={APP_ROUTES.projects}
+>
+  <ContentPage>
+    <h1 class="title-page">Things That I've Made</h1>
+
+    <div class="grid-1col">
+      {data.content.map((project) => (
+        <div id={`project-${projectSlug(project.name)}`}>
+          <ProjectCard project={project} />
+        </div>
+      ))}
+    </div>
+  </ContentPage>
+</BaseLayout>
+
+<script>
+  // Minimal image-carousel replacement for the React state in ProjectCard.jsx.
+  // Without JS, the first image of each project is still visible in the HTML.
+  document.querySelectorAll('.project-image-container').forEach((container) => {
+    const images = container.querySelectorAll('.project-image');
+    if (images.length <= 1) return;
+    const counter = container.querySelector('.image-counter');
+    let current = 0;
+    const show = (i) => {
+      current = (i + images.length) % images.length;
+      images.forEach((img, j) => {
+        img.style.display = j === current ? '' : 'none';
+      });
+      if (counter) counter.textContent = `${current + 1} / ${images.length}`;
+    };
+    container.querySelector('.image-nav-btn.prev')?.addEventListener('click', () => show(current - 1));
+    container.querySelector('.image-nav-btn.next')?.addEventListener('click', () => show(current + 1));
+  });
+</script>

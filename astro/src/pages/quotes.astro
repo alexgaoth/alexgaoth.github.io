@@ -1,0 +1,98 @@
+---
+// Static port of main-section/src/pages/QuotesPage.jsx.
+// The CRA page renders the quotes twice: once in the interactive QuoteWheel
+// and once in a clickable list whose descriptions/related articles live in a
+// QuoteModal. Here every piece of that content — quote, attribution,
+// description ("Why this matters") and related-article links — is emitted
+// directly in the static HTML so crawlers see it without executing JS.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContentPage from '../components/ContentPage.astro';
+import { content } from '../../../main-section/src/data/content.js';
+import thoughtsManifest from '../../../main-section/src/data/thoughtsManifest.json';
+import { APP_ROUTES } from '../config/site.js';
+
+const quotes = content.quotes.content;
+
+// Mirror of QuoteModal's slug -> article lookup.
+const getArticleDetails = (slugs) => {
+  if (!slugs || !Array.isArray(slugs)) return [];
+  return slugs
+    .map((slug) => thoughtsManifest.find((article) => article.slug === slug))
+    .filter((article) => article !== undefined);
+};
+---
+
+<BaseLayout
+  title="Quotes — Alex Gao"
+  description="Quotes collected by Alex Gao (alexgaoth)."
+  keywords={['Alex Gao', 'alexgaoth', 'quotes']}
+  path={APP_ROUTES.quotes}
+>
+  <ContentPage>
+    <h1 class="title-page">Quotes</h1>
+
+    <div class="space-y-large">
+      {quotes.map((item) => {
+        const articles = getArticleDetails(item.relatedArticles);
+        return (
+          <figure class="quote-block quote-figure">
+            <blockquote>
+              <p class="quote-text">"{item.quote}"</p>
+            </blockquote>
+            <figcaption>
+              <cite class="quote-author">— {item.author}</cite>
+            </figcaption>
+
+            {item.description && <p class="quote-note">{item.description}</p>}
+
+            {articles.length > 0 && (
+              <p class="quote-related">
+                Related:{' '}
+                {articles.map((article, i) => (
+                  <>
+                    {i > 0 && ', '}
+                    <a href={`${APP_ROUTES.thoughts}/${article.slug}`} class="quote-related-link">
+                      {article.title}
+                    </a>
+                  </>
+                ))}
+              </p>
+            )}
+          </figure>
+        );
+      })}
+    </div>
+  </ContentPage>
+</BaseLayout>
+
+<style>
+  /* Neutralize browser defaults so the figure/blockquote markup renders
+     identically to the CRA page's bare <blockquote class="quote-block">. */
+  .quote-figure {
+    margin: 0;
+  }
+  .quote-figure blockquote {
+    margin: 0;
+  }
+  .quote-figure .quote-text {
+    margin-top: 0;
+  }
+
+  /* Static stand-ins for the QuoteModal's description and related articles. */
+  .quote-note {
+    margin: 1rem 0 0;
+    font-size: 1rem;
+    font-weight: 200;
+    font-style: italic;
+    color: #333;
+  }
+  .quote-related {
+    margin: 0.75rem 0 0;
+    font-size: 0.875rem;
+    font-weight: 200;
+  }
+  .quote-related-link {
+    color: black;
+    text-decoration: underline;
+  }
+</style>

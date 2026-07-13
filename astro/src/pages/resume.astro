@@ -1,0 +1,61 @@
+---
+// Static port of main-section/src/pages/ResumePage.jsx (data={content.resume}).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContentPage from '../components/ContentPage.astro';
+import { APP_ROUTES } from '../config/site.js';
+import { content } from '../../../main-section/src/data/content.js';
+
+const data = content.resume;
+---
+
+<BaseLayout
+  title="Resume — Alex Gao"
+  description="Alex Gao (alexgaoth) resume."
+  keywords={['Alex Gao', 'alexgaoth', 'resume', 'UCSD']}
+  path={APP_ROUTES.resume}
+>
+  <ContentPage>
+    <h1 class="title-page">Resume</h1>
+    <p class="mb-small">
+      To view my proper resume here:{' '}
+      <a href="https://alexgaoth.com/resume.pdf" target="_blank" rel="noopener noreferrer">view resume</a>
+    </p>
+    <div class="space-y-large">
+      <section>
+        <h2 class="title-section">Experience</h2>
+        {data.content.experience.map((job) => (
+          <div class="experience-item">
+            <div class="experience-header">
+              <h3 class="experience-role">{job.role}</h3>
+              <span class="experience-period">{job.period}</span>
+            </div>
+            <p class="font-medium mb-small">{job.company}</p>
+            <p class="text-gray">{job.description}</p>
+          </div>
+        ))}
+      </section>
+
+      <section>
+        <h2 class="title-section">Skills</h2>
+        <div class="skills-grid">
+          {data.content.skills.map((skill) => (
+            <span class="tag-white">{skill}</span>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 class="title-section">Education</h2>
+        <div>
+          {data.content.education.map((study_experience) => (
+            <div class="experience-item">
+              <h3 class="text-xl font-semibold">{study_experience.degree}</h3>
+              <p class="font-medium">{study_experience.institution}</p>
+              <p class="text-gray">{study_experience.year}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  </ContentPage>
+</BaseLayout>
