@@ -1141,9 +1141,12 @@ function Board({ onBack, now }) {
     debounceRef.current[id] = setTimeout(async () => {
       debounceRef.current[id] = null;
       const meta = val.width != null ? { slipWidth: Math.round(val.width) } : {};
+      // update, not upsert: rows are fixed — visitors only fill existing slips,
+      // and RLS has no INSERT policy (upsert trips its check even on updates)
       const { error } = await supabase
         .from("guest_slips")
-        .upsert({ id, name: val.name, content: val.text, meta, updated_at: new Date().toISOString() });
+        .update({ name: val.name, content: val.text, meta, updated_at: new Date().toISOString() })
+        .eq("id", id);
       if (error) {
         setSyncStatus("error");
         setSaveState("error");
