@@ -1,0 +1,59 @@
+---
+// Static port of main-section/src/components/ThoughtsSidebar.jsx.
+// Year/month grouping uses <details> so it stays collapsible without JS and
+// every article link is in the source HTML. Years default open (matching the
+// CRA initial state); months default open so no link hides from crawlers.
+import { APP_ROUTES } from '../config/site.js';
+
+const { articles, currentSlug = null } = Astro.props;
+
+const MONTH_ORDER = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+const groups = {};
+for (const article of articles) {
+  const [year, month] = article.date.split('-');
+  const monthName = MONTH_ORDER[Number(month) - 1];
+  ((groups[year] ??= {})[monthName] ??= []).push(article);
+}
+const years = Object.keys(groups).sort((a, b) => b - a);
+
+const truncate = (title, max = 40) => (title.length > max ? `${title.substring(0, max)}...` : title);
+---
+
+<aside class="thoughts-sidebar">
+  <div class="sidebar-content">
+    {years.map((year) => (
+      <details class="sidebar-year" open>
+        <summary class="sidebar-year-title clickable">{year}</summary>
+        {MONTH_ORDER.filter((month) => groups[year][month]).map((month) => (
+          <details class="sidebar-month" open>
+            <summary class="sidebar-month-title clickable">{month}</summary>
+            <ul class="sidebar-articles">
+              {groups[year][month].map((article) => (
+                <li>
+                  <a
+                    href={`${APP_ROUTES.thoughts}/${article.slug}`}
+                    class={`sidebar-article-link ${article.slug === currentSlug ? 'active' : ''}`}
+                  >
+                    {truncate(article.title)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ))}
+      </details>
+    ))}
+  </div>
+</aside>
+
+<style>
+  /* <summary> replaces the CRA's h4/h5 toggles — keep their look. */
+  summary { list-style: none; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: '▸ '; font-size: 0.7em; }
+  details[open] > summary::before { content: '▾ '; }
+</style>

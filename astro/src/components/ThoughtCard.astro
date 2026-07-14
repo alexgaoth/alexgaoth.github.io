@@ -1,0 +1,45 @@
+---
+// Static port of main-section/src/components/thoughts/ThoughtCard.jsx.
+import { APP_ROUTES } from '../config/site.js';
+
+const { thought, readTime } = Astro.props;
+---
+
+<a href={`${APP_ROUTES.thoughts}/${thought.slug}`} class="thought-card-link">
+  <article class="thought-card">
+    {thought.image && (
+      <div class="thought-image-container">
+        <img src={thought.image} alt={thought.title} class="thought-image" loading="lazy" />
+      </div>
+    )}
+
+    <div class="thought-content">
+      <div class="article-header">
+        <h2 class="title-article">{thought.title}</h2>
+        <div class="article-meta">
+          <time class="date-badge">{thought.date}</time>
+          {readTime && (
+            <span class="read-time">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              {readTime}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {thought.tags && (
+        <div class="article-tags">
+          {thought.tags.map((tag) => (
+            <span class="article-tag">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"></circle></svg>
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <p class="text-gray leading-relaxed">{thought.excerpt}</p>
+      <span class="read-more-btn">Read Full Article →</span>
+    </div>
+  </article>
+</a>

@@ -1,0 +1,131 @@
+---
+// Hub for the writing side of the site (SEO-PLAN Phase 2). One real page
+// linking every essay, the poetry and ci collections, and the feeds — so the
+// site's conceptual structure is discoverable through normal links. Per-tag
+// hubs are deliberately skipped until enough essays cluster around a topic;
+// thin tag pages would hurt more than help.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavigationBar from '../components/NavigationBar.astro';
+import { APP_ROUTES } from '../config/site.js';
+import { calculateReadTime, getThoughts } from '../lib/thoughts.js';
+
+const entries = await getThoughts();
+---
+
+<BaseLayout
+  title="Writing — Alex Gao"
+  description="All writing by Alex Gao (alexgaoth): essays on history, philosophy, and AI, plus Chinese poetry (诗) and ci (词)."
+  keywords={['Alex Gao', 'alexgaoth', 'writing', 'essays', 'poetry', '诗', '词']}
+  path="/writing"
+>
+  <NavigationBar />
+  <div class="page-container">
+    <div class="content-wrapper-narrow">
+      <h1 class="title-page">writing</h1>
+      <p class="writing-intro">
+        i like to think, and make others think. the essays are where a thought
+        went deep enough to be worth writing down; the poetry and ci are older —
+        most of it written around fifteen, abroad, with too much free time.
+      </p>
+
+      <section class="writing-section">
+        <span class="writing-eyebrow">// essays</span>
+        <ul class="writing-list">
+          {entries.map((entry) => (
+            <li>
+              <a href={`${APP_ROUTES.thoughts}/${entry.data.slug}`} class="writing-row">
+                <span class="writing-row-title">{entry.data.title}</span>
+                <span class="writing-row-excerpt">{entry.data.excerpt}</span>
+                <span class="writing-row-meta">
+                  {entry.data.date} · {entry.data.tags[0].toLowerCase()} · {calculateReadTime(entry.body)}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="writing-note">
+          also as <a href="/rss.xml">rss</a> · index at <a href="/thoughts">/thoughts</a>
+        </p>
+      </section>
+
+      <section class="writing-section">
+        <span class="writing-eyebrow">// verse</span>
+        <ul class="writing-list">
+          <li class="writing-row">
+            <a href={APP_ROUTES.poetry} class="writing-row-title">诗 — poetry</a>
+            <span class="writing-row-excerpt">chinese verse, with context and commentary</span>
+            <span class="writing-row-meta">中文 · <a href={APP_ROUTES.poetryEn} class="writing-inline-link">english version</a> · plain text at <a href="/poetry.txt" class="writing-inline-link">/poetry.txt</a></span>
+          </li>
+          <li class="writing-row">
+            <a href={APP_ROUTES.ci} class="writing-row-title">词 — ci</a>
+            <span class="writing-row-excerpt">written to song-dynasty tunes</span>
+            <span class="writing-row-meta">中文 · <a href={APP_ROUTES.ciEn} class="writing-inline-link">english version</a> · plain text at <a href="/ci.txt" class="writing-inline-link">/ci.txt</a></span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="writing-section">
+        <span class="writing-eyebrow">// adjacent</span>
+        <p class="writing-note">
+          <a href="/quotes">/quotes</a> — the good and the bad, collected ·
+          <a href="/now">/now</a> — what i'm writing right now
+        </p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .writing-intro {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: #555;
+    line-height: 1.7;
+    max-width: 62ch;
+    margin-bottom: 2rem;
+  }
+  .writing-section { margin-bottom: 2.2rem; }
+  .writing-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #888;
+  }
+  .writing-list { list-style: none; margin: 0.6rem 0 0; padding: 0; }
+  .writing-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 11px 8px;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    transition: background 0.12s, color 0.12s;
+  }
+  a.writing-row:hover { background: #000; color: #fff; }
+  .writing-row-title { font-size: 13px; font-weight: 600; color: #000; text-decoration: none; }
+  a.writing-row-title:hover { text-decoration: underline; }
+  .writing-row-excerpt {
+    font-size: 11px;
+    color: #666;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .writing-row-meta { font-size: 10px; color: #888; letter-spacing: 0.06em; }
+  .writing-row:hover .writing-row-excerpt,
+  .writing-row:hover .writing-row-meta { color: rgba(255, 255, 255, 0.6); }
+  .writing-inline-link { color: inherit; }
+  .writing-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: #888;
+    margin-top: 0.8rem;
+  }
+  .writing-note a { color: #000; }
+  .writing-row:hover .writing-inline-link { color: #fff; }
+</style>

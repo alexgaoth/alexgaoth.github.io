@@ -1,0 +1,53 @@
+---
+// Static port of main-section/src/pages/ThoughtsPage.jsx (compact-view
+// toggle dropped — pure JS nicety; default expanded layout rendered).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavigationBar from '../components/NavigationBar.astro';
+import ThoughtCard from '../components/ThoughtCard.astro';
+import ThoughtsSidebar from '../components/ThoughtsSidebar.astro';
+import { APP_ROUTES } from '../config/site.js';
+import { calculateReadTime, getThoughts } from '../lib/thoughts.js';
+
+const entries = await getThoughts();
+const articles = entries.map((entry) => entry.data);
+---
+
+<BaseLayout
+  title="Thoughts — Alex Gao"
+  description="Writing by Alex Gao (alexgaoth)."
+  keywords={['Alex Gao', 'alexgaoth', 'writing', 'thoughts']}
+  path={APP_ROUTES.thoughts}
+>
+  <NavigationBar />
+  <div class="thoughts-page-layout">
+    <ThoughtsSidebar articles={articles} />
+
+    <div class="thoughts-page-content">
+      <div class="page-container">
+        <div class="content-wrapper-narrow">
+          <h1 class="title-page">Thoughts</h1>
+
+          <p class="writing-hub-strip">
+            essays live here — poetry and ci live in <a href="/writing">/writing</a>
+          </p>
+
+          <div class="space-y-medium">
+            {entries.map((entry) => (
+              <ThoughtCard thought={entry.data} readTime={calculateReadTime(entry.body)} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .writing-hub-strip {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: #888;
+    margin-bottom: 1.4rem;
+  }
+  .writing-hub-strip a { color: #000; }
+</style>

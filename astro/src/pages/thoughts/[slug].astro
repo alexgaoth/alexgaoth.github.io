@@ -1,0 +1,173 @@
+---
+// Static port of main-section/src/pages/ThoughtArticlePage.jsx — the payload
+// of the migration: the full article body ships in source HTML, with
+// per-article meta, Article JSON-LD, and onward links to related thoughts.
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NavigationBar from '../../components/NavigationBar.astro';
+import ThoughtsSidebar from '../../components/ThoughtsSidebar.astro';
+import { APP_ROUTES, SITE } from '../../config/site.js';
+import {
+  calculateReadTime,
+  getThoughts,
+  pickRelated,
+  thoughtUrl,
+  toIsoDateString,
+} from '../../lib/thoughts.js';
+
+export async function getStaticPaths() {
+  const entries = await getThoughts();
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry, entries },
+  }));
+}
+
+const { entry, entries } = Astro.props;
+const article = entry.data;
+const { Content } = await render(entry);
+
+const readTime = calculateReadTime(entry.body);
+const publishedTime = toIsoDateString(article.date);
+const modifiedTime = toIsoDateString(article.modified || article.date);
+const keywords = ['Alex Gao', 'alexgaoth', ...article.tags];
+const related = pickRelated(entry, entries);
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.title,
+  description: article.excerpt,
+  author: {
+    '@type': 'Person',
+    name: SITE.name,
+    alternateName: SITE.handle,
+    url: SITE.rootUrl,
+  },
+  mainEntityOfPage: thoughtUrl(article.slug),
+  image: [`${SITE.appUrl}${article.image}`],
+  datePublished: publishedTime,
+  dateModified: modifiedTime,
+  keywords,
+};
+---
+
+<BaseLayout
+  title={`${article.title} — Alex Gao (alexgaoth)`}
+  description={article.excerpt}
+  keywords={keywords}
+  path={`${APP_ROUTES.thoughts}/${article.slug}`}
+  imagePath={article.image}
+  type="article"
+  publishedTime={publishedTime}
+  modifiedTime={modifiedTime}
+  structuredData={[articleSchema]}
+>
+  <NavigationBar />
+  <div class="article-page-layout">
+    <ThoughtsSidebar articles={entries.map((e) => e.data)} currentSlug={article.slug} />
+
+    <div class="article-page-content">
+      <div class="article-page-wrapper">
+        <a href={APP_ROUTES.thoughts} class="btn-back">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+          Back to Thoughts
+        </a>
+
+        {article.image && (
+          <div class="article-page-image">
+            <img src={article.image} alt={article.title} />
+          </div>
+        )}
+
+        <header class="article-page-header">
+          <h1 class="article-page-title">{article.title}</h1>
+
+          <div class="article-page-meta">
+            <time class="article-date" datetime={article.date}>{article.date}</time>
+            <span class="article-read-time">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              {readTime}
+            </span>
+          </div>
+
+          <div class="article-page-tags">
+            {article.tags.map((tag) => (
+              <span class="article-page-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"></circle></svg>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </header>
+
+        <article class="article-body markdown-content">
+          <Content />
+        </article>
+
+        {related.length > 0 && (
+          <nav class="related-thoughts" aria-label="Related thoughts">
+            <span class="related-eyebrow">// related</span>
+            <ul class="related-list">
+              {related.map((rel) => (
+                <li>
+                  <a href={`${APP_ROUTES.thoughts}/${rel.data.slug}`} class="related-link">
+                    <span class="related-title">{rel.data.title}</span>
+                    <span class="related-meta">{rel.data.date} · {rel.data.tags[0].toLowerCase()}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  /* Markdown renders with plain tags here (the CRA version re-mapped them to
+     .article-h1 etc. via react-markdown); style them inside .article-body. */
+  .article-body h1, .article-body h2, .article-body h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    line-height: 1.25;
+    margin: 1.6em 0 0.5em;
+  }
+  .article-body h1 { font-size: 1.6rem; }
+  .article-body h2 { font-size: 1.3rem; }
+  .article-body h3 { font-size: 1.1rem; }
+  .article-body p { margin: 0 0 1em; line-height: 1.75; }
+  .article-body ul, .article-body ol { margin: 0 0 1em 1.4em; }
+  .article-body li { margin-bottom: 0.4em; line-height: 1.6; }
+  .article-body mjx-container svg { max-width: 100%; }
+</style>
+
+<style>
+  .related-thoughts {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-family: 'Space Mono', monospace;
+  }
+  .related-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #888;
+  }
+  .related-list { list-style: none; margin: 0.6rem 0 0; padding: 0; }
+  .related-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 9px 6px;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: #000;
+    transition: background 0.12s, color 0.12s;
+  }
+  .related-link:hover { background: #000; color: #fff; }
+  .related-title { font-size: 12.5px; font-weight: 600; }
+  .related-meta { font-size: 10px; color: #888; letter-spacing: 0.06em; }
+  .related-link:hover .related-meta { color: rgba(255, 255, 255, 0.6); }
+</style>
