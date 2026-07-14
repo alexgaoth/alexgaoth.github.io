@@ -2,11 +2,18 @@
 // Static port of main-section/src/pages/PoetryCollectionPage.jsx (lang="en").
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LiteraryCollection from '../../components/LiteraryCollection.astro';
-import { POETRY_TEXT, buildPoetryAiPrompt, buildPoetryCopyText } from '../../components/literaryConfig.js';
+import { POETRY_TEXT, buildPoetryAiPrompt, buildPoetryCopyText, buildCollectionSchema } from '../../components/literaryConfig.js';
 import { APP_ROUTES, buildAppUrl } from '../../config/site.js';
 import { poems } from '../../../../main-section/src/data/poetryData.js';
 
 const lang = 'en';
+const collectionSchema = buildCollectionSchema({
+  name: 'Poetry by Alex Gao',
+  description: 'Poetry by Alex Gao (alexgaoth).',
+  url: buildAppUrl(APP_ROUTES.poetryEn),
+  inLanguage: 'en',
+  genre: 'poetry',
+});
 ---
 
 <BaseLayout
@@ -19,6 +26,7 @@ const lang = 'en';
     { hrefLang: 'en', href: buildAppUrl(APP_ROUTES.poetryEn) },
     { hrefLang: 'x-default', href: buildAppUrl(APP_ROUTES.poetry) },
   ]}
+  structuredData={[collectionSchema]}
 >
   <LiteraryCollection
     items={poems}

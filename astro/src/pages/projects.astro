@@ -8,13 +8,10 @@ import ContentPage from '../components/ContentPage.astro';
 import ProjectCard from '../components/projects/ProjectCard.astro';
 import { APP_ROUTES } from '../config/site.js';
 import { content } from '../../../main-section/src/data/content.js';
-
-// Must match projectSlug() in ProjectsPage.jsx exactly — other pages deep-link
-// to these /projects#project-<slug> anchors.
-const projectSlug = (name) =>
-  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+import { getFeaturedProjects, projectSlug } from '../lib/projectPages.js';
 
 const data = content.projects;
+const featuredSlugs = new Set(getFeaturedProjects().map((entry) => entry.slug));
 ---
 
 <BaseLayout
@@ -30,11 +27,27 @@ const data = content.projects;
       {data.content.map((project) => (
         <div id={`project-${projectSlug(project.name)}`}>
           <ProjectCard project={project} />
+          {featuredSlugs.has(projectSlug(project.name)) && (
+            <p class="project-page-link">
+              <a href={`${APP_ROUTES.projects}/${projectSlug(project.name)}`}>full page →</a>
+            </p>
+          )}
         </div>
       ))}
     </div>
   </ContentPage>
 </BaseLayout>
+
+<style>
+  .project-page-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    margin: -0.4rem 0 1rem;
+    text-align: right;
+  }
+  .project-page-link a { color: #888; text-decoration: none; }
+  .project-page-link a:hover { color: #000; }
+</style>
 
 <script>
   // Minimal image-carousel replacement for the React state in ProjectCard.jsx.

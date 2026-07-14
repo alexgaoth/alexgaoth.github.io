@@ -4,8 +4,13 @@
 import STATIC_ROUTES from '../../../main-section/src/data/sitemapRoutes.json';
 import { buildAbsoluteUrl, getThoughts, thoughtUrl } from '../lib/thoughts.js';
 
+import { getFeaturedProjects } from '../lib/projectPages.js';
+
 // Routes that exist only on the Astro site (not in the shared CRA list).
-const ASTRO_ONLY_ROUTES = ['/writing'];
+const ASTRO_ONLY_ROUTES = [
+  '/writing',
+  ...getFeaturedProjects().map((entry) => `/projects/${entry.slug}`),
+];
 
 export async function GET() {
   const thoughts = await getThoughts();

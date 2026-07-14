@@ -33,6 +33,16 @@ const modifiedTime = toIsoDateString(article.modified || article.date);
 const keywords = ['Alex Gao', 'alexgaoth', ...article.tags];
 const related = pickRelated(entry, entries);
 
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.appUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Thoughts', item: `${SITE.appUrl}${APP_ROUTES.thoughts}` },
+    { '@type': 'ListItem', position: 3, name: article.title, item: thoughtUrl(article.slug) },
+  ],
+};
+
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -61,7 +71,7 @@ const articleSchema = {
   type="article"
   publishedTime={publishedTime}
   modifiedTime={modifiedTime}
-  structuredData={[articleSchema]}
+  structuredData={[articleSchema, breadcrumbSchema]}
 >
   <NavigationBar />
   <div class="article-page-layout">

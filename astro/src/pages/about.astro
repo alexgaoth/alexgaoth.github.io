@@ -18,8 +18,16 @@ const profileStructuredData = [
       name: SITE.name,
       alternateName: profileData.aliases,
       url: SITE.rootUrl,
-      sameAs: SITE.socialProfiles,
+      // /about is the canonical identity page (SEO-PLAN 3.5) — everything
+      // below mirrors facts visible on this page, nothing more.
+      sameAs: [...SITE.socialProfiles, SITE.personalUrl],
       description: SITE.description,
+      jobTitle: 'Student Builder',
+      affiliation: [
+        { '@type': 'CollegeOrUniversity', name: 'UC San Diego' },
+      ],
+      knowsAbout: ['software', 'writing', 'mathematical thinking'],
+      mainEntityOfPage: buildAppUrl(APP_ROUTES.about),
     },
   },
 ];

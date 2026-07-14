@@ -78,3 +78,23 @@ export function buildCiAiPrompt(piece, lang) {
     ? `请翻译以下这首词，并对其进行详细赏析，涵盖主题、情感基调、艺术手法等方面：\n\n${ciTitleLine(piece)}\n${piece.lines.join('\n')}`
     : `Please translate this Chinese ci poem into English and provide a detailed commentary, covering themes, emotional tone, and literary techniques:\n\n${ciTitleLine(piece)}\n${piece.lines.join('\n')}`;
 }
+
+// CreativeWork JSON-LD for the literary collection pages (SEO-PLAN 3.5).
+// Boring and truthful: mirrors only what the page itself shows.
+export function buildCollectionSchema({ name, description, url, inLanguage, genre }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name,
+    description,
+    url,
+    inLanguage,
+    genre,
+    author: {
+      '@type': 'Person',
+      name: 'Alex Gao',
+      alternateName: 'alexgaoth',
+      url: 'https://alexgaoth.com',
+    },
+  };
+}

@@ -2,11 +2,18 @@
 // Static port of main-section/src/pages/CiCollectionPage.jsx (lang="zh").
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LiteraryCollection from '../components/LiteraryCollection.astro';
-import { CI_TEXT, buildCiAiPrompt, buildCiCopyText } from '../components/literaryConfig.js';
+import { CI_TEXT, buildCiAiPrompt, buildCiCopyText, buildCollectionSchema } from '../components/literaryConfig.js';
 import { APP_ROUTES, buildAppUrl } from '../config/site.js';
 import { ciPieces } from '../../../main-section/src/data/poetryData.js';
 
 const lang = 'zh';
+const collectionSchema = buildCollectionSchema({
+  name: '词 — ci poetry by Alex Gao',
+  description: 'Ci poetry by Alex Gao (alexgaoth).',
+  url: buildAppUrl(APP_ROUTES.ci),
+  inLanguage: 'zh',
+  genre: 'ci poetry',
+});
 ---
 
 <BaseLayout
@@ -19,6 +26,7 @@ const lang = 'zh';
     { hrefLang: 'en', href: buildAppUrl(APP_ROUTES.ciEn) },
     { hrefLang: 'x-default', href: buildAppUrl(APP_ROUTES.ci) },
   ]}
+  structuredData={[collectionSchema]}
 >
   <LiteraryCollection
     items={ciPieces}
