@@ -80,11 +80,12 @@ function Model({ url, rotationRef }) {
 }
 
 // Applies momentum decay each frame when not dragging
-function RotationController({ isDraggingRef, velocityRef, rotationRef }) {
+function RotationController({ isDraggingRef, velocityRef, rotationRef, onFullSpin }) {
   useFrame(() => {
     if (!isDraggingRef.current && Math.abs(velocityRef.current) > 0.0001) {
       rotationRef.current += velocityRef.current;
       velocityRef.current *= 0.92;
+      onFullSpin();
     }
   });
   return null;
@@ -160,6 +161,8 @@ const RegentsPage = () => {
   const lastXRef = useRef(0);
   const audioRef = useRef(null);
   const hasInteracted = useRef(false);
+  // Latest nav handlers, readable from long-lived listeners/frame loops
+  const navRef = useRef({ goNext: () => {}, goPrev: () => {} });
 
   const hasModels = REGENTS.length > 0;
   const current = hasModels ? REGENTS[currentIndex] : null;
@@ -206,8 +209,16 @@ const RegentsPage = () => {
   };
 
   // -------------------------------------------------------------------------
-  // Drag with momentum
+  // Drag with momentum + full-spin navigation
   // -------------------------------------------------------------------------
+  // A full 360° spin acts like the arrows: rightward turn → next regent,
+  // leftward turn → previous. Stable identity so listeners/frames can call it.
+  const checkFullSpin = useRef(() => {
+    const TWO_PI = Math.PI * 2;
+    if (rotationRef.current >= TWO_PI) navRef.current.goNext();
+    else if (rotationRef.current <= -TWO_PI) navRef.current.goPrev();
+  }).current;
+
   useEffect(() => {
     const onMove = (e) => {
       if (!isDraggingRef.current) return;
@@ -217,6 +228,7 @@ const RegentsPage = () => {
       // Smooth velocity tracking (lerp toward latest delta)
       velocityRef.current = velocityRef.current * 0.4 + delta * 0.6;
       lastXRef.current = clientX;
+      checkFullSpin();
     };
     const onUp = () => { isDraggingRef.current = false; };
 
@@ -230,7 +242,7 @@ const RegentsPage = () => {
       window.removeEventListener('touchmove', onMove);
       window.removeEventListener('touchend', onUp);
     };
-  }, []);
+  }, [checkFullSpin]);
 
   const startDrag = (clientX) => {
     if (maskActive) return;
@@ -260,6 +272,8 @@ const RegentsPage = () => {
     setMaskLocked(false);
     setMaskHover(false);
   };
+
+  navRef.current = { goNext, goPrev };
 
   // -------------------------------------------------------------------------
   // Label interaction handlers
@@ -326,6 +340,7 @@ const RegentsPage = () => {
                       isDraggingRef={isDraggingRef}
                       velocityRef={velocityRef}
                       rotationRef={rotationRef}
+                      onFullSpin={checkFullSpin}
                     />
                   </Canvas>
 
@@ -353,6 +368,7 @@ const RegentsPage = () => {
                 </p>
                 <div className="regent-rule" />
                 <p className="regent-index">{currentIndex + 1} / {REGENTS.length}</p>
+                <p className="regent-hint">drag to spin · a full turn summons the next</p>
               </div>
             </>
           )}

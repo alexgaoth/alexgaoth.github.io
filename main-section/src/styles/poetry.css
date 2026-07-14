@@ -26,6 +26,8 @@
   gap: 1.5rem;
 }
 
+/* Upright everywhere: italics synthesize an ugly oblique on CJK glyphs and
+   thin Cormorant into scrawl — hierarchy comes from size/color/structure instead. */
 .poetry-page-title {
   font-family: 'Cormorant Garamond', 'Songti SC', 'STSong', Georgia, serif;
   font-size: 3rem;
@@ -33,7 +35,6 @@
   letter-spacing: 0.1em;
   line-height: 1;
   color: #1a1816;
-  font-style: italic;
 }
 
 .poetry-lang-toggle {
@@ -56,12 +57,11 @@
 
 /* ── Abstract ── */
 .poetry-abstract {
-  font-family: 'Cormorant Garamond', 'Songti SC', 'STSong', Georgia, serif;
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', 'STSong', Georgia, serif;
   font-size: 1.08rem;
   line-height: 2;
   letter-spacing: 0.04em;
-  color: #6a6560;
-  font-style: italic;
+  color: #4e4a44;
   margin-bottom: 2rem;
   max-width: 560px;
 }
@@ -227,10 +227,10 @@
 
 .poetry-line {
   font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', 'STSong', 'FangSong', 'SimSun', Georgia, serif;
-  font-size: 1.1rem;
-  line-height: 2.5;
+  font-size: 1.15rem;
+  line-height: 2.4;
   letter-spacing: 0.1em;
-  color: #2a2826;
+  color: #1f1d1a;
 }
 
 /* ── Claude analysis (collapsible) ── */
@@ -286,12 +286,13 @@
 }
 
 .poetry-claude-text {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.08rem;
-  line-height: 1.95;
-  color: #8a857c;
-  font-style: italic;
-  padding: 0.9rem 0 0 0;
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1.9;
+  color: #55504a;
+  margin-top: 0.9rem;
+  padding: 0.1rem 0 0.1rem 1rem;
+  border-left: 2px solid #e2ded6;
 }
 
 /* ── Context section ── */
@@ -301,27 +302,28 @@
   margin-top: 0.6rem;
 }
 
+/* Eyebrow label carries the "this is aside, not poem" signal that grey italic used to */
 .poetry-context-label {
-  display: none;
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #b0aba4;
+  margin-bottom: 0.4rem;
+  user-select: none;
 }
 
 .poetry-context-text {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 0.975rem;
-  line-height: 1.8;
-  color: #a09890;
-  font-style: italic;
-  letter-spacing: 0.01em;
-}
-
-.poetry-context-text::before {
-  content: '— ';
-  letter-spacing: 0;
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.85;
+  color: #5f5a53;
+  letter-spacing: 0.02em;
 }
 
 .poetry-context-placeholder {
   color: #ccc8c0;
-  font-style: italic;
 }
 
 /* ── Inline translation (English pages only) ── */
@@ -382,10 +384,9 @@
 
 .poetry-seg-en {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: #9a8f82;
-  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: #6a6058;
   letter-spacing: 0.02em;
 }
 
@@ -426,10 +427,9 @@
 }
 
 .poetry-empty-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', serif;
   font-size: 1.5rem;
   font-weight: 300;
-  font-style: italic;
   letter-spacing: 0.06em;
   color: #7a7570;
   margin-bottom: 0.6rem;

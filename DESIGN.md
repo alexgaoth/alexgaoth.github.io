@@ -49,6 +49,14 @@ Defined as CSS vars in `global.css`:
   This is the single hover convention; don't add underlines, scales, or color shifts.
 - Links styled as text carry `→` arrows; arrows may nudge right on hover (art-strip).
 - Live/now things get the pulsing dot.
+- **The object is the control** (personal-side pages). Where a page holds a
+  physical object, the object itself should answer to play, not just the chrome
+  around it: spinning a regent a full 360° summons the next one, exactly like
+  clicking the arrow. The buttons stay for clarity; the gesture rewards
+  curiosity. This is the energy the personal side should run on — interactions
+  that refresh the mind instead of dogmatic click-the-button UI. When adding a
+  visual/personal piece, look for the gesture the object itself invites
+  (spin, drag, flip, hold) and let it double an existing control.
 
 ## Layout patterns
 
@@ -85,6 +93,13 @@ Defined as CSS vars in `global.css`:
 - Spare, human, slightly self-deprecating. Facts over adjectives.
 - Comments-as-labels (`// who`, `// elsewhere`) instead of headings like "Where To Find Me".
 - Prefer deleting a sentence to adding one. Nothing that reads AI-generated.
+- Do not explain the obvious. If the page's object is self-evident, let the
+  object carry the meaning: a gallery needs pictures, not text explaining that
+  it is a gallery; a quote list needs quotes, not a paragraph about collecting
+  quotes; a resume page needs the record, not a pitch about professionalism.
+- Use explanatory copy only when it unlocks something non-obvious: state, source,
+  missing data, live/offline behavior, or an intentional conceptual break. Even
+  then, keep it as a label, rail note, or one dry sentence.
 
 ## Mobile (<768px)
 
@@ -130,7 +145,15 @@ rows, keep every fact.**
   `NavigationBar` (via `ContentPage` layout), same ink-on-paper language.
 - Doors to the personal side: `/art` (ink-wash, serif, its own quiet language),
   `/poetry`, `/ci`, `/regents` (Cormorant Garamond, paper grain), `/now`
-  (warm paper `#efe9d6`, draggable cards). These pages may break the mono/ink
+  (warm paper `#efe9d6`, draggable slip/cards, live guest marks), and `/gallery`
+  (bare photographs, masonry, nearly no copy). These pages may break the mono/ink
   system deliberately — everything else must not.
+- **Literary pages type rule**: never italicize text that can hold Chinese —
+  browsers synthesize an oblique on CJK glyphs and it reads as scrawl (and thin
+  italic Cormorant is barely better in English). Asides (abstract, context,
+  Claude's take, inline translations) are upright serif at readable contrast
+  (#4e–#6a range on the #fdfcf8 paper); the "this is an aside" signal comes from
+  structure — mono eyebrow labels, a left hairline rule, smaller size — not from
+  grey italics.
 - SEO: every page renders `src/components/SEO.jsx` (helmet meta + JSON-LD);
   aliases and searchable queries live in `src/data/profileData.js`. Keep them.

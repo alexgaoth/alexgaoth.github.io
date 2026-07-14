@@ -193,6 +193,16 @@
   margin: 0;
 }
 
+.regent-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  opacity: 0.18;
+  text-align: center;
+  margin: 0;
+  user-select: none;
+}
+
 /* -------------------------------------------------------------------------
    Bio mask overlay
    ------------------------------------------------------------------------- */

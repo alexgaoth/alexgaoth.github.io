@@ -651,20 +651,40 @@ function LogSlipCard({ slip }) {
         flexDirection: "column",
       }}
     >
-      {/* Minimal drag strip — no label, just the grip icon */}
+      {/* Name strip — also the drag handle; the divider sits below the name */}
       <div
         data-drag-handle
         style={{
           cursor: "grab",
           touchAction: "none",
           userSelect: "none",
-          padding: "5px 10px",
+          padding: "8px 10px 7px 14px",
           borderBottom: `1px solid ${NB.hair}`,
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 8,
         }}
       >
-        <span aria-hidden style={{ color: NB.rule, fontSize: 13, lineHeight: 1 }}>⠿</span>
+        <div
+          style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 600,
+            fontSize: 15,
+            letterSpacing: "-0.015em",
+            textTransform: "lowercase",
+            lineHeight: 1.2,
+            minWidth: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {isEmpty
+            ? <span style={{ color: NB.hair }}>—</span>
+            : name || <span style={{ color: NB.fade }}>anonymous</span>}
+        </div>
+        <span aria-hidden style={{ color: NB.rule, fontSize: 13, lineHeight: 1, flexShrink: 0 }}>⠿</span>
       </div>
 
       <div style={{ padding: "10px 14px 12px 14px" }}>
@@ -672,19 +692,6 @@ function LogSlipCard({ slip }) {
           <div style={{ color: NB.hair, fontSize: 11, letterSpacing: "0.1em" }}>—</div>
         ) : (
           <>
-            <div
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 600,
-                fontSize: 15,
-                letterSpacing: "-0.015em",
-                textTransform: "lowercase",
-                lineHeight: 1.2,
-                marginBottom: 5,
-              }}
-            >
-              {name || <span style={{ color: NB.fade }}>anonymous</span>}
-            </div>
             <div style={{ fontSize: 11.5, lineHeight: 1.6 }}>{content}</div>
             {dateStr && (
               <div
