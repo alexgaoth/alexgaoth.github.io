@@ -1,0 +1,58 @@
+---
+// Useful 404 (SEO-PLAN 0.11): dead ends should route people back into the
+// site instead of losing them.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { APP_ROUTES } from '../config/site.js';
+
+const PLACES = [
+  { path: APP_ROUTES.home, label: '/', note: 'the directory' },
+  { path: APP_ROUTES.thoughts, label: '/thoughts', note: 'essays' },
+  { path: APP_ROUTES.projects, label: '/projects', note: 'things i made' },
+  { path: APP_ROUTES.about, label: '/about', note: 'who i am' },
+];
+---
+
+<BaseLayout title="404 — Alex Gao" description="This page does not exist." path="/404">
+  <div class="page-container">
+    <div class="content-wrapper-narrow">
+      <h1 class="title-page">404</h1>
+      <p class="notfound-sub">this page does not exist — these do:</p>
+      <ul class="notfound-list">
+        {PLACES.map((place) => (
+          <li>
+            <a href={place.path} class="notfound-link">
+              <span class="notfound-path">{place.label}</span>
+              <span class="notfound-note">{place.note}</span>
+              <span>→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 1.2rem;
+  }
+  .notfound-list { list-style: none; margin: 0; padding: 0; }
+  .notfound-link {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 8px;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    transition: background 0.12s, color 0.12s;
+  }
+  .notfound-link:hover { background: #000; color: #fff; }
+  .notfound-path { font-size: 13px; font-weight: 600; }
+  .notfound-note { font-size: 10.5px; color: #888; flex: 1; }
+  .notfound-link:hover .notfound-note { color: rgba(255, 255, 255, 0.6); }
+</style>
