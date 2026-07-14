@@ -22,24 +22,8 @@ const SEO = ({
   const canonicalUrl = buildAppUrl(path);
   const imageUrl = image || buildAssetUrl(imagePath);
 
-  const baseStructuredData = [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Person',
-      name: SITE.name,
-      alternateName: [SITE.handle],
-      url: SITE.rootUrl,
-      sameAs: SITE.socialProfiles,
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: SITE.name,
-      alternateName: SITE.handle,
-      url: SITE.appUrl,
-    },
-  ];
-
+  // Base Person/WebSite schemas live in public/index.html only (the richer
+  // copy, visible to crawlers without JS) — do not re-inject them here.
   const articleStructuredData = type === 'article'
     ? [{
         '@context': 'https://schema.org',
@@ -61,7 +45,6 @@ const SEO = ({
     : [];
 
   const allStructuredData = [
-    ...baseStructuredData,
     ...articleStructuredData,
     ...structuredData,
   ];

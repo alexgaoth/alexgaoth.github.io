@@ -16,21 +16,20 @@
     <meta name="publisher" content="Alex Gao">
     <meta name="robots" content="index, follow">
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://alexgaoth.com/">
+    <!-- URL-bearing tags (canonical, og:url, twitter:url) are intentionally NOT
+         hardcoded here: a template-level canonical to "/" tells crawlers every
+         route is the homepage. SEO.jsx injects the per-route versions. -->
     <link rel="alternate" type="application/rss+xml" title="Alex Gao Thoughts RSS" href="%PUBLIC_URL%/rss.xml">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Alex Gao">
-    <meta property="og:url" content="https://alexgaoth.com/">
     <meta property="og:title" content="Alex Gao — Student Builder">
     <meta property="og:description" content="Alex Gao (alexgaoth). Student builder at UCSD.">
     <meta property="og:image" content="https://alexgaoth.com/logo.jpg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://alexgaoth.com/">
     <meta property="twitter:title" content="Alex Gao — Student Builder">
     <meta property="twitter:description" content="Alex Gao (alexgaoth). Student builder at UCSD.">
     <meta property="twitter:image" content="https://alexgaoth.com/logo.jpg">
@@ -76,27 +75,17 @@
     }
     </script>
 
+    <!-- MathJax is loaded on demand by src/utils/mathjaxLoader.js, only on
+         thought pages whose markdown actually contains TeX. -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3BEDKHCBK"></script>
     <script>
-      window.MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']],
-          displayMath: [['$$', '$$'], ['\\[', '\\]']],
-          processEscapes: true,
-          processEnvironments: true
-        },
-        options: {
-          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        },
-        startup: {
-          typeset: false,
-          ready() {
-            MathJax.startup.defaultReady();
-            window.dispatchEvent(new Event('mathjax-ready'));
-          }
-        }
-      };
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-M3BEDKHCBK');
     </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
     <script>window.scrollTo(0, 0);</script>
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.jpg" />

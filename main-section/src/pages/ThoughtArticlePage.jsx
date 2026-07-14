@@ -10,6 +10,7 @@ import thoughtsManifest from '../data/thoughtsManifest.json';
 import { APP_ROUTES } from '../config/site';
 import { toIsoDateString } from '../utils/articleDates';
 import { preprocessThoughtMarkdown } from '../utils/markdownMath';
+import { containsTex, ensureMathJax } from '../utils/mathjaxLoader';
 
 const ThoughtArticlePage = () => {
   const { slug } = useParams();
@@ -20,6 +21,9 @@ const ThoughtArticlePage = () => {
   // Find the article by slug
   const article = thoughtsManifest.find((entry) => entry.slug === slug);
   const articlePublishedTime = article ? toIsoDateString(article.date) : undefined;
+  const articleModifiedTime = article?.modified
+    ? toIsoDateString(article.modified)
+    : articlePublishedTime;
 
   useEffect(() => {
     // Scroll to top when article changes
@@ -68,6 +72,13 @@ const ThoughtArticlePage = () => {
     if (!markdownContent || loadError || !articleBodyRef.current) {
       return undefined;
     }
+
+    // MathJax is not in the page template — fetch it only for articles
+    // that actually contain TeX.
+    if (!containsTex(markdownContent)) {
+      return undefined;
+    }
+    ensureMathJax();
 
     const typesetMath = () => {
       if (ignore || !articleBodyRef.current || !window.MathJax?.typesetPromise) {
@@ -123,7 +134,7 @@ const ThoughtArticlePage = () => {
         imagePath={article.image || undefined}
         type="article"
         publishedTime={articlePublishedTime}
-        modifiedTime={articlePublishedTime}
+        modifiedTime={articleModifiedTime}
       />
       <div className="article-page-layout">
       {/* Sidebar */}
