@@ -1,0 +1,126 @@
+---
+// /gallery: static shell (header, intro copy, footer) + GalleryGrid island.
+// The photo list is also fetched at BUILD time so the first frames ship as
+// real <img> tags in source HTML (the island refreshes them on hydration) —
+// the R2 worker must not be the only source of page meaning. Builds must
+// never break on fetch failure: offline build boxes get shell-only HTML.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GalleryGrid from '../islands/GalleryGrid.jsx';
+import { APP_ROUTES } from '../config/site.js';
+import { LIST_URL, photosFromList } from '../lib/gallery.js';
+
+const STATIC_PHOTO_LIMIT = 12;
+
+let initialPhotos = [];
+try {
+  const res = await fetch(LIST_URL, { signal: AbortSignal.timeout(8000) });
+  if (res.ok) {
+    initialPhotos = photosFromList(await res.json()).slice(0, STATIC_PHOTO_LIMIT);
+  }
+} catch {
+  // offline/CI build — the island still fetches the live list client-side
+}
+---
+
+<BaseLayout
+  title="Gallery — Alex Gao"
+  description="A photo gallery by Alex Gao — moments collected along the way."
+  keywords={['Alex Gao', 'gallery', 'photography', 'photos']}
+  path={APP_ROUTES.gallery}
+>
+  <div class="gallery-page">
+    <div class="gallery-inner">
+      <a href={APP_ROUTES.home} class="gallery-back">← back</a>
+
+      <header class="gallery-header">
+        <span class="gallery-eyebrow">{'// '}</span>
+        <h1 class="gallery-title">GALLERY<span style="color:#ccc">.</span></h1>
+        <p class="gallery-sub">
+          moments collected along the way — raw frames, straight off whatever
+          was on hand, newest first. no captions, no borders; adding a photo
+          is just an upload, so this page is always whatever the camera roll
+          last surrendered.
+        </p>
+      </header>
+
+      <GalleryGrid client:load initialPhotos={initialPhotos} />
+
+      <footer class="gallery-footer">
+        <span class="gallery-eyebrow">
+          shot on whatever was on hand · more at <a href="/art" class="gallery-footer-link">/art</a> · <a href="/about" class="gallery-footer-link">/about</a>
+        </span>
+        <a href={APP_ROUTES.home} class="gallery-footer-link">/ →</a>
+      </footer>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .gallery-page {
+    min-height: 100vh;
+    background: #fff;
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.4rem, 2.6vw, 2.4rem) clamp(1.2rem, 2.5vw, 2.5rem) clamp(1rem, 1.8vw, 1.8rem);
+  }
+  .gallery-inner {
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .gallery-back {
+    align-self: flex-start;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: lowercase;
+    color: #000;
+    text-decoration: none;
+    opacity: 0.4;
+    margin-bottom: 1.4rem;
+  }
+  .gallery-header { margin-bottom: clamp(1rem, 1.8vw, 1.8rem); }
+  .gallery-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #888;
+  }
+  .gallery-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.8rem, 4.8vw, 3.8rem);
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    margin: 0.4rem 0 0.7rem;
+  }
+  .gallery-sub {
+    font-size: clamp(0.68rem, 0.82vw, 0.82rem);
+    color: #888;
+    margin: 0;
+    letter-spacing: 0.02em;
+    max-width: 70ch;
+    line-height: 1.5;
+  }
+  .gallery-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: clamp(1.2rem, 2vw, 2rem);
+    padding-top: 0.45rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .gallery-footer-link {
+    font-size: 11px;
+    color: #000;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    opacity: 0.85;
+  }
+</style>

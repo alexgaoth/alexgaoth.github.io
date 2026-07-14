@@ -1,0 +1,160 @@
+---
+// /now: static, indexable render of the live profile data (from the canonical
+// repo-root profile.json at build time — mobile edits commit, commits rebuild)
+// with the interactive drag-board hydrating over it. No-JS visitors and
+// crawlers keep this shell; the island removes it on mount.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NowBoard from '../islands/NowBoard.jsx';
+import profile from '../../../profile.json';
+import { APP_ROUTES } from '../config/site.js';
+
+const now = profile.now;
+---
+
+<BaseLayout
+  title="Now — Alex Gao"
+  description="What Alex Gao is doing now — building, learning, consuming."
+  keywords={['Alex Gao', 'alexgaoth', 'now']}
+  path={APP_ROUTES.now}
+>
+  <div class="now-paper">
+    <div id="now-static" class="now-static">
+      <a href={APP_ROUTES.home} class="now-back">← home</a>
+      <h1 class="now-title">now</h1>
+      <p class="now-meta">
+        {now.date} · {now.location} · {now.tz}<br />
+        {now.why}
+      </p>
+
+      <section class="now-section">
+        <span class="now-eyebrow">// building</span>
+        <ul>
+          {now.building.map((item) => (
+            <li>
+              <strong>{item.name}</strong>
+              {item.detail && <span class="now-detail"> — {item.detail}</span>}
+              {item.tag && <span class="now-tag">[{item.tag}]</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="now-section">
+        <span class="now-eyebrow">// learning</span>
+        <ul>
+          {now.learning.map((item) => (
+            <li>
+              <strong>{item.name}</strong>
+              {item.detail && <span class="now-detail"> — {item.detail}</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="now-section">
+        <span class="now-eyebrow">// consuming</span>
+        <ul>
+          {now.consuming.map((item) => (
+            <li>
+              <span class="now-tag">{item.kind}</span>
+              <strong> {item.val}</strong>
+              {item.meta && <span class="now-detail"> — {item.meta}</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="now-section">
+        <span class="now-eyebrow">// writing</span>
+        <ul>
+          {now.writing.map((item) => (
+            <li>
+              <span class="now-tag">{item.state}</span>
+              <strong> {item.val}</strong>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {now.quickThoughts?.length > 0 && (
+        <section class="now-section">
+          <span class="now-eyebrow">// quick thoughts</span>
+          <ul>
+            {now.quickThoughts.map((item) => (
+              <li>
+                <em>“{item.thought}”</em>
+                <span class="now-detail"> — {item.date}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <p class="now-note">
+        updated from my phone · visitors with javascript can leave a note on the board
+      </p>
+      <p class="now-note">
+        elsewhere: <a href="/">/home</a> · <a href="/writing">/writing</a> · <a href="/about">/about</a>
+      </p>
+    </div>
+
+    <NowBoard client:only="react" initialNow={now} />
+  </div>
+</BaseLayout>
+
+<style>
+  /* Cream paper matches the board's NB palette in NowBoard.jsx. */
+  .now-paper { min-height: 100vh; background: #efe9d6; }
+  .now-static {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+    font-family: 'Space Mono', monospace;
+    color: #1c1a14;
+  }
+  .now-back {
+    font-size: 0.72rem;
+    color: rgba(28, 26, 20, 0.55);
+    text-decoration: none;
+  }
+  .now-back:hover { color: #1c1a14; }
+  .now-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 6vw, 3rem);
+    margin: 0.6rem 0 0.2rem;
+  }
+  .now-meta {
+    font-size: 0.72rem;
+    color: rgba(28, 26, 20, 0.55);
+    line-height: 1.7;
+    margin-bottom: 1.8rem;
+  }
+  .now-section { margin-bottom: 1.6rem; }
+  .now-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(28, 26, 20, 0.55);
+  }
+  .now-section ul { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+  .now-section li {
+    font-size: 0.78rem;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(28, 26, 20, 0.08);
+    line-height: 1.6;
+  }
+  .now-detail { color: rgba(28, 26, 20, 0.55); }
+  .now-tag {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #9b2a1e;
+  }
+  .now-note {
+    font-size: 0.68rem;
+    color: rgba(28, 26, 20, 0.55);
+    margin-top: 2rem;
+  }
+  .now-note + .now-note { margin-top: 0.4rem; }
+  .now-note a { color: #1c1a14; }
+</style>

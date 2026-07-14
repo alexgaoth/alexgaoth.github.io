@@ -1,0 +1,72 @@
+---
+// Static port of main-section/src/pages/ArtPage.jsx. The ink-flow canvas is
+// a decorative island (imported directly from main-section — it has no
+// router/helmet deps); portals are real links in source HTML.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArtBackground from '../../../main-section/src/components/ArtBackground.jsx';
+import { APP_ROUTES } from '../config/site.js';
+import '../../../main-section/src/styles/art.css';
+
+const PORTALS = [
+  { num: '一', zh: '诗', label: 'poetry', path: '/poetry' },
+  { num: '二', zh: '词', label: 'ci', path: '/ci' },
+  { num: '三', zh: '像', label: 'regents of my mind', path: '/regents' },
+];
+---
+
+<BaseLayout
+  title="Art — Alex Gao"
+  description="The artistic pages of Alex Gao — poetry, ci, and figures of mind."
+  keywords={['Alex Gao', 'poetry', 'ci', 'regents', '诗', '词']}
+  path={APP_ROUTES.art}
+>
+  <div class="art-page">
+    <h1 class="sr-only">Art — poetry, ci, and figures of mind</h1>
+
+    <ArtBackground client:only="react" />
+
+    <div class="art-grain" aria-hidden="true"></div>
+
+    <a href={APP_ROUTES.home} class="art-back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+      <span>back</span>
+    </a>
+
+    <main class="art-portals">
+      {PORTALS.map(({ num, zh, label, path }) => (
+        <a href={path} class="art-portal">
+          <span class="art-num">{num}</span>
+          <span class="art-zh">{zh}</span>
+          <span class="art-label">{label}</span>
+          <span class="art-arrow" aria-hidden="true">→</span>
+        </a>
+      ))}
+      <p class="art-caption">
+        three doors — chinese verse, ci written to song-dynasty tunes, and a
+        3d hall of the minds i answer to. the ink moves if you let it.
+      </p>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .art-caption {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.66rem;
+    color: rgba(0, 0, 0, 0.45);
+    line-height: 1.7;
+    max-width: 44ch;
+    margin-top: 2.2rem;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

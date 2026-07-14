@@ -1,0 +1,85 @@
+---
+// /regents: static, indexable description of the piece and its roster; the
+// three.js exhibition hydrates over it (client:only keeps ~600KB of three.js
+// out of every other page — the CRA lazy-load pattern, preserved).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RegentsScene from '../islands/RegentsScene.jsx';
+import { APP_ROUTES } from '../config/site.js';
+import { REGENTS } from '../lib/regentsData.js';
+---
+
+<BaseLayout
+  title="Regents of My Mind — alex gaoth"
+  description="An interactive 3D exhibition of the regents of my mind."
+  keywords={['alex gaoth', 'regents', '3D', 'art']}
+  path={APP_ROUTES.regents}
+>
+  <div id="regents-static" class="regents-shell">
+    <a href={APP_ROUTES.art} class="regents-shell-back">← art</a>
+    <h1>Regents of My Mind</h1>
+    <p class="regents-shell-sub">
+      an interactive 3d exhibition — four figures who govern how i think,
+      scanned as statues you can spin. drag to turn one; a full rotation
+      summons the next. needs javascript and a little patience to load.
+    </p>
+    <ul class="regents-shell-list">
+      {REGENTS.map((regent, index) => (
+        <li>
+          <span class="regents-shell-index">{index + 1} / {REGENTS.length}</span>
+          <strong>{regent.name}</strong>
+          <span class="regents-shell-bio">{regent.bio}</span>
+        </li>
+      ))}
+    </ul>
+    <p class="regents-shell-note">
+      elsewhere: <a href="/">/home</a> · <a href="/writing">/writing</a> · <a href="/thoughts">/thoughts</a>
+    </p>
+  </div>
+
+  <RegentsScene client:only="react" />
+</BaseLayout>
+
+<style>
+  .regents-shell {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+    font-family: 'Space Mono', monospace;
+    color: #000;
+  }
+  .regents-shell-back {
+    font-size: 0.72rem;
+    color: #888;
+    text-decoration: none;
+  }
+  .regents-shell-back:hover { color: #000; }
+  .regents-shell h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    margin: 0.6rem 0 0.4rem;
+  }
+  .regents-shell-sub {
+    font-size: 0.75rem;
+    color: #666;
+    line-height: 1.7;
+    max-width: 56ch;
+    margin-bottom: 1.6rem;
+  }
+  .regents-shell-list { list-style: none; margin: 0; padding: 0; }
+  .regents-shell-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.8rem;
+  }
+  .regents-shell-index {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    color: #999;
+  }
+  .regents-shell-bio { font-size: 0.72rem; color: #666; line-height: 1.6; }
+  .regents-shell-note { font-size: 0.68rem; color: #888; margin-top: 1.6rem; }
+  .regents-shell-note a { color: #000; }
+</style>
