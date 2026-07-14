@@ -1,19 +1,10 @@
-# robots.txt for alexgaoth.com
+# robots.txt for intro.alexgaoth.com
+#
+# This host is a doorway: the intro page canonicalizes to https://alexgaoth.com/
+# (see <link rel="canonical"> in index.html). It stays crawlable so bots can see
+# that canonical, but it deliberately has no sitemap — canonicalized-away pages
+# don't belong in one. The primary site and its sitemap live at:
+#   https://alexgaoth.com/sitemap.xml
 
 User-agent: *
 Allow: /
-
-# Block development and build files
-Disallow: /node_modules/
-Disallow: /main-section/
-Disallow: /.git/
-
-# Allow CSS and JS for proper rendering
-Allow: /css/
-Allow: /js/
-
-# Sitemap location
-Sitemap: https://alexgaoth.com/sitemap.xml
-
-# Note: Portfolio app moved to app.alexgaoth.com
-# See: https://app.alexgaoth.com/robots.txt
