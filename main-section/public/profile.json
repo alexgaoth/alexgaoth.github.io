@@ -1,7 +1,7 @@
 {
   "now": {
     "date": "may 16, 2026",
-    "location": "la jolla, california",
+    "location": "San Jose, california",
     "why": "home for summer · sdx @ ucsd",
     "tz": "pdt",
     "tzIana": "America/Los_Angeles",
@@ -25,11 +25,11 @@
     "learning": [
       {
         "name": "rust",
-        "detail": "borrow checker, finally"
+        "detail": "beyond the learning curve dip"
       },
       {
         "name": "தமிழ் / tamil",
-        "detail": "reading aloud, slowly"
+        "detail": ""
       },
       {
         "name": "writing more clearly",

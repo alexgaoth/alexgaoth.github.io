@@ -4,7 +4,7 @@
 
 export const NOW_FALLBACK = {
   date: "may 16, 2026",
-  location: "la jolla, california",
+  location: "San Jose, california",
   why: "home for summer · sdx @ ucsd",
   tz: "pdt",
   tzIana: "America/Los_Angeles",
@@ -14,19 +14,19 @@ export const NOW_FALLBACK = {
     { name: "this very site", detail: "preview rail redesign · the page you are on", tag: "wip" },
   ],
   learning: [
-    { name: "rust", detail: "borrow checker, finally" },
-    { name: "தமிழ் / tamil", detail: "reading aloud, slowly" },
+    { name: "rust", detail: "beyond the learning curve dip" },
+    { name: "தமிழ் / tamil", detail: "" },
     { name: "writing more clearly", detail: "fewer words, harder meaning" },
   ],
   consuming: [
     { kind: "sound", val: "soldier of heaven — sabaton", meta: "on repeat" },
     { kind: "read",  val: "the undiscovered self — c.g. jung", meta: "ch. 4 of 7" },
     { kind: "watch", val: "xavier: renegade angel", meta: "s2" },
-    { kind: "play",  val: "none actually", meta: "—" },
+    { kind: "play",  val: "EU4", meta: "full achievement soon" },
   ],
   writing: [
-    { state: "wip",  val: "a note on metaphor as compression" },
-    { state: "open", val: "the politics of attention" },
+    { state: "wip",  val: "Ethics for the future (Gaoism)" },
+    { state: "wip",  val: "mathematical decomposition of hegel (not analytical philosophy)" },
     { state: "stuck", val: "a story about the fall of nineveh" },
   ],
   quickThoughts: [

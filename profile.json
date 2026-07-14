@@ -2,22 +2,23 @@
   "now": {
     "date": "may 16, 2026",
     "location": "San Jose, california",
-    "why": "home for summer ÃÂ· sdx @ ucsd",
+    "why": "home for summer · sdx @ ucsd",
     "tz": "pdt",
+    "tzIana": "America/Los_Angeles",
     "building": [
       {
         "name": "signalor.app",
-        "detail": "v0.3 ÃÂ· google analytics for brands ÃÂ· in production",
+        "detail": "v0.3 · google analytics for brands · in production",
         "tag": "live"
       },
       {
         "name": "sdx @ ucsd",
-        "detail": "design-engineering club ÃÂ· 3 brand pitches this week",
+        "detail": "design-engineering club · 3 brand pitches this week",
         "tag": "wip"
       },
       {
         "name": "this very site",
-        "detail": "preview rail redesign ÃÂ· the page you are on",
+        "detail": "preview rail redesign · the page you are on",
         "tag": "wip"
       }
     ],
@@ -27,7 +28,7 @@
         "detail": "beyond the learning curve dip"
       },
       {
-        "name": "Ã Â®Â¤Ã Â®Â®Ã Â®Â¿Ã Â®Â´Ã Â¯Â / tamil",
+        "name": "தமிழ் / tamil",
         "detail": ""
       },
       {
@@ -38,12 +39,12 @@
     "consuming": [
       {
         "kind": "sound",
-        "val": "soldier of heaven Ã¢ÂÂ sabaton",
+        "val": "soldier of heaven — sabaton",
         "meta": "on repeat"
       },
       {
         "kind": "read",
-        "val": "the undiscovered self Ã¢ÂÂ c.g. jung",
+        "val": "the undiscovered self — c.g. jung",
         "meta": "ch. 4 of 7"
       },
       {
