@@ -1,0 +1,227 @@
+---
+// Static port of main-section/src/components/literary/LiteraryCollectionPage.jsx
+// (plus LiteraryCard.jsx and LiteraryLines.jsx). Every poem/ci — title, all
+// lines, English segment translations, Claude commentary, and context notes —
+// is emitted in the build-time HTML so no-JS crawlers see the full text.
+//
+// Interactivity mapping vs the CRA version:
+// - Claude commentary: CRA collapses it behind a JS toggle (first item with
+//   commentary starts expanded). Here it is a <details>/<summary> — the text
+//   is always in the source HTML, and the first commentary gets `open`.
+// - English tap-to-translate segments: rendered fully expanded (all
+//   translations visible) instead of hidden behind click state.
+// - AI icons: plain <a href> links to the services with the prompt in the
+//   URL's ?q= parameter; a small inline script also copies the prompt to the
+//   clipboard and shows the toast, matching the CRA flow and footer note.
+// - Copy button: inline script copies the poem text and swaps to a check icon.
+import { AI_SERVICES } from '../../../main-section/src/components/literary/aiServices.js';
+import '../../../main-section/src/styles/art.css';
+import '../../../main-section/src/styles/poetry.css';
+
+const {
+  buildAiPrompt,
+  buildCopyText,
+  emptyState,
+  items,
+  lang = 'zh',
+  text,
+  togglePath,
+  backPath,
+} = Astro.props;
+
+const getClaudeText = (item) => (lang === 'zh' ? item.claudeZh : item.claudeEn);
+const getContextText = (item) => (lang === 'zh' ? item.context : item.contextEn);
+
+// Mirror of the CRA initial state: the first item with Claude commentary
+// starts expanded.
+const firstClaudeId = items.find((item) => getClaudeText(item))?.id;
+---
+
+<a href={backPath} class="art-back">
+  <!-- lucide ArrowLeft -->
+  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+  <span>art</span>
+</a>
+
+<div class="poetry-page">
+  <div class="page-container">
+    <div class="content-wrapper-narrow">
+      <div class="poetry-page-header">
+        <h1 class="poetry-page-title">{text.pageTitle}</h1>
+        <a href={togglePath} class="poetry-lang-toggle">{text.langToggle}</a>
+      </div>
+
+      <p class="poetry-abstract">{text.abstract}</p>
+
+      {items.length === 0 && emptyState ? (
+        <div class="poetry-empty">
+          <p class="poetry-empty-index">——</p>
+          <h2 class="poetry-empty-title">{emptyState.title}</h2>
+          <p class="poetry-empty-text">{emptyState.text}</p>
+        </div>
+      ) : (
+        <>
+          <div class="poetry-list">
+            {items.map((item) => {
+              const claudeText = getClaudeText(item);
+              const contextText = getContextText(item);
+              return (
+                <article class="poetry-card">
+                  <div class="poetry-card-header">
+                    <div>
+                      <h2 class="poetry-title">
+                        《{item.title}》
+                        {item.tune ? (
+                          <span style="font-weight: 300; font-size: 0.75em; opacity: 0.45; margin-left: 0.45em; letter-spacing: 0.03em;">{item.tune}</span>
+                        ) : null}
+                      </h2>
+                    </div>
+                    <div class="poetry-card-actions">
+                      <button class="poetry-icon-btn" data-copy={buildCopyText(item)} title="Copy poem">
+                        <!-- lucide Clipboard -->
+                        <svg class="icon-clipboard" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg>
+                        <!-- lucide Check -->
+                        <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+                      </button>
+                      <span class="poetry-actions-sep"></span>
+                      {AI_SERVICES.map((service) => (
+                        <a
+                          class="poetry-ai-icon-btn"
+                          href={service.urlTemplate(buildAiPrompt(item, lang))}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={service.label}
+                          data-copy={buildAiPrompt(item, lang)}
+                        >
+                          <img src={service.favicon} alt={service.label} class="poetry-ai-favicon" loading="lazy" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div class="poetry-body">
+                    {lang !== 'en'
+                      ? item.lines.map((line) => <p class="poetry-line">{line}</p>)
+                      : item.lines.map((line, lineIndex) => {
+                          const translations = item.linesEn?.[lineIndex] || [];
+                          return (
+                            <div class="poetry-line-group">
+                              <p class="poetry-line">{line}</p>
+                              {translations.length > 0 && (
+                                <div class="poetry-line-trans">
+                                  {translations.map((translation) => (
+                                    <span class="poetry-seg-en">{translation}</span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                  </div>
+
+                  {claudeText ? (
+                    <details class="poetry-claude" open={item.id === firstClaudeId}>
+                      <summary class="poetry-claude-toggle">
+                        {text.claudeLabel}
+                        <span class="poetry-claude-arrow">▾</span>
+                      </summary>
+                      <div class="poetry-claude-body open">
+                        <p class="poetry-claude-text">{claudeText}</p>
+                      </div>
+                    </details>
+                  ) : null}
+
+                  {contextText ? (
+                    <div class="poetry-context">
+                      <span class="poetry-context-label">{text.contextLabel}</span>
+                      <p class="poetry-context-text">{contextText}</p>
+                    </div>
+                  ) : null}
+                </article>
+              );
+            })}
+          </div>
+
+          <p class="poetry-footer">{text.footerNote}</p>
+
+          <nav class="poetry-elsewhere" aria-label="Elsewhere on the site">
+            <a href="/">/home</a> · <a href="/writing">/writing</a> · <a href="/thoughts">/thoughts</a>
+          </nav>
+        </>
+      )}
+    </div>
+  </div>
+</div>
+
+<div class="poetry-toast" id="poetry-toast" hidden>{text.aiToastMsg}</div>
+
+<style>
+  .poetry-elsewhere {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: #888;
+    margin-top: 1.6rem;
+  }
+  .poetry-elsewhere a { color: inherit; }
+  .poetry-elsewhere a:hover { color: #000; }
+</style>
+
+<style is:global>
+  /* <details>/<summary> stand-in for the CRA Claude-commentary JS toggle. */
+  summary.poetry-claude-toggle {
+    list-style: none;
+  }
+  summary.poetry-claude-toggle::-webkit-details-marker {
+    display: none;
+  }
+  details[open] > summary .poetry-claude-arrow {
+    transform: rotate(180deg);
+  }
+  /* poetry.css caps .poetry-claude-body.open at 32rem for its JS animation;
+     inside <details> the browser handles visibility, so never clip. */
+  details .poetry-claude-body.open {
+    max-height: none;
+  }
+
+  /* Clipboard button feedback: swap clipboard icon for check while copied. */
+  .poetry-icon-btn .icon-check {
+    display: none;
+  }
+  .poetry-icon-btn.copied .icon-clipboard {
+    display: none;
+  }
+  .poetry-icon-btn.copied .icon-check {
+    display: block;
+  }
+</style>
+
+<script is:inline>
+  // Mirrors the CRA clipboard flow: the copy button copies the poem text and
+  // briefly shows a check; the AI links copy the prompt and show the toast
+  // (navigation to the AI service proceeds via the plain href).
+  document.addEventListener('click', function (event) {
+    var trigger = event.target && event.target.closest && event.target.closest('[data-copy]');
+    if (!trigger) return;
+    var payload = trigger.getAttribute('data-copy');
+    if (payload && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(payload).catch(function () {});
+    }
+    if (trigger.classList.contains('poetry-icon-btn')) {
+      trigger.classList.add('copied');
+      setTimeout(function () {
+        trigger.classList.remove('copied');
+      }, 2000);
+    }
+    if (trigger.classList.contains('poetry-ai-icon-btn')) {
+      var toast = document.getElementById('poetry-toast');
+      if (toast) {
+        toast.hidden = false;
+        clearTimeout(toast.dataset.timer);
+        toast.dataset.timer = setTimeout(function () {
+          toast.hidden = true;
+        }, 3000);
+      }
+    }
+  });
+</script>

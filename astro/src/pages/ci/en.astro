@@ -1,0 +1,33 @@
+---
+// Static port of main-section/src/pages/CiCollectionPage.jsx (lang="en").
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LiteraryCollection from '../../components/LiteraryCollection.astro';
+import { CI_TEXT, buildCiAiPrompt, buildCiCopyText } from '../../components/literaryConfig.js';
+import { APP_ROUTES, buildAppUrl } from '../../config/site.js';
+import { ciPieces } from '../../../../main-section/src/data/poetryData.js';
+
+const lang = 'en';
+---
+
+<BaseLayout
+  title="Ci Poetry — Alex Gao"
+  description="Ci poetry by Alex Gao (alexgaoth)."
+  keywords={['Alex Gao', 'alexgaoth', 'ci poetry', '词', 'Chinese lyric poetry']}
+  path={APP_ROUTES.ciEn}
+  alternates={[
+    { hrefLang: 'zh', href: buildAppUrl(APP_ROUTES.ci) },
+    { hrefLang: 'en', href: buildAppUrl(APP_ROUTES.ciEn) },
+    { hrefLang: 'x-default', href: buildAppUrl(APP_ROUTES.ci) },
+  ]}
+>
+  <LiteraryCollection
+    items={ciPieces}
+    lang={lang}
+    text={CI_TEXT[lang]}
+    buildAiPrompt={buildCiAiPrompt}
+    buildCopyText={buildCiCopyText}
+    emptyState={{ title: CI_TEXT[lang].emptyTitle, text: CI_TEXT[lang].emptyText }}
+    togglePath={APP_ROUTES.ci}
+    backPath={APP_ROUTES.art}
+  />
+</BaseLayout>
