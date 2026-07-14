@@ -7,6 +7,7 @@ const THOUGHTS_DIR = path.join(__dirname, '../src/data/thoughts');
 const OUTPUT_FILE = path.join(__dirname, '../src/data/thoughtsManifest.json');
 const SITEMAP_FILE = path.join(__dirname, '../public/sitemap.xml');
 const RSS_FILE = path.join(__dirname, '../public/rss.xml');
+const LLMS_FILE = path.join(__dirname, '../public/llms.txt');
 const PUBLIC_THOUGHTS_DIR = path.join(__dirname, '../public/content/thoughts');
 const STATIC_ROUTES = require('../src/data/sitemapRoutes.json');
 const APP_BASE_URL = 'https://alexgaoth.com';
@@ -64,6 +65,12 @@ function validateFrontmatter(filename, data, content) {
 
   if (!isValidExplicitDate(data.date)) {
     errors.push('`date` must use YYYY-MM-DD and be a valid calendar date.');
+  }
+
+  // `modified` is optional; only bump it when the article meaningfully changes
+  // (it drives sitemap lastmod and article:modified_time).
+  if (data.modified !== undefined && !isValidExplicitDate(data.modified)) {
+    errors.push('`modified` must use YYYY-MM-DD and be a valid calendar date when present.');
   }
 
   if (typeof data.excerpt !== 'string' || !data.excerpt.trim()) {
@@ -160,6 +167,7 @@ function generateThoughtsArtifacts() {
       filename,
       title: data.title,
       date: data.date,
+      modified: data.modified || null,
       excerpt: data.excerpt,
       image: data.image,
       tags: data.tags,
@@ -185,23 +193,60 @@ function generateThoughtsArtifacts() {
   writePublicThoughts(articles);
   generateSitemap(articles);
   generateRss(articles);
+  generateLlmsTxt(articles);
+}
+
+// llms.txt: a discovery shortcut for LLM crawlers that don't execute JS
+// (SEO-PLAN 0.8). Extra distribution, not a Google requirement.
+function generateLlmsTxt(articles) {
+  const writingLines = articles.map((article) =>
+    `- [${article.title}](${buildAbsoluteUrl(`/thoughts/${article.slug}`)}): ${article.excerpt}`
+  );
+
+  const llms = `# Alex Gao (alexgaoth)
+
+> Personal site of Alex Gao — Tianhao Gao, online as alexgaoth. Math-CS
+> student at UC San Diego (previously St Paul's School, London). Builds
+> software (signalor.app), writes essays on history, philosophy, and AI,
+> and keeps Chinese poetry (诗) and ci (词) on the side.
+
+## Key pages
+
+- [Home](${buildAbsoluteUrl('/')}): directory of everything below
+- [About](${buildAbsoluteUrl('/about')}): who alex is — aliases, facts, links
+- [Resume](${buildAbsoluteUrl('/resume')}): experience and skills ([PDF](${buildAbsoluteUrl('/resume.pdf')}))
+- [Projects](${buildAbsoluteUrl('/projects')}): software and creative work
+- [Thoughts](${buildAbsoluteUrl('/thoughts')}): essays ([RSS](${buildAbsoluteUrl('/rss.xml')}))
+- [Quotes](${buildAbsoluteUrl('/quotes')}): collected quotes
+- [Now](${buildAbsoluteUrl('/now')}): what alex is doing right now
+- [Poetry 诗](${buildAbsoluteUrl('/poetry')}): Chinese poetry (plain text: ${buildAbsoluteUrl('/poetry.txt')})
+- [Ci 词](${buildAbsoluteUrl('/ci')}): ci to Song-dynasty tunes (plain text: ${buildAbsoluteUrl('/ci.txt')})
+
+## Writing
+
+${writingLines.join('\n')}
+
+## Identity
+
+- Handle: alexgaoth everywhere — [GitHub](https://github.com/alexgaoth), [LinkedIn](https://linkedin.com/in/alexgaoth), [X/Twitter](https://twitter.com/alexgaoth), [Instagram](https://instagram.com/alexgaoth)
+- Intro site: https://intro.alexgaoth.com/
+`;
+
+  fs.writeFileSync(LLMS_FILE, llms, 'utf-8');
+  console.log('✅ Successfully generated llms.txt');
 }
 
 function generateSitemap(staticArticles) {
-  const today = new Date().toISOString().split('T')[0];
-
-  const staticEntries = STATIC_ROUTES.map((route) => `  <url>
-    <loc>${buildAbsoluteUrl(route.path)}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${route.changefreq}</changefreq>
-    <priority>${route.priority}</priority>
+  // No lastmod on static routes: stamping them with the build date claims
+  // they changed on every build, which trains crawlers to ignore the signal.
+  // changefreq/priority are legacy hints Google ignores — omitted everywhere.
+  const staticEntries = STATIC_ROUTES.map((routePath) => `  <url>
+    <loc>${buildAbsoluteUrl(routePath)}</loc>
   </url>`);
 
   const thoughtEntries = staticArticles.map((article) => `  <url>
     <loc>${buildAbsoluteUrl(`/thoughts/${article.slug}`)}</loc>
-    <lastmod>${normaliseDateString(article.date)}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>${normaliseDateString(article.modified || article.date)}</lastmod>
   </url>`);
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -235,7 +280,7 @@ function generateRss(articles) {
     <title>Alex Gao Thoughts</title>
     <link>${buildAbsoluteUrl('/thoughts')}</link>
     <description>Writing by Alex Gao (alexgaoth).</description>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <lastBuildDate>${toRfc822Date(articles[0].modified || articles[0].date)}</lastBuildDate>
     <language>en-us</language>
 ${items}
   </channel>
