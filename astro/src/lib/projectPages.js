@@ -18,6 +18,28 @@ const FEATURED_SLUGS = [
   'dont-hallucinate',
 ];
 
+// ── ALEX: write here ─────────────────────────────────────────────────────
+// A few sentences per project, in your own voice: the problem, your role,
+// what you learned / what makes it worth reading about. Each string renders
+// as one paragraph on the project's page. Leave '' to render nothing.
+const PROSE = {
+  'signalor': [
+    '',
+  ],
+  'this-very-website': [
+    '',
+  ],
+  'ucsd-crimes-log-tracker': [
+    '',
+  ],
+  '3d-fractal-simulator': [
+    '',
+  ],
+  'dont-hallucinate': [
+    '',
+  ],
+};
+
 // 'This very website' is a CreativeWork; the rest are software.
 const CREATIVE_WORK_SLUGS = new Set(['this-very-website']);
 
@@ -32,6 +54,7 @@ export function getFeaturedProjects() {
       ship: ship || null,
       schemaType: CREATIVE_WORK_SLUGS.has(slug) ? 'CreativeWork' : 'SoftwareApplication',
       images: project.images || (project.image ? [project.image] : []),
+      prose: (PROSE[slug] || []).filter((paragraph) => paragraph.trim()),
     };
   });
 }

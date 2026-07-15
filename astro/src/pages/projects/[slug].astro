@@ -15,7 +15,7 @@ export function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { project, ship, schemaType, images, slug } = entry;
+const { project, ship, schemaType, images, slug, prose } = entry;
 
 const pagePath = `${APP_ROUTES.projects}/${slug}`;
 const pageUrl = buildAppUrl(pagePath);
@@ -82,6 +82,14 @@ const breadcrumbSchema = {
       <h1 class="title-page">{project.name}</h1>
       <p class="project-desc">{project.description}</p>
 
+      {prose.length > 0 && (
+        <div class="project-prose">
+          {prose.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+        </div>
+      )}
+
       <dl class="project-facts">
         {facts.map((fact) => (
           <div class="project-fact">
@@ -133,6 +141,15 @@ const breadcrumbSchema = {
     color: #333;
     margin-bottom: 1.4rem;
   }
+  .project-prose {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.75;
+    max-width: 62ch;
+    color: #444;
+    margin-bottom: 1.6rem;
+  }
+  .project-prose p { margin: 0 0 0.9em; }
   .project-facts { margin: 0 0 1.2rem; }
   .project-fact {
     display: flex;
