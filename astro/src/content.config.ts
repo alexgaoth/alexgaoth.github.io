@@ -1,10 +1,9 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
-// Thought articles load straight from the CRA app's markdown so there is one
-// source of truth until cutover (same convention as config/data/styles).
-// The schema enforces the editorial frontmatter contract from SEO-PLAN
-// Phase 2 — the same rules generate-thoughts-index.js validates.
+// Thought articles: markdown in src/data/thoughts/, one file per article.
+// The schema enforces the editorial frontmatter contract — see
+// ADDITION-RULES.md at the repo root before adding one.
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const thoughts = defineCollection({

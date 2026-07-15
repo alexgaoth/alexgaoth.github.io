@@ -1,7 +1,7 @@
 // Shared gallery list/caption logic — used by both the build-time fetch in
 // pages/gallery.astro and the client island islands/GalleryGrid.jsx, so the
 // static HTML and the hydrated grid derive identical alt text and URLs.
-// Mirrors main-section/src/pages/GalleryPage.jsx.
+// Mirrors the old React page GalleryPage.jsx.
 
 export const GALLERY_BASE_URL = 'https://photos.alexgaoth.com';
 export const LIST_URL = `${GALLERY_BASE_URL}/list.json`;

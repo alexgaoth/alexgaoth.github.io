@@ -1,4 +1,4 @@
-// Mirror of the CRA generator's llms.txt (SEO-PLAN 0.8): a discovery
+// Mirror of the CRA generator's llms.txt: a discovery
 // shortcut for LLM crawlers that don't execute JS.
 import { buildAbsoluteUrl, getThoughts, thoughtUrl } from '../lib/thoughts.js';
 

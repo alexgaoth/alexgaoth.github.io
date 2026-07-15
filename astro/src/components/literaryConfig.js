@@ -1,5 +1,5 @@
 // Static-port mirror of the per-collection config in
-// main-section/src/pages/PoetryCollectionPage.jsx and CiCollectionPage.jsx:
+// the old React page PoetryCollectionPage.jsx and CiCollectionPage.jsx:
 // UI strings plus the copy-text / AI-prompt builders each page hands to
 // LiteraryCollectionPage. Kept in one module so /poetry and /poetry/en (and
 // /ci and /ci/en) cannot drift apart.
@@ -79,7 +79,7 @@ export function buildCiAiPrompt(piece, lang) {
     : `Please translate this Chinese ci poem into English and provide a detailed commentary, covering themes, emotional tone, and literary techniques:\n\n${ciTitleLine(piece)}\n${piece.lines.join('\n')}`;
 }
 
-// CreativeWork JSON-LD for the literary collection pages (SEO-PLAN 3.5).
+// CreativeWork JSON-LD for the literary collection pages.
 // Boring and truthful: mirrors only what the page itself shows.
 export function buildCollectionSchema({ name, description, url, inLanguage, genre }) {
   return {

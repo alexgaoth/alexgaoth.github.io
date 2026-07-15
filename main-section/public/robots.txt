@@ -1,7 +1,0 @@
-# robots.txt for alexgaoth.com
-
-User-agent: *
-Allow: /
-
-# Sitemap location
-Sitemap: https://alexgaoth.com/sitemap.xml

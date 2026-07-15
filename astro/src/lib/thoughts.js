@@ -1,5 +1,5 @@
 // Shared helpers for the thoughts collection — the logic that used to live in
-// main-section/scripts/generate-thoughts-index.js (read time, ordering,
+// the retired script generate-thoughts-index.js (read time, ordering,
 // absolute URLs, RFC-822 dates) plus related-article selection.
 import { getCollection } from 'astro:content';
 import { SITE } from '../config/site.js';
@@ -33,8 +33,8 @@ export async function getThoughts() {
 }
 
 // 2–3 related articles: hand-picked `related` slugs first, then shared-tag
-// matches, then most recent — so every article page links onward (SEO-PLAN
-// Phase 2: the site's structure should be discoverable through normal links).
+// matches, then most recent — so every article page links onward and the
+// site's structure stays discoverable through normal links.
 export function pickRelated(entry, allEntries, max = 3) {
   const others = allEntries.filter((other) => other.data.slug !== entry.data.slug);
   const chosen = [];

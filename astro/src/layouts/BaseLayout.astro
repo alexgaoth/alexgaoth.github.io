@@ -1,6 +1,6 @@
 ---
 // Static head for every page — the fix for the CRA empty-shell problem.
-// Mirrors main-section/src/components/SEO.jsx, but rendered at build time so
+// Mirrors the old React component SEO.jsx, but rendered at build time so
 // crawlers, social bots, and LLM fetchers see it without executing JS.
 import { SITE, buildAppUrl, buildAssetUrl } from '../config/site.js';
 import '../styles/global.css';
@@ -27,8 +27,8 @@ const keywordList = Array.isArray(keywords)
 const canonicalUrl = buildAppUrl(path);
 const imageUrl = image || buildAssetUrl(imagePath);
 
-// Base entity schemas live here and only here (SEO-PLAN 0.3: one copy, the
-// richer one). Article/page-specific schemas come in via `structuredData`.
+// Base Person/WebSite schemas live here and only here — duplicate entity
+// records drift. Article/page-specific schemas come in via `structuredData`.
 const baseStructuredData = [
   {
     '@context': 'https://schema.org',
@@ -105,6 +105,16 @@ const allStructuredData = [...baseStructuredData, ...structuredData];
     ))}
 
     <link rel="apple-touch-icon" href="/logo.jpg" />
+
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-M3BEDKHCBK"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-M3BEDKHCBK');
+    </script>
+
     <slot name="head" />
   </head>
   <body>

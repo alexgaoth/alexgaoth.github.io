@@ -1,4 +1,4 @@
-// Standalone project pages (SEO-PLAN Phase 3.5). Everything here is
+// Standalone project pages. Everything here is
 // assembled from copy that already exists on the site — content.js project
 // entries plus the home rail's SHIPS facts — so the pages stay truthful.
 import { content } from '../data/content.js';

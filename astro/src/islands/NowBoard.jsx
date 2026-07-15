@@ -1,10 +1,9 @@
-// Adapted copy of main-section/src/pages/NowPage.jsx for the Astro island
-// (router/helmet removed; meta lives in now.astro's BaseLayout). The board
-// logic is otherwise identical — keep the two in sync until cutover retires
-// the CRA version.
+// The /now drag-board island. Meta and the static no-JS shell live in
+// now.astro; this hydrates over it (guest slips via Supabase, live fetch
+// of /profile.json).
 import React from "react";
 import { supabase } from "../lib/supabase";
-import { NOW_FALLBACK } from "../../../main-section/src/data/nowData";
+import { NOW_FALLBACK } from "../data/nowData";
 
 // Context so cards can read live data without prop-drilling
 const NowCtx = React.createContext(NOW_FALLBACK);

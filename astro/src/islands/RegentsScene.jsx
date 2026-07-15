@@ -1,4 +1,4 @@
-// Adapted copy of main-section/src/pages/RegentsPage.jsx for the Astro island
+// Adapted copy of the old React page RegentsPage.jsx for the Astro island
 // (router/helmet removed; meta + static shell live in regents.astro). Loaded
 // with client:only so three.js (~600KB) never enters any shared bundle —
 // preserving the CRA lazy-load pattern.

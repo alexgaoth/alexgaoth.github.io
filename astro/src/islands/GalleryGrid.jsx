@@ -1,13 +1,11 @@
-// React island for /gallery — adapted copy of the grid/lightbox logic from
-// main-section/src/pages/GalleryPage.jsx (which can't be imported directly:
-// it pulls in react-router and the CRA SEO/helmet component). The static
-// shell (back link, h1, intro copy, footer) lives in pages/gallery.astro.
+// The /gallery grid + lightbox island. The static shell (back link, h1,
+// intro copy, footer) lives in pages/gallery.astro.
 //
 // Astro server-renders this component at build time, so when the page is
 // built with `initialPhotos` (fetched in gallery.astro's frontmatter) the
 // first frames ship as real <img loading="lazy"> tags in the static HTML.
 // On hydration the island fetches the fresh, full list.json and replaces
-// them; the fetch/caption behavior matches the CRA page.
+// them.
 import { useCallback, useEffect, useState } from 'react';
 import { LIST_URL, photosFromList } from '../lib/gallery.js';
 
@@ -78,7 +76,7 @@ export default function GalleryGrid({ initialPhotos = [] }) {
       });
 
     return () => { cancelled = true; };
-    // initialPhotos is build-time static — run once on mount, like the CRA page.
+    // initialPhotos is build-time static — run once on mount.
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const closeLightbox = useCallback(() => setActive(null), []);

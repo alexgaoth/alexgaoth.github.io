@@ -1,5 +1,5 @@
 ---
-// Static port of main-section/src/pages/ProfilePage.jsx (/about).
+// Static port of the old React page ProfilePage.jsx (/about).
 // Inline JSX style objects converted to the scoped <style> block below;
 // React hover state -> CSS :hover; isMobile state -> 768px media query.
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -18,7 +18,7 @@ const profileStructuredData = [
       name: SITE.name,
       alternateName: profileData.aliases,
       url: SITE.rootUrl,
-      // /about is the canonical identity page (SEO-PLAN 3.5) — everything
+      // /about is the canonical identity page — everything
       // below mirrors facts visible on this page, nothing more.
       sameAs: [...SITE.socialProfiles, SITE.personalUrl],
       description: SITE.description,

@@ -1,6 +1,5 @@
-// Same URL and shape as the CRA generator's sitemap (SEO-PLAN Phase 4: keep
-// /sitemap.xml identical across the cutover). Honest lastmod only: thoughts
-// use modified||date, static routes carry none.
+// Honest lastmod only: thoughts use modified||date; static routes carry none
+// (a fake build-date lastmod trains crawlers to ignore the signal).
 import { buildAbsoluteUrl, getThoughts, thoughtUrl } from '../lib/thoughts.js';
 import { getFeaturedProjects } from '../lib/projectPages.js';
 
