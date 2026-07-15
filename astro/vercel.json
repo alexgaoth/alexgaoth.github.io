@@ -1,0 +1,16 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/main-section",
+      "destination": "https://alexgaoth.com",
+      "permanent": true
+    },
+    {
+      "source": "/main-section/:path*",
+      "destination": "https://alexgaoth.com/:path*",
+      "permanent": true
+    }
+  ]
+}

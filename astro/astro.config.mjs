@@ -1,4 +1,3 @@
-import { fileURLToPath } from 'node:url';
 import react from '@astrojs/react';
 import { defineConfig } from 'astro/config';
 import rehypeMathjaxSvg from 'rehype-mathjax/svg';
@@ -23,17 +22,10 @@ export default defineConfig({
   trailingSlash: 'never',
   build: { format: 'file' },
   integrations: [react()],
-  // TeX renders to static SVG at build time (SEO-PLAN 0.6 done properly):
-  // no MathJax client script ever ships from thought pages.
+  // TeX renders to static SVG at build time — no MathJax client script ever
+  // ships from thought pages.
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeMathjaxSvg, rehypeDemoteH1],
-  },
-  vite: {
-    server: {
-      // Config, data, and styles are imported from ../main-section so there is
-      // one source of truth during the parallel-run period.
-      fs: { allow: [fileURLToPath(new URL('..', import.meta.url))] },
-    },
   },
 });

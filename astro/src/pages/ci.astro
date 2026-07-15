@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import LiteraryCollection from '../components/LiteraryCollection.astro';
 import { CI_TEXT, buildCiAiPrompt, buildCiCopyText, buildCollectionSchema } from '../components/literaryConfig.js';
 import { APP_ROUTES, buildAppUrl } from '../config/site.js';
-import { ciPieces } from '../../../main-section/src/data/poetryData.js';
+import { ciPieces } from '../data/poetryData.js';
 
 const lang = 'zh';
 const collectionSchema = buildCollectionSchema({

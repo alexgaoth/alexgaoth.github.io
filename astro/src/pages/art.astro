@@ -3,9 +3,9 @@
 // a decorative island (imported directly from main-section — it has no
 // router/helmet deps); portals are real links in source HTML.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ArtBackground from '../../../main-section/src/components/ArtBackground.jsx';
+import ArtBackground from '../islands/ArtBackground.jsx';
 import { APP_ROUTES } from '../config/site.js';
-import '../../../main-section/src/styles/art.css';
+import '../styles/art.css';
 
 const PORTALS = [
   { num: '一', zh: '诗', label: 'poetry', path: '/poetry' },

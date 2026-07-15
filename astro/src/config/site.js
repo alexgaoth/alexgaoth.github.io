@@ -1,4 +1,59 @@
-// Single source of truth for site constants, routes, and navigation lives in
-// the CRA app until cutover (SEO-PLAN Phase 1: keep src/config/site.js as the
-// single source for URLs/nav). This re-export keeps the Astro side in sync.
-export * from '../../../main-section/src/config/site.js';
+export const SITE = {
+  name: 'Alex Gao',
+  handle: 'alexgaoth',
+  twitterHandle: '@alexgaoth',
+  title: 'Alex Gao — Student Builder',
+  description: 'Alex Gao (alexgaoth). Student builder at UCSD.',
+  keywords: ['Alex Gao', 'alexgaoth', 'Student Builder', 'UCSD'],
+  rootUrl: 'https://alexgaoth.com',
+  appUrl: 'https://alexgaoth.com',
+  legacyAppUrl: 'https://app.alexgaoth.com',
+  personalUrl: 'https://intro.alexgaoth.com',
+  defaultImagePath: '/logo.jpg',
+  socialProfiles: [
+    'https://github.com/alexgaoth',
+    'https://linkedin.com/in/alexgaoth',
+    'https://twitter.com/alexgaoth',
+    'https://instagram.com/alexgaoth',
+  ],
+};
+
+export const APP_ROUTES = {
+  home: '/',
+  about: '/about',
+  resume: '/resume',
+  projects: '/projects',
+  thoughts: '/thoughts',
+  quotes: '/quotes',
+  now: '/now',
+  art: '/art',
+  gallery: '/gallery',
+  regents: '/regents',
+  poetry: '/poetry',
+  poetryEn: '/poetry/en',
+  ci: '/ci',
+  ciEn: '/ci/en',
+  writing: '/writing',
+};
+
+export const NAVIGATION_ITEMS = [
+  { path: APP_ROUTES.resume, label: 'Resume' },
+  { path: APP_ROUTES.projects, label: 'Things I Made' },
+  { path: APP_ROUTES.thoughts, label: 'Thoughts' },
+  { path: APP_ROUTES.quotes, label: 'Quotes' },
+  { path: APP_ROUTES.poetry, label: '诗' },
+  { path: APP_ROUTES.ci, label: '词' },
+  { path: APP_ROUTES.now, label: 'Now', isNowButton: true },
+];
+
+export function buildAppUrl(path = APP_ROUTES.home) {
+  return path === APP_ROUTES.home ? `${SITE.appUrl}/` : `${SITE.appUrl}${path}`;
+}
+
+export function buildRootUrl(path = '/') {
+  return path === '/' ? `${SITE.rootUrl}/` : `${SITE.rootUrl}${path}`;
+}
+
+export function buildAssetUrl(path = SITE.defaultImagePath) {
+  return path.startsWith('http') ? path : `${SITE.appUrl}${path}`;
+}

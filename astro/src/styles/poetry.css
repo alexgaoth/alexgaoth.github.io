@@ -1,0 +1,498 @@
+/* ─── Poetry Collection ─── */
+
+/* ── Page wrapper ── */
+.poetry-page {
+  background: #fdfcf8;
+  min-height: 100vh;
+}
+
+.poetry-page .page-container {
+  background: transparent;
+}
+
+/* Narrower reading column — poetry reads better in an intimate width */
+.poetry-page .content-wrapper-narrow {
+  max-width: 640px;
+}
+
+/* ── Page header ── */
+.poetry-page-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #ddd8d0;
+  gap: 1.5rem;
+}
+
+/* Upright everywhere: italics synthesize an ugly oblique on CJK glyphs and
+   thin Cormorant into scrawl — hierarchy comes from size/color/structure instead. */
+.poetry-page-title {
+  font-family: 'Cormorant Garamond', 'Songti SC', 'STSong', Georgia, serif;
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  color: #1a1816;
+}
+
+.poetry-lang-toggle {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  color: #aaa8a4;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.poetry-lang-toggle:hover {
+  color: #1a1816;
+  border-bottom-color: #1a1816;
+}
+
+/* ── Abstract ── */
+.poetry-abstract {
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', 'STSong', Georgia, serif;
+  font-size: 1.08rem;
+  line-height: 2;
+  letter-spacing: 0.04em;
+  color: #4e4a44;
+  margin-bottom: 2rem;
+  max-width: 560px;
+}
+
+/* ── Translation callout (English pages) ── */
+.poetry-trans-callout {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e4e0d8;
+  background: rgba(26, 24, 22, 0.018);
+  margin-bottom: 3rem;
+}
+
+.poetry-trans-callout-dot {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: #b0a898;
+  letter-spacing: 0.15em;
+  flex-shrink: 0;
+}
+
+.poetry-trans-callout-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  line-height: 1.75;
+  letter-spacing: 0.06em;
+  color: #9a9088;
+}
+
+/* ── Poem list ── */
+.poetry-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Poem card — no hover background, poems are not buttons ── */
+.poetry-card {
+  position: relative;
+  padding: 2.75rem 0;
+  border-top: 1px solid #eae7e0;
+}
+
+.poetry-card:last-child {
+  border-bottom: 1px solid #eae7e0;
+}
+
+/* ── Ghost index — centered behind the card, not fighting the header ── */
+.poetry-index {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  font-family: 'Space Mono', monospace;
+  font-size: 5.5rem;
+  font-weight: 700;
+  color: #1a1816;
+  opacity: 0.032;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Card header: title + icon cluster ── */
+.poetry-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.poetry-title {
+  font-family: 'Cormorant Garamond', 'Songti SC', 'STSong', 'Noto Serif SC', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
+  color: #1a1816;
+}
+
+/* ── Icon cluster — ghost at rest, visible on hover ── */
+.poetry-card-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  padding-top: 0.25rem;
+  opacity: 0.04;
+  transition: opacity 0.35s ease;
+}
+
+.poetry-card:hover .poetry-card-actions {
+  opacity: 0.55;
+}
+
+.poetry-actions-sep {
+  width: 1px;
+  height: 11px;
+  background: #888;
+  opacity: 0.5;
+  margin: 0 0.25rem;
+  flex-shrink: 0;
+}
+
+.poetry-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1816;
+  transition: transform 0.15s ease;
+}
+
+.poetry-icon-btn:hover {
+  transform: scale(1.2);
+}
+
+.poetry-ai-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.poetry-ai-icon-btn:hover {
+  transform: scale(1.2);
+}
+
+.poetry-ai-favicon {
+  width: 17px;
+  height: 17px;
+  display: block;
+  filter: grayscale(1) opacity(0.65);
+  transition: filter 0.2s ease;
+}
+
+.poetry-ai-icon-btn:hover .poetry-ai-favicon {
+  filter: grayscale(0) opacity(1);
+}
+
+/* ── Poem body ── */
+.poetry-body {
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.poetry-line {
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', 'STSong', 'FangSong', 'SimSun', Georgia, serif;
+  font-size: 1.15rem;
+  line-height: 2.4;
+  letter-spacing: 0.1em;
+  color: #1f1d1a;
+}
+
+/* ── Claude analysis (collapsible) ── */
+.poetry-claude {
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.poetry-claude-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #b0aba4;
+  transition: color 0.25s ease;
+  user-select: none;
+}
+
+.poetry-claude-toggle:hover {
+  color: #6a6560;
+}
+
+.poetry-claude-arrow {
+  display: inline-block;
+  font-size: 0.8em;
+  line-height: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.poetry-claude-arrow.open {
+  transform: rotate(180deg);
+}
+
+.poetry-claude-body {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.4s ease;
+}
+
+.poetry-claude-body.open {
+  max-height: 32rem;
+  opacity: 1;
+}
+
+.poetry-claude-text {
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1.9;
+  color: #55504a;
+  margin-top: 0.9rem;
+  padding: 0.1rem 0 0.1rem 1rem;
+  border-left: 2px solid #e2ded6;
+}
+
+/* ── Context section ── */
+.poetry-context {
+  position: relative;
+  z-index: 1;
+  margin-top: 0.6rem;
+}
+
+/* Eyebrow label carries the "this is aside, not poem" signal that grey italic used to */
+.poetry-context-label {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #b0aba4;
+  margin-bottom: 0.4rem;
+  user-select: none;
+}
+
+.poetry-context-text {
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.85;
+  color: #5f5a53;
+  letter-spacing: 0.02em;
+}
+
+.poetry-context-placeholder {
+  color: #ccc8c0;
+}
+
+/* ── Inline translation (English pages only) ── */
+.poetry-translate-hint {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: #c8c2ba;
+  margin-top: 0.3rem;
+  text-transform: uppercase;
+}
+
+.poetry-line-group {
+  /* wrapper replacing the plain <p> on English pages */
+}
+
+.poetry-line-translatable {
+  /* the line itself — cursor handled by segments */
+}
+
+.poetry-seg {
+  cursor: pointer;
+  border-bottom: 1px dotted #cac4bc;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.poetry-seg:hover {
+  color: #1a1816;
+  border-bottom-color: #9a8f82;
+}
+
+.poetry-seg-active {
+  color: #1a1816;
+  border-bottom: 1px solid #8a7f72;
+}
+
+.poetry-seg-comma {
+  /* just a display character, not interactive */
+  pointer-events: none;
+}
+
+.poetry-line-trans {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-top: 0.1rem;
+  margin-bottom: 0.4rem;
+  padding: 0.4rem 0.8rem 0.4rem 0.9rem;
+  border-left: 1.5px solid #dedad3;
+  animation: seg-trans-in 0.22s ease;
+}
+
+@keyframes seg-trans-in {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.poetry-seg-en {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: #6a6058;
+  letter-spacing: 0.02em;
+}
+
+/* ── Toast notification ── */
+.poetry-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1816;
+  color: #fdfcf8;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  padding: 0.6rem 1.5rem;
+  z-index: 9999;
+  pointer-events: none;
+  animation: poetry-toast-in 0.2s ease;
+}
+
+@keyframes poetry-toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Empty state ── */
+.poetry-empty {
+  padding: 7rem 0;
+  text-align: center;
+}
+
+.poetry-empty-index {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: #ccc;
+  margin-bottom: 1.5rem;
+}
+
+.poetry-empty-title {
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', 'Songti SC', serif;
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: #7a7570;
+  margin-bottom: 0.6rem;
+}
+
+.poetry-empty-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: #bbb;
+  letter-spacing: 0.08em;
+}
+
+/* ── Footer ── */
+.poetry-footer {
+  margin-top: 4.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #eae7e0;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: #c0bbb3;
+  text-align: center;
+  padding-bottom: 4rem;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .poetry-page-title {
+    font-size: 2.2rem;
+  }
+
+  .poetry-page-header {
+    margin-bottom: 2.75rem;
+  }
+
+  .poetry-card {
+    padding: 2.25rem 0;
+  }
+
+  .poetry-index {
+    font-size: 4rem;
+    opacity: 0.025;
+  }
+
+  .poetry-title {
+    font-size: 1.25rem;
+  }
+
+  .poetry-line {
+    font-size: 1rem;
+    line-height: 2.3;
+    letter-spacing: 0.06em;
+  }
+
+  .poetry-card-actions {
+    opacity: 0.28;
+  }
+
+  .poetry-claude-text {
+    font-size: 1rem;
+  }
+
+  .poetry-context-text {
+    font-size: 0.93rem;
+  }
+}

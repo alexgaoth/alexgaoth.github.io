@@ -5,7 +5,7 @@
 // can return later as an island; content and links must not depend on it.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE, APP_ROUTES } from '../config/site.js';
-import { content } from '../../../main-section/src/data/content.js';
+import { content } from '../data/content.js';
 import {
   SHIPS,
   TROPHIES,
@@ -15,7 +15,7 @@ import {
   EDUCATION,
   DOMAINS,
   TONGUES,
-} from '../../../main-section/src/data/homeRailData.js';
+} from '../data/homeRailData.js';
 
 const CARD_DESCRIPTIONS = {
   resume: 'My professional experience and skills',

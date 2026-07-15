@@ -7,17 +7,18 @@
 // directly in the static HTML so crawlers see it without executing JS.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContentPage from '../components/ContentPage.astro';
-import { content } from '../../../main-section/src/data/content.js';
-import thoughtsManifest from '../../../main-section/src/data/thoughtsManifest.json';
+import { content } from '../data/content.js';
 import { APP_ROUTES } from '../config/site.js';
+import { getThoughts } from '../lib/thoughts.js';
 
 const quotes = content.quotes.content;
+const articles = (await getThoughts()).map((entry) => entry.data);
 
-// Mirror of QuoteModal's slug -> article lookup.
+// Resolve a quote's relatedArticles slugs against the thoughts collection.
 const getArticleDetails = (slugs) => {
   if (!slugs || !Array.isArray(slugs)) return [];
   return slugs
-    .map((slug) => thoughtsManifest.find((article) => article.slug === slug))
+    .map((slug) => articles.find((article) => article.slug === slug))
     .filter((article) => article !== undefined);
 };
 ---

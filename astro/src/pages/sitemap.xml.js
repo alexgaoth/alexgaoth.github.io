@@ -1,13 +1,24 @@
 // Same URL and shape as the CRA generator's sitemap (SEO-PLAN Phase 4: keep
 // /sitemap.xml identical across the cutover). Honest lastmod only: thoughts
 // use modified||date, static routes carry none.
-import STATIC_ROUTES from '../../../main-section/src/data/sitemapRoutes.json';
 import { buildAbsoluteUrl, getThoughts, thoughtUrl } from '../lib/thoughts.js';
-
 import { getFeaturedProjects } from '../lib/projectPages.js';
 
-// Routes that exist only on the Astro site (not in the shared CRA list).
-const ASTRO_ONLY_ROUTES = [
+const STATIC_ROUTES = [
+  '/',
+  '/about',
+  '/now',
+  '/resume',
+  '/projects',
+  '/thoughts',
+  '/quotes',
+  '/art',
+  '/gallery',
+  '/regents',
+  '/poetry',
+  '/poetry/en',
+  '/ci',
+  '/ci/en',
   '/writing',
   ...getFeaturedProjects().map((entry) => `/projects/${entry.slug}`),
 ];
@@ -15,7 +26,7 @@ const ASTRO_ONLY_ROUTES = [
 export async function GET() {
   const thoughts = await getThoughts();
 
-  const staticEntries = [...STATIC_ROUTES, ...ASTRO_ONLY_ROUTES].map((routePath) => `  <url>
+  const staticEntries = STATIC_ROUTES.map((routePath) => `  <url>
     <loc>${buildAbsoluteUrl(routePath)}</loc>
   </url>`);
 

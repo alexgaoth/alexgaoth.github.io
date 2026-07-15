@@ -1,0 +1,418 @@
+/* Global Styles - styles/global.css */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --muted: #888;
+  --subtle: rgba(0, 0, 0, 0.18);
+  --hairline: rgba(0, 0, 0, 0.08);
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Space Mono', monospace;
+  line-height: 1.6;
+}
+
+/* Layout Classes */
+.page-container {
+  min-height: 100vh;
+  background-color: var(--paper);
+  color: var(--ink);
+  padding: 1rem;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding: 2rem;
+  }
+}
+
+.content-wrapper {
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+/* Parallax Styles */
+.parallax-container {
+  position: relative;
+}
+
+.title-section-parallax {
+  will-change: transform, top;
+  width: 100%;
+  /* Position and transform set via inline styles */
+}
+
+.cards-section-parallax {
+  will-change: transform, top;
+  width: 100%;
+  /* Position and transform set via inline styles */
+}
+
+.fade-text-block {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 70ch;
+  margin-left: auto;
+  margin-right: auto;
+  /* max-height enables smooth collapse after parallax ends.
+     400px is a safe upper bound; the real height is ~130–160px. */
+  max-height: 400px;
+  overflow: hidden;
+  transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-top  0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Applied when isParallaxActive becomes false. Because all paragraphs are
+   already opacity:0 at that point, the visual collapse is invisible — only
+   the height recedes, smoothly pulling the cards upward. */
+.fade-text-block--collapsed {
+  max-height: 0;
+  margin-top: 0;
+}
+
+
+.fade-scroll-hint {
+  font-style: italic;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  opacity: 1;
+  will-change: opacity;
+  transition: opacity 0.08s linear;
+  margin-bottom: 0.4rem;
+}
+
+/* Scroll indicator line for parallax hint */
+.scroll-line-indicator {
+  width: 1px;
+  height: 28px;
+  background: var(--ink);
+  transform-origin: top center;
+  animation: scrollLineGrow 1.8s ease-in-out infinite;
+}
+
+@keyframes scrollLineGrow {
+  0%   { opacity: 0;    transform: scaleY(0); }
+  40%  { opacity: 0.3;  transform: scaleY(1); }
+  80%  { opacity: 0.15; transform: scaleY(1); }
+  100% { opacity: 0;    transform: scaleY(0.3); }
+}
+
+.fade-para {
+  font-style: italic;
+  font-size: 0.82rem;
+  line-height: 1.75;
+  opacity: 1;
+  will-change: opacity;
+  transition: opacity 0.08s linear;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .fade-text-block {
+    max-width: 30ch;
+  }
+
+  .fade-scroll-hint {
+    font-size: 0.7rem;
+  }
+
+  .fade-para {
+    font-size: 0.75rem;
+  }
+}
+
+.content-wrapper-narrow {
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+/* Typography */
+.title-main {
+  font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: -1.5rem;
+  margin-bottom: 0.2rem;
+  text-align: center;
+}
+
+.title-sub {
+  font-size: 0.85rem;
+  padding-bottom: 1.25rem;
+  text-align: center;
+}
+
+/* display:none removes the element from flow entirely (visibility:hidden keeps its space) */
+@media (min-width: 769px) {
+  .hidden {
+    display: none;
+  }
+}
+
+@media (max-width: 769px) {
+  .reverse-hidden {
+    display: none;
+  }
+}
+
+
+.footer {
+  font-size: 0.85rem;
+  opacity: 60%;
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  z-index: 5;
+}
+
+.footer p + p {
+  margin-top: 0.35rem;
+}
+
+.mainpage-footer {
+  transform: translateX(0.65rem);
+}
+
+.mainpage-footer-strip {
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    padding 0.3s ease;
+}
+
+.mainpage-footer-strip .art-strip-arrow {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .title-main {
+    font-size: 3.75rem;
+  }
+}
+
+.title-page {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.title-section {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid black;
+  padding-bottom: 0.5rem;
+}
+
+.title-card {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.title-article {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Grid and Layout */
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .grid-2col {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+  }
+}
+
+.grid-1col {
+  display: grid;
+  gap: 2rem;
+}
+
+/* Spacing */
+.space-y-large > * + * {
+  margin-top: 3rem;
+}
+
+.space-y-medium > * + * {
+  margin-top: 2rem;
+}
+
+.space-y-small > * + * {
+  margin-top: 1rem;
+}
+
+.mb-small { margin-bottom: 0.5rem; }
+.mb-medium { margin-bottom: 1rem; }
+.mb-large { margin-bottom: 2rem; }
+
+/* Flex utilities */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.space-x-small > * + * {
+  margin-left: 0.5rem;
+}
+
+.gap-small {
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .md-flex-row {
+    flex-direction: row;
+  }
+  
+  .md-justify-between {
+    justify-content: space-between;
+  }
+  
+  .md-items-start {
+    align-items: flex-start;
+  }
+}
+
+/* Text styles */
+.text-gray {
+  color: #666;
+}
+
+.text-small {
+  font-size: 0.875rem;
+}
+
+.text-medium {
+  font-size: 1rem;
+}
+
+.text-large {
+  font-size: 1.25rem;
+}
+
+.text-xl {
+  font-size: 1.5rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.opacity-70 {
+  opacity: 0.7;
+}
+
+.leading-relaxed {
+  line-height: 1.6;
+}
+
+/* /art strip — below the 2×2 card grid */
+.art-strip {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 3rem;
+  padding: 1rem 0;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  text-decoration: none;
+  color: inherit;
+  font-family: 'Space Mono', monospace;
+  transition: background 0.2s ease, color 0.2s ease, padding 0.2s ease;
+}
+
+.art-strip:hover {
+  background: var(--ink);
+  color: var(--paper);
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.art-strip-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.art-strip-desc {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  opacity: 0.45;
+  flex: 1;
+}
+
+.art-strip-arrow {
+  font-size: 0.82rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.art-strip:hover .art-strip-arrow {
+  transform: translateX(4px);
+  opacity: 1;
+}
+
+.art-strip:hover .art-strip-desc {
+  opacity: 0.7;
+}
+
+/* Live indicator pulse used in HomePreviewRail */
+@keyframes rail-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.35; transform: scale(0.82); }
+}
+.rail-pulse {
+  animation: rail-pulse 1.3s ease-in-out infinite;
+}

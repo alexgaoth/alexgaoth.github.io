@@ -1,8 +1,8 @@
 // Standalone project pages (SEO-PLAN Phase 3.5). Everything here is
 // assembled from copy that already exists on the site — content.js project
 // entries plus the home rail's SHIPS facts — so the pages stay truthful.
-import { content } from '../../../main-section/src/data/content.js';
-import { SHIPS } from '../../../main-section/src/data/homeRailData.js';
+import { content } from '../data/content.js';
+import { SHIPS } from '../data/homeRailData.js';
 
 // Must match projectSlug() in ProjectsPage.jsx — /projects#project-<slug>
 // anchors and these page URLs share slugs.
@@ -18,25 +18,22 @@ const FEATURED_SLUGS = [
   'dont-hallucinate',
 ];
 
-// ── ALEX: write here ─────────────────────────────────────────────────────
-// A few sentences per project, in your own voice: the problem, your role,
-// what you learned / what makes it worth reading about. Each string renders
-// as one paragraph on the project's page. Leave '' to render nothing.
+
 const PROSE = {
   'signalor': [
-    '',
+    'I am the CTO of Signalor, and we transform public sentiment data processing into actionable insights. ',
   ],
   'this-very-website': [
-    '',
+    'This website has been the one of my earliest person project, and it has came so far, some weird design/artchitexture choices i take on here, are legacy of previous version and a residue of my early technical days.',
   ],
   'ucsd-crimes-log-tracker': [
-    '',
+    'Scrapes and tracks UCSD crime logs. Is marginally helpful if ones wants a laugh',
   ],
   '3d-fractal-simulator': [
-    '',
+    'A 3D fractal simulator that renders 2D julia set fractal shapes in a 3D space. One if not my proudest high school project.',
   ],
   'dont-hallucinate': [
-    '',
+    'You know what they say out there: Negative reinforcement for your agents get them further than any post training',
   ],
 };
 

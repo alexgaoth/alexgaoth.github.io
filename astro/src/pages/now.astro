@@ -1,11 +1,12 @@
 ---
 // /now: static, indexable render of the live profile data (from the canonical
-// repo-root profile.json at build time — mobile edits commit, commits rebuild)
+// public/profile.json at build time — mobile edits commit, commits rebuild,
+// and the same file is served at /profile.json for the island's live fetch)
 // with the interactive drag-board hydrating over it. No-JS visitors and
 // crawlers keep this shell; the island removes it on mount.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NowBoard from '../islands/NowBoard.jsx';
-import profile from '../../../profile.json';
+import profile from '../../public/profile.json';
 import { APP_ROUTES } from '../config/site.js';
 
 const now = profile.now;
