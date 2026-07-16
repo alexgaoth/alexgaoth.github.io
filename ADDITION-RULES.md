@@ -32,7 +32,9 @@ Opening paragraph. Normal + GitHub-flavored markdown.
 
 - Math: `$inline$`, `$$display$$`, or a ` ```math ` fence — rendered to static SVG at build; no other code fence is treated as math.
 - Don't repeat the title as a `# heading` (it's demoted to h2 anyway; the page renders the title).
-- Sitemap, RSS, llms.txt, and the Buttondown subscriber email all update automatically on push.
+- Sitemap, RSS, and llms.txt update automatically on push. The Buttondown subscriber email is
+  currently **paused** — flip `if: false` to `if: true` in `.github/workflows/notify-new-thought.yml`
+  to resume it.
 - The homepage WRITING panel shows a hand-picked trio: update `WRITINGS` in `astro/src/data/homeRailData.js` if the new piece should appear there.
 
 ## Poem or ci

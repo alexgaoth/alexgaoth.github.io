@@ -9,6 +9,9 @@ on:
 
 jobs:
   notify:
+    # DISABLED — subscriber emails are paused. To re-enable, change the line
+    # below to `if: true` (nothing else needs to change).
+    if: false
     runs-on: ubuntu-latest
 
     steps:
