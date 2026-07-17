@@ -39,7 +39,23 @@ const data = content.resume;
         <h2 class="title-section">Skills</h2>
         <div class="skills-grid">
           {data.content.skills.map((skill) => (
-            <span class="tag-white">{skill}</span>
+            <a
+              href={skill.href}
+              class="tag-white"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {skill.name}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 class="title-section">Language</h2>
+        <div class="skills-grid">
+          {data.content.languages.map((language) => (
+            <span class="tag-white">{language}</span>
           ))}
         </div>
       </section>

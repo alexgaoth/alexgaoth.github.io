@@ -233,10 +233,14 @@ const featured = SHIPS[0];
       <div class="return-stage">
       <div class="cards-section-parallax" style="position:relative">
         <div class="cards-title">
-          <h2 class="title-main">alex gaoth's directory</h2>
-          <div class="title-sub" style="padding-top:0.4rem">
-            <p>I am alex gao, the additional 'th' is here so you can find me easier</p>
-            <p class="reverse-hidden">'th' is the initials of my chinese first name, and u can find me elsewhere all by alexgaoth</p>
+          <div class="return-reveal-line">
+            <h2 class="title-main">alex gaoth's directory</h2>
+          </div>
+          <div class="return-reveal-line">
+            <div class="title-sub" style="padding-top:0.4rem">
+              <p>I am alex gao, the additional 'th' is here so you can find me easier</p>
+              <p class="reverse-hidden">'th' is the initials of my chinese first name, and u can find me elsewhere all by alexgaoth</p>
+            </div>
           </div>
         </div>
         <div class="grid-2col">
@@ -316,7 +320,11 @@ const featured = SHIPS[0];
     gap: 0.7rem;
   }
   @media (min-width: 768px) {
-    .rail-panel { --rail-gap: min(30vh, 20rem); }
+    .rail-panel {
+      --rail-gap: min(30vh, 20rem);
+      min-height: 100vh;
+    }
+    .rail-panel .rail-footer { margin-top: auto; }
   }
   /* the rail follows the intro spacer closely, as pre-migration */
   .rail-panel:first-of-type {
@@ -326,6 +334,14 @@ const featured = SHIPS[0];
     position: relative;
   }
   .return-stage {
+    position: relative;
+  }
+  .return-reveal-line {
+    overflow: hidden;
+  }
+  .cards-title .title-main,
+  .cards-title .title-sub,
+  .cards-section-parallax > .grid-2col {
     will-change: transform, opacity;
   }
   /* ── fixed parallax chrome (all shown/driven by the FX script only) ── */
@@ -704,10 +720,10 @@ const featured = SHIPS[0];
 </script>
 
 <script>
-  // Scroll-driven rail FX: each section is hidden under a white cover and gets
-  // "printed" by a full-height Bayer-dithered wash sweeping left→right — a
-  // slide transition scrubbed by scroll. The section title split-flaps while
-  // the sweep runs, letters resolving one by one across the whole transition.
+  // Scroll-driven rail FX: WRITING and EXPERIENCE are hidden under a white
+  // cover and get "printed" by a full-height Bayer-dithered wash sweeping
+  // left→right. BUILT enters cleanly, then shares the outgoing wash used by
+  // the other panels. Titles split-flap while their incoming sweep runs.
   // Everything is a pure function of scroll position — scrolling back runs it
   // in reverse. Enhancement only: static HTML stays complete, and we skip
   // entirely under prefers-reduced-motion.
@@ -855,11 +871,14 @@ const featured = SHIPS[0];
     const introSub = introTitle && introTitle.querySelector('.title-sub');
     const returnSpacer = document.querySelector('.return-spacer');
     const returnStage = document.querySelector('.return-stage');
+    const returnTitle = returnStage && returnStage.querySelector('.cards-title .title-main');
+    const returnSub = returnStage && returnStage.querySelector('.cards-title .title-sub');
+    const returnCards = returnStage && returnStage.querySelector('.cards-section-parallax > .grid-2col');
     const overlay = document.querySelector('.parallax-overlay');
     const phrases = overlay ? [...overlay.querySelectorAll('.overlay-phrase')] : [];
     const PHRASES = [
-      { start: 0, peak: 0.1, end: 0.3 },
-      { start: 0.22, peak: 0.35, end: 0.5 },
+      { start: 0, peak: 0.12, end: 0.38 },
+      { start: 0.24, peak: 0.37, end: 0.56 },
     ];
     const track = document.querySelector('.progress-track');
     const fill = document.querySelector('.progress-fill');
@@ -873,12 +892,6 @@ const featured = SHIPS[0];
         `max-width:1152px;width:calc(100% - ${MOBILE ? 32 : 64}px);`;
     }
 
-    // Scroll-scrubbed summon of the directory title once the first row of
-    // cards is in view. The mask grows from the ground line while scrollBy
-    // keeps that line (and the cards below it) pinned in the viewport — so
-    // the rising title pushes everything above it up. easeOutBack overshoots
-    // slightly for the pop; scrolling back sinks it again. Driven by the
-    // line's own viewport position, which the compensation keeps stable.
     // Pre-migration intro choreography: the fixed title rises from vertical
     // centre to the top over the first 55% of the intro scroll (quintic
     // ease-out), pins there, and fades out over the last 30% of the intro;
@@ -902,13 +915,17 @@ const featured = SHIPS[0];
       }
     };
 
-    // Return stage: the overlay phrases play across the spacer while the
-    // directory scrolls up through it, then the directory fades in and
-    // settles from 28px below — the pre-migration entrance.
+    // Return stage: start the overlay sequence before the spacer reaches the
+    // viewport top. The second directory heading then rises through its own
+    // bottom clip line, followed by the subtitle and cards. The spacer length
+    // stays fixed; the phases overlap to keep the movement continuous.
     const returnFx = (vh, rect) => {
-      const rp = Math.min(1, Math.max(0, -rect.top / (vh * 1.1)));
+      const rp = Math.min(
+        1,
+        Math.max(0, (vh * 0.25 - rect.top) / (vh * 1.25))
+      );
       if (overlay) {
-        const active = rp > 0 && rp < 1;
+        const active = rp > 0 && rp < PHRASES[PHRASES.length - 1].end;
         overlay.style.display = active ? 'block' : 'none';
         if (active) {
           phrases.forEach((el, k) => {
@@ -924,14 +941,21 @@ const featured = SHIPS[0];
           });
         }
       }
-      if (returnStage) {
-        const cardP = Math.max(0, (rp - 0.5) / 0.5);
-        const ease = 1 - Math.pow(1 - cardP, 3);
-        returnStage.style.opacity = Math.min(
-          1,
-          Math.max(0, (rp - 0.5) * 2)
-        ).toFixed(3);
-        returnStage.style.transform = `translateY(${((1 - ease) * 28).toFixed(1)}px)`;
+      const revealFromGround = (el, p) => {
+        if (!el) return;
+        const eased = p * p * (3 - 2 * p);
+        el.style.opacity = p > 0 ? '1' : '0';
+        el.style.transform = `translateY(${((1 - eased) * 105).toFixed(1)}%)`;
+      };
+      const titleP = Math.min(1, Math.max(0, (rp - 0.46) / 0.38));
+      const subP = Math.min(1, Math.max(0, (rp - 0.58) / 0.34));
+      revealFromGround(returnTitle, titleP);
+      revealFromGround(returnSub, subP);
+      if (returnCards) {
+        const cardP = Math.min(1, Math.max(0, (rp - 0.78) / 0.22));
+        const eased = cardP * cardP * (3 - 2 * cardP);
+        returnCards.style.opacity = cardP.toFixed(3);
+        returnCards.style.transform = `translateY(${((1 - eased) * 24).toFixed(1)}px)`;
       }
     };
 
@@ -965,17 +989,21 @@ const featured = SHIPS[0];
       );
       panels.forEach((it, i) => {
         const { rect, p } = ps[i];
-        if (rect.bottom < -50 || rect.top > vh + 50) return;
+        // The canvas reaches into the seam above its panel. Check its actual
+        // bounds so a previously painted frame cannot re-enter as stale pixels.
+        const canvasRect = it.canvas.getBoundingClientRect();
+        if (canvasRect.bottom < -50 || canvasRect.top > vh + 50) return;
         const pNext = i + 1 < panels.length ? ps[i + 1].p : pAfter;
-        const key = p + '|' + pNext;
+        const key = (i === 0 ? 'static' : p) + '|' + pNext;
         if (key === it.last) return;
         it.last = key;
         const w = it.canvas.width;
         const span = w + it.fade + it.core + it.tail;
         // travels from just offscreen left to where even the tail has cleared;
         // the erase runs ahead of the print so the outgoing section is taken
-        // away early rather than lingering on screen
-        const front = -it.fade + p * span;
+        // away early rather than lingering on screen. BUILT has no incoming
+        // wash; it starts fully resolved but keeps its outgoing transition.
+        const front = i === 0 ? span : -it.fade + p * span;
         const erase = -it.fade + Math.min(1, pNext * 1.35) * span;
         drawWash(it, front, erase);
         // while being wiped, the title sits under the canvas so the pixel

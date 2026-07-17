@@ -1260,10 +1260,14 @@
   border: 2px solid black;
   padding: 0.5rem 1rem;
   transition: all 0.3s ease;
-  cursor: pointer;
+  color: inherit;
+  display: inline-block;
+  text-decoration: none;
 }
 
-.tag-white:hover {
+a.tag-white { cursor: pointer; }
+
+a.tag-white:hover {
   background-color: black;
   color: white;
 }

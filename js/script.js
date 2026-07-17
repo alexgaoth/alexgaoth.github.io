@@ -111,12 +111,11 @@ document.addEventListener('wheel', (e) => {
 // #contact link or the legacy ?flip=1 param.
 let contactFlow = window.location.search.includes('flip');
 
-// Map a URL hash to a step. #contact lands on the card back — the back of
-// the ID card is the contact slide.
+// Map a URL hash to its slide. A #contact link starts the contact flow at
+// the actual contact form; it does not stop on the preceding ID-card back.
 function stepForHash(hash) {
     if (hash === 'contact') {
         contactFlow = true;
-        return cardBackStep;
     }
     const slideIdx = [...slides].findIndex(s => s.id === hash);
     if (slideIdx < 0) return -1;

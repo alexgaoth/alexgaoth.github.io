@@ -118,15 +118,15 @@ export const DOORS = [
 export const EXPERIENCE = [
   {
     role: "software & devops intern",
-    org: "climind · san francisco",
-    period: "2024–25",
-    desc: "esg data crawler feeding llm training · docker, ci/cd",
+    org: "ibm · san jose",
+    period: "2026",
+    desc: "watsonx assistant for z · aiops, finn release features",
   },
   {
-    role: "lead developer",
-    org: "radians · london",
-    period: "2023–24",
-    desc: "full-stack product site · react, node, mongo",
+    role: "founder & cto",
+    org: "signalor",
+    period: "2025–26",
+    desc: "public-sentiment intelligence · product, data infrastructure",
   },
 ];
 
