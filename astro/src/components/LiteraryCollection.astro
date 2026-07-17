@@ -8,8 +8,10 @@
 // - Claude commentary: CRA collapses it behind a JS toggle (first item with
 //   commentary starts expanded). Here it is a <details>/<summary> — the text
 //   is always in the source HTML, and the first commentary gets `open`.
-// - English tap-to-translate segments: rendered fully expanded (all
-//   translations visible) instead of hidden behind click state.
+// - English tap-to-translate segments: the CRA interaction, restored — a
+//   line splits on '，' into tappable segments and each tap reveals that
+//   segment's translation. All translations are still emitted in the source
+//   HTML (display:none) so crawlers keep the full text.
 // - AI icons: plain <a href> links to the services with the prompt in the
 //   URL's ?q= parameter; a small inline script also copies the prompt to the
 //   clipboard and shows the toast, matching the CRA flow and footer note.
@@ -35,6 +37,9 @@ const getContextText = (item) => (lang === 'zh' ? item.context : item.contextEn)
 // Mirror of the CRA initial state: the first item with Claude commentary
 // starts expanded.
 const firstClaudeId = items.find((item) => getClaudeText(item))?.id;
+
+// CRA LiteraryLines: an English line splits on '，' into tappable segments.
+const splitSegments = (line) => line.split('，').filter((segment) => segment.trim());
 ---
 
 <a href={backPath} class="art-back">
@@ -75,6 +80,9 @@ const firstClaudeId = items.find((item) => getClaudeText(item))?.id;
                           <span style="font-weight: 300; font-size: 0.75em; opacity: 0.45; margin-left: 0.45em; letter-spacing: 0.03em;">{item.tune}</span>
                         ) : null}
                       </h2>
+                      {lang === 'en' && text.translateHint ? (
+                        <span class="poetry-translate-hint">{text.translateHint}</span>
+                      ) : null}
                     </div>
                     <div class="poetry-card-actions">
                       <button class="poetry-icon-btn" data-copy={buildCopyText(item)} title="Copy poem">
@@ -103,17 +111,27 @@ const firstClaudeId = items.find((item) => getClaudeText(item))?.id;
                     {lang !== 'en'
                       ? item.lines.map((line) => <p class="poetry-line">{line}</p>)
                       : item.lines.map((line, lineIndex) => {
-                          const translations = item.linesEn?.[lineIndex] || [];
+                          const segments = splitSegments(line);
+                          const segmentTranslations = item.linesEn?.[lineIndex] || [];
                           return (
                             <div class="poetry-line-group">
-                              <p class="poetry-line">{line}</p>
-                              {translations.length > 0 && (
-                                <div class="poetry-line-trans">
-                                  {translations.map((translation) => (
-                                    <span class="poetry-seg-en">{translation}</span>
-                                  ))}
-                                </div>
-                              )}
+                              <p class="poetry-line poetry-line-translatable">
+                                {segments.map((segment, segmentIndex) => (
+                                  <>
+                                    <span class="poetry-seg" title="tap to translate">{segment}</span>
+                                    {segmentIndex < segments.length - 1 && (
+                                      <span class="poetry-seg-comma">，</span>
+                                    )}
+                                  </>
+                                ))}
+                              </p>
+                              <div class="poetry-line-trans" style="display:none">
+                                {segments.map((_, segmentIndex) => (
+                                  <span class="poetry-seg-en" style="display:none">
+                                    {segmentTranslations[segmentIndex] ?? segmentTranslations.join(' ')}
+                                  </span>
+                                ))}
+                              </div>
                             </div>
                           );
                         })}
@@ -143,10 +161,6 @@ const firstClaudeId = items.find((item) => getClaudeText(item))?.id;
           </div>
 
           <p class="poetry-footer">{text.footerNote}</p>
-
-          <nav class="poetry-elsewhere" aria-label="Elsewhere on the site">
-            <a href="/">/home</a> · <a href="/writing">/writing</a> · <a href="/thoughts">/thoughts</a>
-          </nav>
         </>
       )}
     </div>
@@ -154,18 +168,6 @@ const firstClaudeId = items.find((item) => getClaudeText(item))?.id;
 </div>
 
 <div class="poetry-toast" id="poetry-toast" hidden>{text.aiToastMsg}</div>
-
-<style>
-  .poetry-elsewhere {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
-    color: #888;
-    margin-top: 1.6rem;
-  }
-  .poetry-elsewhere a { color: inherit; }
-  .poetry-elsewhere a:hover { color: #000; }
-</style>
 
 <style is:global>
   /* <details>/<summary> stand-in for the CRA Claude-commentary JS toggle. */
@@ -223,5 +225,25 @@ const firstClaudeId = items.find((item) => getClaudeText(item))?.id;
         }, 3000);
       }
     }
+  });
+
+  // CRA tap-to-translate (LiteraryLines.jsx): tapping a segment toggles its
+  // translation; the translation row shows while any segment is revealed.
+  document.addEventListener('click', function (event) {
+    var seg = event.target && event.target.closest && event.target.closest('.poetry-seg');
+    if (!seg) return;
+    var group = seg.closest('.poetry-line-group');
+    if (!group) return;
+    var segs = Array.prototype.slice.call(group.querySelectorAll('.poetry-seg'));
+    var translations = group.querySelectorAll('.poetry-seg-en');
+    var target = translations[segs.indexOf(seg)];
+    if (!target) return;
+    var revealed = seg.classList.toggle('poetry-seg-active');
+    target.style.display = revealed ? '' : 'none';
+    var any = Array.prototype.some.call(translations, function (t) {
+      return t.style.display !== 'none';
+    });
+    var row = group.querySelector('.poetry-line-trans');
+    if (row) row.style.display = any ? '' : 'none';
   });
 </script>

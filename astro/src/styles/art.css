@@ -51,11 +51,10 @@
   display: flex;
   flex-direction: column;
   width: clamp(320px, 74vw, 900px);
-  /* all three portals in one viewport */
-  height: 100vh;
+  height: auto;
   box-sizing: border-box;
-  padding: 4.5rem 0 1.5rem;
-  justify-content: space-evenly;
+  padding: 0;
+  justify-content: center;
 }
 
 /* ── Entrance animation ─────────────────────────────────────────────────────── */
@@ -72,7 +71,9 @@
   align-items: center;
   align-content: center;
   position: relative;
-  padding: 0;
+  flex: 0 0 auto;
+  min-height: clamp(8rem, 18vh, 10.5rem);
+  padding: clamp(0.75rem, 2vh, 1.3rem) 0;
   border-top: 1.5px solid rgba(26, 26, 26, 0.18);
   text-decoration: none;
   color: inherit;

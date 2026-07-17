@@ -4,10 +4,10 @@
 // LiteraryCollectionPage. Kept in one module so /poetry and /poetry/en (and
 // /ci and /ci/en) cannot drift apart.
 //
-// Note: the CRA English pages also carry a `translateHint` string ("tap a
-// phrase to translate") for the JS tap-to-reveal translations. The static
-// pages render every translation expanded in the source HTML, so that hint
-// would describe an interaction that no longer exists and is omitted here.
+// The English pages carry the CRA `translateHint` string ("tap a phrase to
+// translate") for the tap-to-reveal translations, restored to match the
+// pre-migration interaction (translations stay in the source HTML for
+// crawlers; the reveal is presentation only).
 
 export const POETRY_TEXT = {
   zh: {
@@ -27,6 +27,7 @@ export const POETRY_TEXT = {
     claudeLabel: 'What Claude thinks',
     aiToastMsg: 'Prompt copied. Opening AI…',
     footerNote: 'Clicking an AI icon copies a translation & commentary prompt to your clipboard. Paste it after the tab opens.',
+    translateHint: 'tap a phrase to translate',
   },
 };
 
@@ -50,6 +51,7 @@ export const CI_TEXT = {
     claudeLabel: 'What Claude thinks',
     aiToastMsg: 'Prompt copied. Opening AI…',
     footerNote: 'Clicking an AI icon copies a translation & commentary prompt to your clipboard. Paste it after the tab opens.',
+    translateHint: 'tap a phrase to translate',
     emptyTitle: 'No Content Yet',
     emptyText: 'Ci pieces are being compiled. Check back soon.',
   },

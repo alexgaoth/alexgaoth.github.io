@@ -1,3 +1,5 @@
-1. In the regents of my mind pasge, implement so that everytime you spin an regent 360 degree one direction, it triggers the same effect as clicking the arrow to go to the next. It is like this type of interaction, which fresh one's mind and not boring and dogmatic that I want more on my site, especially the personal side of it. Add this and highlight this philosophy in the DESIGN.md file.
-2. The line for guest slips on the now page, should be below the name/title, between the subtext.
-3. The poetry and ci pages design need to be reconsidered. It is good, but not great. The grey curvy text is hard and not fun to read in Chinese and even more in english. Use your design abiltiies and skills to critically address this shortcoming.
+I am unhappy with a lot of the post migration file changes:
+
+1. I want the now page to be the exact same again. But just in astro. 
+2. I want the art page to be the exact same again. All of /art and /ci and /poetry and /regents. Restore them. Only change from the old code should be the width of the span.artzh, the height of each column looks better in the post-migration than before. 
+3. Why is does 2 looks differnt than in localhost? Why is there background effect for the prod but not local host? Answer this first
