@@ -3,29 +3,31 @@
 // EXPERIENCE rail, directory cards, footer strips) rendered as source HTML.
 // The scroll-parallax choreography stays client-side-only in the CRA app and
 // can return later as an island; content and links must not depend on it.
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE, APP_ROUTES } from '../config/site.js';
-import { content } from '../data/content.js';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE, APP_ROUTES } from "../config/site.js";
+import { content } from "../data/content.js";
 import {
-  SHIPS,
-  TROPHIES,
-  WRITINGS,
-  DOORS,
-  EXPERIENCE,
-  EDUCATION,
-  DOMAINS,
-  TONGUES,
-} from '../data/homeRailData.js';
+    SHIPS,
+    TROPHIES,
+    WRITINGS,
+    DOORS,
+    EXPERIENCE,
+    EDUCATION,
+    DOMAINS,
+    TONGUES,
+} from "../data/homeRailData.js";
 
 const CARD_DESCRIPTIONS = {
-  resume: 'My professional experience and skills',
-  projects: 'Creative projects funded by my relentless mind',
-  thoughts: 'Ideas worth saying - maybe worth reading',
-  quotes: 'The good and the bad',
+    resume: "My professional experience and skills",
+    projects: "Creative projects funded by my relentless mind",
+    thoughts: "Ideas worth saying - maybe worth reading",
+    quotes: "The good and the bad",
 };
 
 const shipHref = (ship) =>
-  ship.anchor ? `${APP_ROUTES.projects}#project-${ship.anchor}` : APP_ROUTES.projects;
+    ship.anchor
+        ? `${APP_ROUTES.projects}#project-${ship.anchor}`
+        : APP_ROUTES.projects;
 
 // Hero shows the featured ship by default; hovering a build-log row swaps it
 // (client enhancement only — the static default must stay complete).
@@ -33,1023 +35,1331 @@ const featured = SHIPS[0];
 ---
 
 <BaseLayout
-  title={SITE.title}
-  description={SITE.description}
-  keywords={SITE.keywords}
-  path={APP_ROUTES.home}
+    title={SITE.title}
+    description={SITE.description}
+    keywords={SITE.keywords}
+    path={APP_ROUTES.home}
 >
-  <div class="page-container" style="background-color:#fff">
-    <div class="content-wrapper" style="padding-top:2.5rem;padding-bottom:3rem">
-
-      <!-- Intro: empty scroll distance for the fixed-title rise (pre-migration
+    <div class="page-container" style="background-color:#fff">
+        <div
+            class="content-wrapper"
+            style="padding-top:2.5rem;padding-bottom:3rem"
+        >
+            <!-- Intro: empty scroll distance for the fixed-title rise (pre-migration
            parallax). The FX script fixes the title over it; without JS the
            spacer stays collapsed and the header reads statically. -->
-      <div class="intro-spacer">
-        <header class="title-section-parallax" style="position:relative">
-          <h1 class="title-main">alex gaoth's directory</h1>
-          <div class="title-sub" style="padding-top:0.4rem">
-            <p>I am alex gao, the additional 'th' is here so you can find me easier</p>
-            <p class="reverse-hidden">'th' is the initials of my chinese first name, and u can find me elsewhere all by alexgaoth</p>
-            <p class="hidden">mobile-first redesign coming — works better on desktop for now</p>
-          </div>
-        </header>
-      </div>
-
-      <!-- ── 01 BUILT ── -->
-      <section class="rail-panel">
-        <span class="rail-eyebrow">// what i have</span>
-        <h2 class="rail-title">BUILT<span style="color:#ccc">.</span></h2>
-        <p class="rail-sub">the true answers is uncountable many things but few of value</p>
-
-        <div class="built-grid">
-          <!-- Hero — desktop only. Image swaps to match whichever row is hovered. -->
-          <a href={shipHref(featured)} class="built-hero" id="built-hero">
-            <span class="built-hero-media">
-              {SHIPS.map((ship, i) => (
-                <img
-                  src={ship.img}
-                  alt={ship.name}
-                  class:list={['built-hero-img', { active: i === 0 }]}
-                  data-ship={ship.name}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                />
-              ))}
-              <span class="built-hero-live" id="built-hero-live" hidden={featured.status !== 'live'}>
-                <span class="now-dot rail-pulse" style="background:#0f6"></span>
-                LIVE
-              </span>
-            </span>
-            <span class="built-hero-body">
-              <span class="built-hero-head">
-                <span class="built-hero-name" id="built-hero-name">{featured.name}</span>
-                <span class="rail-eyebrow" id="built-hero-year">{featured.year}</span>
-              </span>
-              <span class="built-hero-desc" id="built-hero-desc">{featured.desc ?? ''}</span>
-              <span class="built-hero-chips" id="built-hero-chips">
-                {featured.tech.split(' · ').map((t) => (
-                  <span class="built-chip">{t}</span>
-                ))}
-              </span>
-            </span>
-          </a>
-
-          <!-- Build log -->
-          <div class="built-log">
-            <div class="built-log-head">
-              <span class="rail-eyebrow" style="color:#666">// build log</span>
-              <span class="rail-eyebrow" style="color:#bbb">desc ↓</span>
+            <div class="intro-spacer">
+                <header
+                    class="title-section-parallax"
+                    style="position:relative"
+                >
+                    <h1 class="title-main">alex gaoth's directory</h1>
+                    <div class="title-sub" style="padding-top:0.4rem">
+                        <p>
+                            I am alex gao, the additional 'th' is here so you
+                            can find me easier
+                        </p>
+                        <p class="reverse-hidden">
+                            'th' is the initials of my chinese first name, and u
+                            can find me elsewhere all by alexgaoth
+                        </p>
+                        <p class="hidden">
+                            mobile-first redesign coming — works better on
+                            desktop for now
+                        </p>
+                    </div>
+                </header>
             </div>
-            <div class="built-log-cols">
-              <span>year</span>
-              <span>name · stack</span>
-              <span>status</span>
-            </div>
-            <ul class="ship-list" id="built-log-list">
-              {SHIPS.map((ship, i) => (
-                <li class:list={[{ 'ship-desktop-hidden': i === 0, 'ship-mobile-hidden': i >= 5 }]}>
-                  <a
-                    href={shipHref(ship)}
-                    class="ship-row"
-                    data-name={ship.name}
-                    data-year={ship.year}
-                    data-desc={ship.desc ?? ''}
-                    data-tech={ship.tech}
-                    data-status={ship.status}
-                    data-href={shipHref(ship)}
-                  >
-                    <span class="ship-year">{ship.year}</span>
-                    <span class="ship-main">
-                      <span class="ship-name">{ship.name}</span>
-                      <span class="ship-tech">{ship.tech}</span>
-                    </span>
-                    <span class="ship-status">{ship.status}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <footer class="rail-footer">
-          <span class="rail-eyebrow">see them all · github.com/alexgaoth</span>
-          <a href={APP_ROUTES.projects} class="rail-footer-link">/projects →</a>
-        </footer>
-      </section>
 
-      <!-- ── 02 WRITING ── -->
-      <section class="rail-panel">
-        <span class="rail-eyebrow">// what i think</span>
-        <h2 class="rail-title">WRITING<span style="color:rgba(0,0,0,0.18)">.</span></h2>
-        <p class="rail-sub">i like to think, and make others think.</p>
+            <!-- ── 01 BUILT ── -->
+            <section class="rail-panel">
+                <span class="rail-eyebrow">// what i have</span>
+                <h2 class="rail-title">
+                    BUILT<span style="color:#ccc">.</span>
+                </h2>
+                <p class="rail-sub">
+                    the true answers is uncountable many things but few of value
+                </p>
 
-        <span class="rail-eyebrow">// recent thoughts</span>
-        <div class="writing-cards">
-          {WRITINGS.map((w) => (
-            <a href={`${APP_ROUTES.thoughts}/${w.slug}`} class="writing-card">
-              <span class="writing-pull">{w.pull}</span>
-              <span class="writing-title">{w.title}</span>
-              <span class="writing-meta">{w.date} · {w.tag} · {w.read}</span>
-            </a>
-          ))}
-        </div>
+                <div class="built-grid">
+                    <!-- Hero — desktop only. Image swaps to match whichever row is hovered. -->
+                    <a
+                        href={shipHref(featured)}
+                        class="built-hero"
+                        id="built-hero"
+                    >
+                        <span class="built-hero-media">
+                            {
+                                SHIPS.map((ship, i) => (
+                                    <img
+                                        src={ship.img}
+                                        alt={ship.name}
+                                        class:list={[
+                                            "built-hero-img",
+                                            { active: i === 0 },
+                                        ]}
+                                        data-ship={ship.name}
+                                        loading={i === 0 ? "eager" : "lazy"}
+                                    />
+                                ))
+                            }
+                            <span
+                                class="built-hero-live"
+                                id="built-hero-live"
+                                hidden={featured.status !== "live"}
+                            >
+                                <span
+                                    class="now-dot rail-pulse"
+                                    style="background:#0f6"></span>
+                                LIVE
+                            </span>
+                        </span>
+                        <span class="built-hero-body">
+                            <span class="built-hero-head">
+                                <span
+                                    class="built-hero-name"
+                                    id="built-hero-name">{featured.name}</span
+                                >
+                                <span class="rail-eyebrow" id="built-hero-year"
+                                    >{featured.year}</span
+                                >
+                            </span>
+                            <span class="built-hero-desc" id="built-hero-desc"
+                                >{featured.desc ?? ""}</span
+                            >
+                            <span
+                                class="built-hero-chips"
+                                id="built-hero-chips"
+                            >
+                                {
+                                    featured.tech
+                                        .split(" · ")
+                                        .map((t) => (
+                                            <span class="built-chip">{t}</span>
+                                        ))
+                                }
+                            </span>
+                        </span>
+                    </a>
 
-        <span class="rail-eyebrow">// the personal side</span>
-        <div class="door-rows">
-          {DOORS.map((d) => (
-            <a href={d.to} class="door-row">
-              <span class="door-glyph">{d.glyph}</span>
-              <span class="door-label">{d.label}</span>
-              <span class="door-note">{d.note}</span>
-              <span class="door-arrow">→</span>
-            </a>
-          ))}
-        </div>
+                    <!-- Build log -->
+                    <div class="built-log">
+                        <div class="built-log-head">
+                            <span class="rail-eyebrow" style="color:#666"
+                                >// build log</span
+                            >
+                            <span class="rail-eyebrow" style="color:#bbb"
+                                >desc ↓</span
+                            >
+                        </div>
+                        <div class="built-log-cols">
+                            <span>year</span>
+                            <span>name · stack</span>
+                            <span>status</span>
+                        </div>
+                        <ul class="ship-list" id="built-log-list">
+                            {
+                                SHIPS.map((ship, i) => (
+                                    <li
+                                        class:list={[
+                                            {
+                                                "ship-desktop-hidden": i === 0,
+                                                "ship-mobile-hidden": i >= 5,
+                                            },
+                                        ]}
+                                    >
+                                        <a
+                                            href={shipHref(ship)}
+                                            class="ship-row"
+                                            data-name={ship.name}
+                                            data-year={ship.year}
+                                            data-desc={ship.desc ?? ""}
+                                            data-tech={ship.tech}
+                                            data-status={ship.status}
+                                            data-href={shipHref(ship)}
+                                        >
+                                            <span class="ship-year">
+                                                {ship.year}
+                                            </span>
+                                            <span class="ship-main">
+                                                <span class="ship-name">
+                                                    {ship.name}
+                                                </span>
+                                                <span class="ship-tech">
+                                                    {ship.tech}
+                                                </span>
+                                            </span>
+                                            <span class="ship-status">
+                                                {ship.status}
+                                            </span>
+                                        </a>
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <footer class="rail-footer">
+                    <span class="rail-eyebrow"
+                        >see them all · github.com/alexgaoth</span
+                    >
+                    <a href={APP_ROUTES.projects} class="rail-footer-link"
+                        >/projects →</a
+                    >
+                </footer>
+            </section>
 
-        <footer class="rail-footer">
-          <span class="rail-eyebrow">the long version is in /thoughts</span>
-          <a href={APP_ROUTES.thoughts} class="rail-footer-link">/thoughts →</a>
-        </footer>
-      </section>
+            <!-- ── 02 WRITING ── -->
+            <section class="rail-panel">
+                <span class="rail-eyebrow">// some of my</span>
+                <h2 class="rail-title">
+                    WRITING<span style="color:rgba(0,0,0,0.18)">.</span>
+                </h2>
+                <p class="rail-sub">
+                    i like to think, and make others think. To write is to
+                    think. To write well is to think clearly.
+                </p>
 
-      <!-- ── 03 EXPERIENCE ── -->
-      <section class="rail-panel">
-        <span class="rail-eyebrow">// on paper</span>
-        <h2 class="rail-title">EXPERIENCE<span style="color:#ccc">.</span></h2>
-        <p class="rail-sub">math-cs @ ucsd, class of 2029 · previously st paul's london</p>
+                <span class="rail-eyebrow">// recent thoughts</span>
+                <div class="writing-cards">
+                    {
+                        WRITINGS.map((w) => (
+                            <a
+                                href={`${APP_ROUTES.thoughts}/${w.slug}`}
+                                class="writing-card"
+                            >
+                                <span class="writing-pull">{w.pull}</span>
+                                <span class="writing-title">{w.title}</span>
+                                <span class="writing-meta">
+                                    {w.date} · {w.tag} · {w.read}
+                                </span>
+                            </a>
+                        ))
+                    }
+                </div>
 
-        <div class="exp-grid">
-          <div>
-            <span class="rail-eyebrow">// work</span>
-            {EXPERIENCE.map((e) => (
-              <div class="exp-row">
-                <span class="exp-role">{e.role}</span>
-                <span class="exp-org">{e.org} · {e.period}</span>
-                <span class="exp-desc">{e.desc}</span>
-              </div>
-            ))}
-            <span class="rail-eyebrow">// education</span>
-            {EDUCATION.map((e) => (
-              <div class="exp-row">
-                <span class="exp-role">{e.school}</span>
-                <span class="exp-desc">{e.detail}</span>
-              </div>
-            ))}
-          </div>
-          <div>
-            <span class="rail-eyebrow">// trophies</span>
-            {TROPHIES.map((t) => (
-              <div class="exp-row">
-                <span class="exp-role">{t.stamp} — {t.label}</span>
-                <span class="exp-desc">{t.year}</span>
-              </div>
-            ))}
-            <div class="inline-list">
-              <span class="rail-eyebrow">// domains of attention</span>
-              <span class="exp-desc">{DOMAINS.join(' · ')}</span>
-            </div>
-            <div class="inline-list">
-              <span class="rail-eyebrow">// tongues</span>
-              <span class="exp-desc">{TONGUES.join(' · ')}</span>
-            </div>
-          </div>
-        </div>
+                <span class="rail-eyebrow">// the personal side</span>
+                <div class="door-rows">
+                    {
+                        DOORS.map((d) => (
+                            <a href={d.to} class="door-row">
+                                <span class="door-glyph">{d.glyph}</span>
+                                <span class="door-label">{d.label}</span>
+                                <span class="door-note">{d.note}</span>
+                                <span class="door-arrow">→</span>
+                            </a>
+                        ))
+                    }
+                </div>
 
-        <a href={APP_ROUTES.now} class="now-strip">
-          <span class="now-dot rail-pulse"></span>
-          <span class="now-strip-label">what i'm doing right now, updated from my phone</span>
-          <span>→</span>
-        </a>
+                <footer class="rail-footer">
+                    <span class="rail-eyebrow"
+                        >the long version is in /thoughts</span
+                    >
+                    <a href={APP_ROUTES.thoughts} class="rail-footer-link"
+                        >/thoughts →</a
+                    >
+                </footer>
+            </section>
 
-        <footer class="rail-footer">
-          <span class="rail-eyebrow">full record in /resume</span>
-          <a href={APP_ROUTES.resume} class="rail-footer-link">/resume →</a>
-        </footer>
-      </section>
+            <!-- ── 03 EXPERIENCE ── -->
+            <section class="rail-panel">
+                <span class="rail-eyebrow">// brief summary of my</span>
+                <h2 class="rail-title">
+                    EXPERIENCE<span style="color:#ccc">.</span>
+                </h2>
+                <p class="rail-sub">ls -a | head -n 2</p>
 
-      <!-- Return stage: scroll distance for the overlay phrases; the
+                <div class="exp-grid">
+                    <div>
+                        <span class="rail-eyebrow">// work</span>
+                        {
+                            EXPERIENCE.map((e) => (
+                                <div class="exp-row">
+                                    <span class="exp-role">{e.role}</span>
+                                    <span class="exp-org">
+                                        {e.org} · {e.period}
+                                    </span>
+                                    <span class="exp-desc">{e.desc}</span>
+                                </div>
+                            ))
+                        }
+                        <span class="rail-eyebrow">// education</span>
+                        {
+                            EDUCATION.map((e) => (
+                                <div class="exp-row">
+                                    <span class="exp-role">{e.school}</span>
+                                    <span class="exp-desc">{e.detail}</span>
+                                </div>
+                            ))
+                        }
+                    </div>
+                    <div>
+                        <span class="rail-eyebrow">// trophies</span>
+                        {
+                            TROPHIES.map((t) => (
+                                <div class="exp-row">
+                                    <span class="exp-role">
+                                        {t.stamp} — {t.label}
+                                    </span>
+                                    <span class="exp-desc">{t.year}</span>
+                                </div>
+                            ))
+                        }
+                        <div class="inline-list">
+                            <span class="rail-eyebrow">// i work in</span>
+                            <span class="exp-desc">{DOMAINS.join(" · ")}</span>
+                        </div>
+                        <div class="inline-list">
+                            <span class="rail-eyebrow">// tongues</span>
+                            <span class="exp-desc">{TONGUES.join(" · ")}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <a href={APP_ROUTES.now} class="now-strip">
+                    <span class="now-dot rail-pulse"></span>
+                    <span class="now-strip-label">me - rn</span>
+                    <span>→</span>
+                </a>
+
+                <footer class="rail-footer">
+                    <span class="rail-eyebrow">full record in /resume</span>
+                    <a href={APP_ROUTES.resume} class="rail-footer-link"
+                        >/resume →</a
+                    >
+                </footer>
+            </section>
+
+            <!-- Return stage: scroll distance for the overlay phrases; the
            directory scrolls into view through it (pre-migration return). -->
-      <div class="return-spacer"></div>
+            <div class="return-spacer"></div>
 
-      <!-- ── Directory: second title + cards, entrance driven by the return -->
-      <div class="return-stage">
-      <div class="cards-section-parallax" style="position:relative">
-        <div class="cards-title">
-          <div class="return-reveal-line">
-            <h2 class="title-main">alex gaoth's directory</h2>
-          </div>
-          <div class="return-reveal-line">
-            <div class="title-sub" style="padding-top:0.4rem">
-              <p>I am alex gao, the additional 'th' is here so you can find me easier</p>
-              <p class="reverse-hidden">'th' is the initials of my chinese first name, and u can find me elsewhere all by alexgaoth</p>
+            <!-- ── Directory: second title + cards, entrance driven by the return -->
+            <div class="return-stage">
+                <div class="cards-section-parallax" style="position:relative">
+                    <div class="cards-title">
+                        <div class="return-reveal-line">
+                            <h2 class="title-main">alex gaoth's directory</h2>
+                        </div>
+                        <div class="return-reveal-line">
+                            <div class="title-sub" style="padding-top:0.4rem">
+                                <p>
+                                    I am alex gao, the additional 'th' is here
+                                    so you can find me easier
+                                </p>
+                                <p class="reverse-hidden">
+                                    'th' is the initials of my chinese first
+                                    name, and u can find me elsewhere all by
+                                    alexgaoth
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-2col">
+                        {
+                            Object.entries(content).map(([key, data]) => (
+                                <a href={`/${key}`} class="card">
+                                    <div class="card-image">
+                                        <img
+                                            src={data.previewImage}
+                                            alt={`${data.title} preview`}
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                    <h3 class="title-card">{data.title}</h3>
+                                    <p class="card-description">
+                                        {CARD_DESCRIPTIONS[key]}
+                                    </p>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <!-- ── Footer strips ── -->
+                <div class="mainpage-footer">
+                    <a
+                        href={APP_ROUTES.art}
+                        class="art-strip mainpage-footer-strip"
+                    >
+                        <span class="art-strip-label">/art</span>
+                        <span class="art-strip-arrow">→</span>
+                    </a>
+                    <a
+                        href={APP_ROUTES.gallery}
+                        class="art-strip mainpage-footer-strip"
+                        style="margin-top:0.5rem"
+                    >
+                        <span class="art-strip-label">/gallery</span>
+                        <span class="art-strip-arrow">→</span>
+                    </a>
+                    <a
+                        href={APP_ROUTES.about}
+                        class="art-strip mainpage-footer-strip"
+                        style="margin-top:0.5rem"
+                    >
+                        <span class="art-strip-label">/about</span>
+                        <span class="art-strip-arrow">→</span>
+                    </a>
+                    <a
+                        href={SITE.personalUrl}
+                        class="art-strip mainpage-footer-strip"
+                        style="margin-top:0.5rem"
+                    >
+                        <span class="art-strip-label">#contact</span>
+                        <span class="art-strip-arrow">→</span>
+                    </a>
+                    <div class="footer">
+                        <p>
+                            this page is written with React @2022 (now
+                            deprecated)
+                        </p>
+                        <p>
+                            No rights reserved – this work by alex is free to
+                            use for any purpose.
+                        </p>
+                    </div>
+                </div>
+            </div><!-- /return-stage -->
+        </div>
+
+        <!-- Fixed parallax chrome (hidden without JS / reduced motion) -->
+        <div class="parallax-overlay" aria-hidden="true">
+            <div class="overlay-phrase">
+                <span class="overlay-label">// 01</span>
+                <p>
+                    this site is an index of things i find worth sharing. look
+                    around — there might just be something that interests you.
+                </p>
             </div>
-          </div>
+            <div class="overlay-phrase">
+                <span class="overlay-label">// 02</span>
+                <p>
+                    if you found things here interesting, i will be just as
+                    interesting in person.<br />
+                    reach me <a
+                        href="https://intro.alexgaoth.com/#contact"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        tabindex="-1">in all these different ways</a
+                    >
+                </p>
+            </div>
         </div>
-        <div class="grid-2col">
-          {Object.entries(content).map(([key, data]) => (
-            <a href={`/${key}`} class="card">
-              <div class="card-image">
-                <img src={data.previewImage} alt={`${data.title} preview`} loading="lazy" />
-              </div>
-              <h3 class="title-card">{data.title}</h3>
-              <p class="card-description">{CARD_DESCRIPTIONS[key]}</p>
-            </a>
-          ))}
+        <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill"></div>
         </div>
-      </div>
-
-      <!-- ── Footer strips ── -->
-      <div class="mainpage-footer">
-        <a href={APP_ROUTES.art} class="art-strip mainpage-footer-strip">
-          <span class="art-strip-label">/art</span>
-          <span class="art-strip-arrow">→</span>
-        </a>
-        <a href={APP_ROUTES.gallery} class="art-strip mainpage-footer-strip" style="margin-top:0.5rem">
-          <span class="art-strip-label">/gallery</span>
-          <span class="art-strip-arrow">→</span>
-        </a>
-        <a href={APP_ROUTES.about} class="art-strip mainpage-footer-strip" style="margin-top:0.5rem">
-          <span class="art-strip-label">/about</span>
-          <span class="art-strip-arrow">→</span>
-        </a>
-        <a href={SITE.personalUrl} class="art-strip mainpage-footer-strip" style="margin-top:0.5rem">
-          <span class="art-strip-label">#contact</span>
-          <span class="art-strip-arrow">→</span>
-        </a>
-        <div class="footer">
-          <p>this page is written with React @2022 (now deprecated)</p>
-          <p>No rights reserved – this work by alex is free to use for any purpose.</p>
+        <div class="scroll-hint" aria-hidden="true">
+            <span class="scroll-hint-label">scroll</span>
+            <div class="scroll-line-indicator"></div>
         </div>
-      </div>
-      </div><!-- /return-stage -->
-
     </div>
-
-    <!-- Fixed parallax chrome (hidden without JS / reduced motion) -->
-    <div class="parallax-overlay" aria-hidden="true">
-      <div class="overlay-phrase">
-        <span class="overlay-label">// 01</span>
-        <p>this site is an index of things i find worth sharing. look around — there might just be something that interests you.</p>
-      </div>
-      <div class="overlay-phrase">
-        <span class="overlay-label">// 02</span>
-        <p>
-          if you found things here interesting, i will be just as interesting in person.<br />
-          reach me <a href="https://intro.alexgaoth.com/#contact" target="_blank" rel="noopener noreferrer" tabindex="-1">in all these different ways</a>
-        </p>
-      </div>
-    </div>
-    <div class="progress-track" aria-hidden="true"><div class="progress-fill"></div></div>
-    <div class="scroll-hint" aria-hidden="true">
-      <span class="scroll-hint-label">scroll</span>
-      <div class="scroll-line-indicator"></div>
-    </div>
-  </div>
 </BaseLayout>
 
 <style>
-  .rail-panel {
-    position: relative; /* anchors the scroll-driven wash canvas */
-    /* seam size, shared with the FX canvas via var(--rail-gap). Desktop is
+    .rail-panel {
+        position: relative; /* anchors the scroll-driven wash canvas */
+        /* seam size, shared with the FX canvas via var(--rail-gap). Desktop is
        viewport-relative: when a new section's transition plays (~55% up the
        screen), the outgoing one has at most ~a quarter of the viewport left.
        Mobile reads as a continuous ledger (DESIGN.md), so the gap stays small. */
-    --rail-gap: clamp(3rem, 8vw, 5rem);
-    margin: var(--rail-gap) 0;
-    font-family: 'Space Mono', monospace;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-  @media (min-width: 768px) {
-    .rail-panel {
-      --rail-gap: min(30vh, 20rem);
-      min-height: 100vh;
+        --rail-gap: clamp(3rem, 8vw, 5rem);
+        margin: var(--rail-gap) 0;
+        font-family: "Space Mono", monospace;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
     }
-    .rail-panel .rail-footer { margin-top: auto; }
-  }
-  /* the rail follows the intro spacer closely, as pre-migration */
-  .rail-panel:first-of-type {
-    --rail-gap: clamp(2rem, 5vh, 4rem);
-  }
-  .intro-spacer {
-    position: relative;
-  }
-  .return-stage {
-    position: relative;
-  }
-  .return-reveal-line {
-    overflow: hidden;
-  }
-  .cards-title .title-main,
-  .cards-title .title-sub,
-  .cards-section-parallax > .grid-2col {
-    will-change: transform, opacity;
-  }
-  /* ── fixed parallax chrome (all shown/driven by the FX script only) ── */
-  .parallax-overlay {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 8;
-    display: none;
-  }
-  .overlay-phrase {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: min(640px, calc(100vw - 4rem));
-    opacity: 0;
-    border-left: 1px solid rgba(0, 0, 0, 0.18);
-    padding-left: 1.25rem;
-    font-family: 'Space Mono', monospace;
-  }
-  .overlay-label {
-    display: block;
-    font-size: 0.74rem;
-    letter-spacing: 0.1em;
-    color: rgba(0, 0, 0, 0.35);
-    margin-bottom: 0.6rem;
-  }
-  .overlay-phrase p {
-    font-size: 0.82rem;
-    font-weight: 400;
-    letter-spacing: 0.01em;
-    line-height: 1.85;
-    margin: 0;
-    color: #000;
-  }
-  @media (max-width: 767px) {
-    .overlay-phrase p { font-size: 0.72rem; line-height: 1.8; }
-  }
-  .overlay-phrase a {
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    pointer-events: auto;
-  }
-  .progress-track {
-    position: fixed;
-    left: clamp(1.2rem, 3vw, 2.8rem);
-    top: 15vh;
-    height: 70vh;
-    width: 1px;
-    background: rgba(0, 0, 0, 0.1);
-    z-index: 6;
-    pointer-events: none;
-    display: none;
-  }
-  .progress-fill {
-    width: 100%;
-    height: 0;
-    background: rgba(0, 0, 0, 0.45);
-  }
-  .scroll-hint {
-    position: fixed;
-    bottom: 2.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 8;
-    pointer-events: none;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-  }
-  .scroll-hint-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: #000;
-    opacity: 0.38;
-  }
-  .rail-eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #888;
-  }
-  .rail-title {
-    /* floats above the wash cover so the split-flap board is visible for the
+    @media (min-width: 768px) {
+        .rail-panel {
+            --rail-gap: min(30vh, 20rem);
+            min-height: 100vh;
+        }
+        .rail-panel .rail-footer {
+            margin-top: auto;
+        }
+    }
+    /* the rail follows the intro spacer closely, as pre-migration */
+    .rail-panel:first-of-type {
+        --rail-gap: clamp(2rem, 5vh, 4rem);
+    }
+    .intro-spacer {
+        position: relative;
+    }
+    .return-stage {
+        position: relative;
+    }
+    .return-reveal-line {
+        overflow: hidden;
+    }
+    .cards-title .title-main,
+    .cards-title .title-sub,
+    .cards-section-parallax > .grid-2col {
+        will-change: transform, opacity;
+    }
+    /* ── fixed parallax chrome (all shown/driven by the FX script only) ── */
+    .parallax-overlay {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 8;
+        display: none;
+    }
+    .overlay-phrase {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: min(640px, calc(100vw - 4rem));
+        opacity: 0;
+        border-left: 1px solid rgba(0, 0, 0, 0.18);
+        padding-left: 1.25rem;
+        font-family: "Space Mono", monospace;
+    }
+    .overlay-label {
+        display: block;
+        font-size: 0.74rem;
+        letter-spacing: 0.1em;
+        color: rgba(0, 0, 0, 0.35);
+        margin-bottom: 0.6rem;
+    }
+    .overlay-phrase p {
+        font-size: 0.82rem;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        line-height: 1.85;
+        margin: 0;
+        color: #000;
+    }
+    @media (max-width: 767px) {
+        .overlay-phrase p {
+            font-size: 0.72rem;
+            line-height: 1.8;
+        }
+    }
+    .overlay-phrase a {
+        color: inherit;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        pointer-events: auto;
+    }
+    .progress-track {
+        position: fixed;
+        left: clamp(1.2rem, 3vw, 2.8rem);
+        top: 15vh;
+        height: 70vh;
+        width: 1px;
+        background: rgba(0, 0, 0, 0.1);
+        z-index: 6;
+        pointer-events: none;
+        display: none;
+    }
+    .progress-fill {
+        width: 100%;
+        height: 0;
+        background: rgba(0, 0, 0, 0.45);
+    }
+    .scroll-hint {
+        position: fixed;
+        bottom: 2.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 8;
+        pointer-events: none;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    .scroll-hint-label {
+        font-family: "Space Mono", monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: #000;
+        opacity: 0.38;
+    }
+    .rail-eyebrow {
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #888;
+    }
+    .rail-title {
+        /* floats above the wash cover so the split-flap board is visible for the
        whole transition */
-    position: relative;
-    z-index: 4;
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    font-size: clamp(1.8rem, 4.8vw, 3.8rem);
-    letter-spacing: -0.035em;
-    line-height: 0.95;
-    margin: 0;
-    color: #000;
-  }
-  .rail-sub {
-    font-size: clamp(0.68rem, 0.82vw, 0.82rem);
-    color: #888;
-    margin: 0 0 0.4rem;
-    letter-spacing: 0.02em;
-    max-width: 70ch;
-    line-height: 1.5;
-  }
-  .rail-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding-top: 0.45rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-  }
-  .rail-footer-link {
-    font-size: 11px;
-    color: #000;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    opacity: 0.85;
-  }
-  .built-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(0.8rem, 1.8vw, 1.6rem);
-    align-items: flex-start;
-  }
-  .built-hero { display: none; }
-  .ship-mobile-hidden { display: none; }
-  @media (min-width: 768px) {
-    .built-grid { grid-template-columns: 1.35fr 1fr; }
-    .built-hero {
-      display: flex;
-      flex-direction: column;
-      border: 1px solid #000;
-      text-decoration: none;
-      color: inherit;
-      overflow: hidden;
+        position: relative;
+        z-index: 4;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: clamp(1.8rem, 4.8vw, 3.8rem);
+        letter-spacing: -0.035em;
+        line-height: 0.95;
+        margin: 0;
+        color: #000;
     }
-    .ship-desktop-hidden { display: none; }
-    .ship-mobile-hidden { display: list-item; }
-  }
-  .built-hero-media {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #f4f1ea;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-  .built-hero-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-  .built-hero-img.active { opacity: 1; }
-  .built-hero-live {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #000;
-    color: #fff;
-    padding: 3px 8px;
-    font-size: 9px;
-    letter-spacing: 0.22em;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .built-hero-live[hidden] { display: none; }
-  .built-hero-body {
-    display: flex;
-    flex-direction: column;
-    border-top: 1px solid #000;
-    background: #fff;
-    padding: 10px 14px 12px;
-  }
-  .built-hero-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 12px;
-    margin-bottom: 4px;
-  }
-  .built-hero-name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(0.92rem, 1.3vw, 1.2rem);
-    letter-spacing: -0.015em;
-    font-weight: 600;
-  }
-  .built-hero-desc {
-    font-size: 11.5px;
-    margin: 0 0 8px;
-    line-height: 1.5;
-    color: #555;
-  }
-  .built-hero-desc:empty { margin: 0; }
-  .built-hero-chips { display: flex; gap: 5px; flex-wrap: wrap; }
-  .built-chip {
-    background: #000;
-    color: #fff;
-    padding: 2px 7px;
-    font-size: 9.5px;
-    letter-spacing: 0.06em;
-  }
-  .built-log { display: flex; flex-direction: column; }
-  .built-log-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 5px;
-  }
-  .built-log-cols {
-    display: grid;
-    grid-template-columns: 44px 1fr auto;
-    gap: 10px;
-    padding: 4px 6px;
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  .ship-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .ship-row {
-    display: grid;
-    grid-template-columns: 44px 1fr auto;
-    gap: 10px;
-    padding: 8px 6px;
-    border-bottom: 1px solid #eee;
-    align-items: center;
-    text-decoration: none;
-    color: #000;
-    transition: background 0.12s, color 0.12s;
-  }
-  .ship-row:hover { background: #000; color: #fff; }
-  .ship-year { font-size: 10.5px; font-weight: 600; color: #999; }
-  .ship-row:hover .ship-year,
-  .ship-row:hover .ship-tech { color: rgba(255, 255, 255, 0.6); }
-  .ship-main { display: flex; flex-direction: column; min-width: 0; }
-  .ship-name { font-size: 12.5px; font-weight: 500; }
-  .ship-tech { font-size: 9.5px; color: #888; letter-spacing: 0.02em; }
-  .ship-status {
-    font-size: 8.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    border: 1px solid currentColor;
-    padding: 2px 5px;
-    white-space: nowrap;
-  }
-  .writing-cards { display: flex; flex-direction: column; gap: 8px; }
-  .writing-card {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    padding: 10px 8px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    text-decoration: none;
-    color: #000;
-    transition: background 0.12s, color 0.12s;
-  }
-  .writing-card:hover { background: #000; color: #fff; }
-  .writing-pull { font-size: 11px; color: #888; font-style: italic; }
-  .writing-card:hover .writing-pull,
-  .writing-card:hover .writing-meta { color: rgba(255, 255, 255, 0.6); }
-  .writing-title { font-size: 13px; font-weight: 600; }
-  .writing-meta { font-size: 10px; color: #888; letter-spacing: 0.06em; }
-  .door-rows { display: flex; flex-direction: column; gap: 8px; }
-  .door-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 8px;
-    border: 1px solid #000;
-    text-decoration: none;
-    color: #000;
-    transition: background 0.12s, color 0.12s;
-  }
-  .door-row:hover { background: #000; color: #fff; }
-  .door-glyph { font-size: 20px; }
-  .door-label { font-size: 12px; font-weight: 600; }
-  .door-note { font-size: 10px; color: #888; flex: 1; }
-  .door-row:hover .door-note { color: rgba(255, 255, 255, 0.6); }
-  .exp-grid { display: grid; grid-template-columns: 1fr; gap: 1.2rem; }
-  @media (min-width: 768px) {
-    .exp-grid { grid-template-columns: 1fr 1fr; }
-  }
-  .exp-row { display: flex; flex-direction: column; padding: 8px 6px; border-bottom: 1px solid #eee; }
-  .exp-role { font-size: 12.5px; font-weight: 600; }
-  .exp-org { font-size: 10.5px; color: #888; }
-  .exp-desc { font-size: 10.5px; color: #666; }
-  .inline-list { display: flex; flex-direction: column; padding: 8px 6px; }
-  .now-strip {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border: 1px solid #000;
-    color: #000;
-    text-decoration: none;
-    transition: background 0.12s, color 0.12s;
-    margin-top: 0.6rem;
-  }
-  .now-strip:hover { background: #000; color: #fff; }
-  .now-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #0a7;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .now-strip:hover .now-dot { background: #0f6; }
-  .now-strip-label { font-size: 11px; letter-spacing: 0.04em; flex: 1; }
-  .cards-title .title-main {
-    margin-top: 0;
-  }
+    .rail-sub {
+        font-size: clamp(0.68rem, 0.82vw, 0.82rem);
+        color: #888;
+        margin: 0 0 0.4rem;
+        letter-spacing: 0.02em;
+        max-width: 70ch;
+        line-height: 1.5;
+    }
+    .rail-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding-top: 0.45rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .rail-footer-link {
+        font-size: 11px;
+        color: #000;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        opacity: 0.85;
+    }
+    .built-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: clamp(0.8rem, 1.8vw, 1.6rem);
+        align-items: flex-start;
+    }
+    .built-hero {
+        display: none;
+    }
+    .ship-mobile-hidden {
+        display: none;
+    }
+    @media (min-width: 768px) {
+        .built-grid {
+            grid-template-columns: 1.35fr 1fr;
+        }
+        .built-hero {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #000;
+            text-decoration: none;
+            color: inherit;
+            overflow: hidden;
+        }
+        .ship-desktop-hidden {
+            display: none;
+        }
+        .ship-mobile-hidden {
+            display: list-item;
+        }
+    }
+    .built-hero-media {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #f4f1ea;
+        position: relative;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    .built-hero-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        opacity: 0;
+        transition: opacity 0.15s;
+    }
+    .built-hero-img.active {
+        opacity: 1;
+    }
+    .built-hero-live {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #000;
+        color: #fff;
+        padding: 3px 8px;
+        font-size: 9px;
+        letter-spacing: 0.22em;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .built-hero-live[hidden] {
+        display: none;
+    }
+    .built-hero-body {
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid #000;
+        background: #fff;
+        padding: 10px 14px 12px;
+    }
+    .built-hero-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 4px;
+    }
+    .built-hero-name {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(0.92rem, 1.3vw, 1.2rem);
+        letter-spacing: -0.015em;
+        font-weight: 600;
+    }
+    .built-hero-desc {
+        font-size: 11.5px;
+        margin: 0 0 8px;
+        line-height: 1.5;
+        color: #555;
+    }
+    .built-hero-desc:empty {
+        margin: 0;
+    }
+    .built-hero-chips {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+    .built-chip {
+        background: #000;
+        color: #fff;
+        padding: 2px 7px;
+        font-size: 9.5px;
+        letter-spacing: 0.06em;
+    }
+    .built-log {
+        display: flex;
+        flex-direction: column;
+    }
+    .built-log-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 5px;
+    }
+    .built-log-cols {
+        display: grid;
+        grid-template-columns: 44px 1fr auto;
+        gap: 10px;
+        padding: 4px 6px;
+        border-top: 1px solid #000;
+        border-bottom: 1px solid #000;
+        font-size: 9px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+    .ship-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .ship-row {
+        display: grid;
+        grid-template-columns: 44px 1fr auto;
+        gap: 10px;
+        padding: 8px 6px;
+        border-bottom: 1px solid #eee;
+        align-items: center;
+        text-decoration: none;
+        color: #000;
+        transition:
+            background 0.12s,
+            color 0.12s;
+    }
+    .ship-row:hover {
+        background: #000;
+        color: #fff;
+    }
+    .ship-year {
+        font-size: 10.5px;
+        font-weight: 600;
+        color: #999;
+    }
+    .ship-row:hover .ship-year,
+    .ship-row:hover .ship-tech {
+        color: rgba(255, 255, 255, 0.6);
+    }
+    .ship-main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+    .ship-name {
+        font-size: 12.5px;
+        font-weight: 500;
+    }
+    .ship-tech {
+        font-size: 9.5px;
+        color: #888;
+        letter-spacing: 0.02em;
+    }
+    .ship-status {
+        font-size: 8.5px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        border: 1px solid currentColor;
+        padding: 2px 5px;
+        white-space: nowrap;
+    }
+    .writing-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .writing-card {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding: 10px 8px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        text-decoration: none;
+        color: #000;
+        transition:
+            background 0.12s,
+            color 0.12s;
+    }
+    .writing-card:hover {
+        background: #000;
+        color: #fff;
+    }
+    .writing-pull {
+        font-size: 11px;
+        color: #888;
+        font-style: italic;
+    }
+    .writing-card:hover .writing-pull,
+    .writing-card:hover .writing-meta {
+        color: rgba(255, 255, 255, 0.6);
+    }
+    .writing-title {
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .writing-meta {
+        font-size: 10px;
+        color: #888;
+        letter-spacing: 0.06em;
+    }
+    .door-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .door-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 8px;
+        border: 1px solid #000;
+        text-decoration: none;
+        color: #000;
+        transition:
+            background 0.12s,
+            color 0.12s;
+    }
+    .door-row:hover {
+        background: #000;
+        color: #fff;
+    }
+    .door-glyph {
+        font-size: 20px;
+    }
+    .door-label {
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .door-note {
+        font-size: 10px;
+        color: #888;
+        flex: 1;
+    }
+    .door-row:hover .door-note {
+        color: rgba(255, 255, 255, 0.6);
+    }
+    .exp-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+    @media (min-width: 768px) {
+        .exp-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    .exp-row {
+        display: flex;
+        flex-direction: column;
+        padding: 8px 6px;
+        border-bottom: 1px solid #eee;
+    }
+    .exp-role {
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+    .exp-org {
+        font-size: 10.5px;
+        color: #888;
+    }
+    .exp-desc {
+        font-size: 10.5px;
+        color: #666;
+    }
+    .inline-list {
+        display: flex;
+        flex-direction: column;
+        padding: 8px 6px;
+    }
+    .now-strip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border: 1px solid #000;
+        color: #000;
+        text-decoration: none;
+        transition:
+            background 0.12s,
+            color 0.12s;
+        margin-top: 0.6rem;
+    }
+    .now-strip:hover {
+        background: #000;
+        color: #fff;
+    }
+    .now-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: #0a7;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .now-strip:hover .now-dot {
+        background: #0f6;
+    }
+    .now-strip-label {
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        flex: 1;
+    }
+    .cards-title .title-main {
+        margin-top: 0;
+    }
 </style>
 
 <script>
-  // Hover a build-log row → the hero swaps to that project; leave the log →
-  // hero falls back to the featured ship. Enhancement only: without JS the
-  // hero statically shows the featured ship.
-  const hero = document.getElementById('built-hero');
-  const list = document.getElementById('built-log-list');
-  if (hero && list) {
-    const nameEl = document.getElementById('built-hero-name');
-    const yearEl = document.getElementById('built-hero-year');
-    const descEl = document.getElementById('built-hero-desc');
-    const chipsEl = document.getElementById('built-hero-chips');
-    const liveEl = document.getElementById('built-hero-live');
-    const imgs = hero.querySelectorAll('.built-hero-img');
+    // Hover a build-log row → the hero swaps to that project; leave the log →
+    // hero falls back to the featured ship. Enhancement only: without JS the
+    // hero statically shows the featured ship.
+    const hero = document.getElementById("built-hero");
+    const list = document.getElementById("built-log-list");
+    if (hero && list) {
+        const nameEl = document.getElementById("built-hero-name");
+        const yearEl = document.getElementById("built-hero-year");
+        const descEl = document.getElementById("built-hero-desc");
+        const chipsEl = document.getElementById("built-hero-chips");
+        const liveEl = document.getElementById("built-hero-live");
+        const imgs = hero.querySelectorAll(".built-hero-img");
 
-    const featured = {
-      name: nameEl.textContent,
-      year: yearEl.textContent,
-      desc: descEl.textContent,
-      tech: [...chipsEl.children].map((c) => c.textContent).join(' · '),
-      status: liveEl.hidden ? '' : 'live',
-      href: hero.getAttribute('href'),
-    };
+        const featured = {
+            name: nameEl.textContent,
+            year: yearEl.textContent,
+            desc: descEl.textContent,
+            tech: [...chipsEl.children].map((c) => c.textContent).join(" · "),
+            status: liveEl.hidden ? "" : "live",
+            href: hero.getAttribute("href"),
+        };
 
-    const show = (ship) => {
-      nameEl.textContent = ship.name;
-      yearEl.textContent = ship.year;
-      descEl.textContent = ship.desc;
-      chipsEl.replaceChildren(
-        ...ship.tech.split(' · ').map((t) => {
-          const chip = document.createElement('span');
-          chip.className = 'built-chip';
-          chip.textContent = t;
-          return chip;
-        })
-      );
-      liveEl.hidden = ship.status !== 'live';
-      hero.setAttribute('href', ship.href);
-      imgs.forEach((img) => img.classList.toggle('active', img.dataset.ship === ship.name));
-    };
+        const show = (ship) => {
+            nameEl.textContent = ship.name;
+            yearEl.textContent = ship.year;
+            descEl.textContent = ship.desc;
+            chipsEl.replaceChildren(
+                ...ship.tech.split(" · ").map((t) => {
+                    const chip = document.createElement("span");
+                    chip.className = "built-chip";
+                    chip.textContent = t;
+                    return chip;
+                }),
+            );
+            liveEl.hidden = ship.status !== "live";
+            hero.setAttribute("href", ship.href);
+            imgs.forEach((img) =>
+                img.classList.toggle("active", img.dataset.ship === ship.name),
+            );
+        };
 
-    list.querySelectorAll('.ship-row').forEach((row) => {
-      row.addEventListener('mouseenter', () => show(row.dataset));
-    });
-    list.addEventListener('mouseleave', () => show(featured));
-  }
+        list.querySelectorAll(".ship-row").forEach((row) => {
+            row.addEventListener("mouseenter", () => show(row.dataset));
+        });
+        list.addEventListener("mouseleave", () => show(featured));
+    }
 </script>
 
 <script>
-  // Scroll-driven rail FX: WRITING and EXPERIENCE are hidden under a white
-  // cover and get "printed" by a full-height Bayer-dithered wash sweeping
-  // left→right. BUILT enters cleanly, then shares the outgoing wash used by
-  // the other panels. Titles split-flap while their incoming sweep runs.
-  // Everything is a pure function of scroll position — scrolling back runs it
-  // in reverse. Enhancement only: static HTML stays complete, and we skip
-  // entirely under prefers-reduced-motion.
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const BAYER = [
-      [0, 8, 2, 10],
-      [12, 4, 14, 6],
-      [3, 11, 1, 9],
-      [15, 7, 13, 5],
-    ];
-    // flap alphabet skips narrow glyphs (I, J, L) to keep width jitter low
-    const FLAPS = 'ABCDEFGHKMNPRSTUVWXYZ#%&=+*';
-    // one breakpoint, per DESIGN.md; coarser cells keep mobile repaints cheap
-    const MOBILE = innerWidth < 768;
-    const CELL = MOBILE ? 4 : 3; // dither cell size, px
-    // bar geometry maxima — scaled to panel width in measure() so the bar
-    // never outsizes a narrow screen
-    const CORE = 120; // solid core of the wash bar, px
-    const FADE = 80;  // dithered leading edge, px
-    const TAIL = 240; // dithered dissolve trailing the core, px
+    // Scroll-driven rail FX: WRITING and EXPERIENCE are hidden under a white
+    // cover and get "printed" by a full-height Bayer-dithered wash sweeping
+    // left→right. BUILT enters cleanly, then shares the outgoing wash used by
+    // the other panels. Titles split-flap while their incoming sweep runs.
+    // Everything is a pure function of scroll position — scrolling back runs it
+    // in reverse. Enhancement only: static HTML stays complete, and we skip
+    // entirely under prefers-reduced-motion.
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const BAYER = [
+            [0, 8, 2, 10],
+            [12, 4, 14, 6],
+            [3, 11, 1, 9],
+            [15, 7, 13, 5],
+        ];
+        // flap alphabet skips narrow glyphs (I, J, L) to keep width jitter low
+        const FLAPS = "ABCDEFGHKMNPRSTUVWXYZ#%&=+*";
+        // one breakpoint, per DESIGN.md; coarser cells keep mobile repaints cheap
+        const MOBILE = innerWidth < 768;
+        const CELL = MOBILE ? 4 : 3; // dither cell size, px
+        // bar geometry maxima — scaled to panel width in measure() so the bar
+        // never outsizes a narrow screen
+        const CORE = 120; // solid core of the wash bar, px
+        const FADE = 80; // dithered leading edge, px
+        const TAIL = 240; // dithered dissolve trailing the core, px
 
-    const panels = [...document.querySelectorAll('.rail-panel')].map((panel) => {
-      const canvas = document.createElement('canvas');
-      // extends up over the inter-section gap so the wipe bar is one
-      // continuous stroke across the seam between old and new section
-      canvas.style.cssText =
-        'position:absolute;left:0;right:0;bottom:0;' +
-        'top:calc(var(--rail-gap) * -1);' +
-        'height:calc(100% + var(--rail-gap));width:100%;' +
-        'pointer-events:none;z-index:3;image-rendering:pixelated;';
-      canvas.setAttribute('aria-hidden', 'true');
-      panel.prepend(canvas);
+        const panels = [...document.querySelectorAll(".rail-panel")].map(
+            (panel) => {
+                const canvas = document.createElement("canvas");
+                // extends up over the inter-section gap so the wipe bar is one
+                // continuous stroke across the seam between old and new section
+                canvas.style.cssText =
+                    "position:absolute;left:0;right:0;bottom:0;" +
+                    "top:calc(var(--rail-gap) * -1);" +
+                    "height:calc(100% + var(--rail-gap));width:100%;" +
+                    "pointer-events:none;z-index:3;image-rendering:pixelated;";
+                canvas.setAttribute("aria-hidden", "true");
+                panel.prepend(canvas);
 
-      // Wrap the title's text into per-letter spans; the h2 keeps its real
-      // name for assistive tech via aria-label. The colored "." span is an
-      // element child and stays untouched — the board's fixed punctuation.
-      const title = panel.querySelector('.rail-title');
-      const chars = [];
-      if (title) {
-        title.setAttribute('aria-label', title.textContent);
-        [...title.childNodes].forEach((node) => {
-          if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) return;
-          const frag = document.createDocumentFragment();
-          [...node.textContent].forEach((ch) => {
-            const s = document.createElement('span');
-            s.textContent = ch;
-            s.dataset.char = ch;
-            s.setAttribute('aria-hidden', 'true');
-            frag.appendChild(s);
-            chars.push({ el: s, t: 0 });
-          });
-          node.replaceWith(frag);
-        });
-      }
-      // resolve thresholds spread across the whole sweep so the flapping is
-      // visible for the full transition, not just while the front crosses
-      // the title's own pixels
-      chars.forEach((c, i) => {
-        c.t = (i + 1) / (chars.length + 1);
-      });
-      const off = document.createElement('canvas');
-      return {
-        panel,
-        canvas,
-        ctx: canvas.getContext('2d'),
-        off,
-        octx: off.getContext('2d'),
-        title,
-        chars,
-        last: -1,
-      };
-    });
+                // Wrap the title's text into per-letter spans; the h2 keeps its real
+                // name for assistive tech via aria-label. The colored "." span is an
+                // element child and stays untouched — the board's fixed punctuation.
+                const title = panel.querySelector(".rail-title");
+                const chars = [];
+                if (title) {
+                    title.setAttribute("aria-label", title.textContent);
+                    [...title.childNodes].forEach((node) => {
+                        if (
+                            node.nodeType !== Node.TEXT_NODE ||
+                            !node.textContent.trim()
+                        )
+                            return;
+                        const frag = document.createDocumentFragment();
+                        [...node.textContent].forEach((ch) => {
+                            const s = document.createElement("span");
+                            s.textContent = ch;
+                            s.dataset.char = ch;
+                            s.setAttribute("aria-hidden", "true");
+                            frag.appendChild(s);
+                            chars.push({ el: s, t: 0 });
+                        });
+                        node.replaceWith(frag);
+                    });
+                }
+                // resolve thresholds spread across the whole sweep so the flapping is
+                // visible for the full transition, not just while the front crosses
+                // the title's own pixels
+                chars.forEach((c, i) => {
+                    c.t = (i + 1) / (chars.length + 1);
+                });
+                const off = document.createElement("canvas");
+                return {
+                    panel,
+                    canvas,
+                    ctx: canvas.getContext("2d"),
+                    off,
+                    octx: off.getContext("2d"),
+                    title,
+                    chars,
+                    last: -1,
+                };
+            },
+        );
 
-    const measure = () => {
-      panels.forEach((it) => {
-        const cr = it.canvas.getBoundingClientRect();
-        const w = Math.max(1, Math.round(cr.width));
-        it.canvas.width = w;
-        it.canvas.height = Math.max(1, Math.round(cr.height));
-        it.off.width = Math.ceil(it.canvas.width / CELL);
-        it.off.height = Math.ceil(it.canvas.height / CELL);
-        it.core = Math.min(CORE, w * 0.16);
-        it.fade = Math.min(FADE, w * 0.1);
-        it.tail = Math.min(TAIL, w * 0.3);
-        it.last = '';
-      });
-      const vh = innerHeight;
-      if (introSpacer) introSpacer.style.height = Math.round(vh * 1.6) + 'px';
-      if (returnSpacer) returnSpacer.style.height = Math.round(vh * 1.1) + 'px';
-      if (introTitle) titleH = introTitle.offsetHeight;
-      update();
-    };
+        const measure = () => {
+            panels.forEach((it) => {
+                const cr = it.canvas.getBoundingClientRect();
+                const w = Math.max(1, Math.round(cr.width));
+                it.canvas.width = w;
+                it.canvas.height = Math.max(1, Math.round(cr.height));
+                it.off.width = Math.ceil(it.canvas.width / CELL);
+                it.off.height = Math.ceil(it.canvas.height / CELL);
+                it.core = Math.min(CORE, w * 0.16);
+                it.fade = Math.min(FADE, w * 0.1);
+                it.tail = Math.min(TAIL, w * 0.3);
+                it.last = "";
+            });
+            const vh = innerHeight;
+            if (introSpacer)
+                introSpacer.style.height = Math.round(vh * 1.6) + "px";
+            if (returnSpacer)
+                returnSpacer.style.height = Math.round(vh * 1.1) + "px";
+            if (introTitle) titleH = introTitle.offsetHeight;
+            update();
+        };
 
-    // Bar coverage at column x for a wipe front f: dithered leading edge
-    // ahead of the front, solid core behind it, dithered tail dissolving out.
-    const barCov = (x, f, it) => {
-      if (x > f) return 1 - (x - f) / it.fade;
-      if (x > f - it.core) return 1;
-      return 1 - (f - it.core - x) / it.tail;
-    };
+        // Bar coverage at column x for a wipe front f: dithered leading edge
+        // ahead of the front, solid core behind it, dithered tail dissolving out.
+        const barCov = (x, f, it) => {
+            if (x > f) return 1 - (x - f) / it.fade;
+            if (x > f - it.core) return 1;
+            return 1 - (f - it.core - x) / it.tail;
+        };
 
-    // Paints the full-panel overlay at cell resolution into a small offscreen
-    // canvas, then scales it up unsmoothed for the chunky 1-bit look.
-    // Two fronts share one geometry: `front` prints this section (white cover
-    // ahead of it, content behind), `erase` is the NEXT section's front
-    // wiping this one away again (content ahead of it, white behind).
-    const drawWash = (it, front, erase) => {
-      const { ctx, canvas, off, octx } = it;
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-      if (erase - it.core - it.tail >= w) {
-        ctx.fillStyle = '#fff'; // section fully wiped away
-        ctx.fillRect(0, 0, w, h);
-        return;
-      }
-      if (front - it.core - it.tail < w || erase > -it.fade) {
-        const cw = off.width;
-        const ch = off.height;
-        const img = octx.createImageData(cw, ch);
-        const d = img.data;
-        for (let cx = 0; cx < cw; cx++) {
-          const x = cx * CELL + CELL / 2;
-          const b = Math.max(barCov(x, front, it), barCov(x, erase, it));
-          const covered = x > front || x <= erase;
-          if (b <= 0 && !covered) continue; // fully transparent column
-          for (let cy = 0; cy < ch; cy++) {
-            const i = (cy * cw + cx) * 4;
-            if (b * 16 > BAYER[cx % 4][cy % 4]) {
-              d[i + 3] = 255; // black cell
-            } else if (covered) {
-              d[i] = d[i + 1] = d[i + 2] = 255;
-              d[i + 3] = 255; // white cover
+        // Paints the full-panel overlay at cell resolution into a small offscreen
+        // canvas, then scales it up unsmoothed for the chunky 1-bit look.
+        // Two fronts share one geometry: `front` prints this section (white cover
+        // ahead of it, content behind), `erase` is the NEXT section's front
+        // wiping this one away again (content ahead of it, white behind).
+        const drawWash = (it, front, erase) => {
+            const { ctx, canvas, off, octx } = it;
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+            if (erase - it.core - it.tail >= w) {
+                ctx.fillStyle = "#fff"; // section fully wiped away
+                ctx.fillRect(0, 0, w, h);
+                return;
             }
-          }
-        }
-        octx.putImageData(img, 0, 0);
-        ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(off, 0, 0, cw * CELL, ch * CELL);
-      }
-    };
-
-    const introSpacer = document.querySelector('.intro-spacer');
-    const introTitle = document.querySelector('.intro-spacer .title-section-parallax');
-    const introSub = introTitle && introTitle.querySelector('.title-sub');
-    const returnSpacer = document.querySelector('.return-spacer');
-    const returnStage = document.querySelector('.return-stage');
-    const returnTitle = returnStage && returnStage.querySelector('.cards-title .title-main');
-    const returnSub = returnStage && returnStage.querySelector('.cards-title .title-sub');
-    const returnCards = returnStage && returnStage.querySelector('.cards-section-parallax > .grid-2col');
-    const overlay = document.querySelector('.parallax-overlay');
-    const phrases = overlay ? [...overlay.querySelectorAll('.overlay-phrase')] : [];
-    const PHRASES = [
-      { start: 0, peak: 0.12, end: 0.38 },
-      { start: 0.24, peak: 0.37, end: 0.56 },
-    ];
-    const track = document.querySelector('.progress-track');
-    const fill = document.querySelector('.progress-fill');
-    let titleH = 0;
-    if (introTitle) {
-      // The parallax: the title leaves the flow and floats fixed over the
-      // intro spacer — the page scrolls underneath while the title rises on
-      // its own slower track, exactly like the pre-migration MainPage.
-      introTitle.style.cssText =
-        'position:fixed;left:50%;transform:translateX(-50%);z-index:10;' +
-        `max-width:1152px;width:calc(100% - ${MOBILE ? 32 : 64}px);`;
-    }
-
-    // Pre-migration intro choreography: the fixed title rises from vertical
-    // centre to the top over the first 55% of the intro scroll (quintic
-    // ease-out), pins there, and fades out over the last 30% of the intro;
-    // the subtitle fades in over the last fifth of the rise. All pure
-    // functions of scrollY.
-    const introFx = (vh) => {
-      if (!introTitle) return;
-      const introH = vh * 1.6;
-      const tp = Math.min(1, scrollY / (introH * 0.55));
-      const eased = 1 - Math.pow(1 - tp, 5);
-      const navH = MOBILE ? 72 : 80;
-      const startTop = (vh - titleH) * 0.5;
-      introTitle.style.top =
-        (startTop + (navH - startTop) * eased).toFixed(1) + 'px';
-      const ip = Math.min(1, scrollY / introH);
-      const op = Math.max(0, 1 - Math.max(0, (ip - 0.7) / 0.3));
-      introTitle.style.opacity = op.toFixed(3);
-      introTitle.style.pointerEvents = op > 0 ? 'auto' : 'none';
-      if (introSub) {
-        introSub.style.opacity = Math.max(0, (tp - 0.8) / 0.2).toFixed(3);
-      }
-    };
-
-    // Return stage: start the overlay sequence before the spacer reaches the
-    // viewport top. The second directory heading then rises through its own
-    // bottom clip line, followed by the subtitle and cards. The spacer length
-    // stays fixed; the phases overlap to keep the movement continuous.
-    const returnFx = (vh, rect) => {
-      const rp = Math.min(
-        1,
-        Math.max(0, (vh * 0.25 - rect.top) / (vh * 1.25))
-      );
-      if (overlay) {
-        const active = rp > 0 && rp < PHRASES[PHRASES.length - 1].end;
-        overlay.style.display = active ? 'block' : 'none';
-        if (active) {
-          phrases.forEach((el, k) => {
-            const t = PHRASES[k];
-            let o = 0;
-            if (rp > t.start && rp < t.end) {
-              o =
-                rp <= t.peak
-                  ? (rp - t.start) / (t.peak - t.start)
-                  : 1 - Math.pow((rp - t.peak) / (t.end - t.peak), 1.45);
+            if (front - it.core - it.tail < w || erase > -it.fade) {
+                const cw = off.width;
+                const ch = off.height;
+                const img = octx.createImageData(cw, ch);
+                const d = img.data;
+                for (let cx = 0; cx < cw; cx++) {
+                    const x = cx * CELL + CELL / 2;
+                    const b = Math.max(
+                        barCov(x, front, it),
+                        barCov(x, erase, it),
+                    );
+                    const covered = x > front || x <= erase;
+                    if (b <= 0 && !covered) continue; // fully transparent column
+                    for (let cy = 0; cy < ch; cy++) {
+                        const i = (cy * cw + cx) * 4;
+                        if (b * 16 > BAYER[cx % 4][cy % 4]) {
+                            d[i + 3] = 255; // black cell
+                        } else if (covered) {
+                            d[i] = d[i + 1] = d[i + 2] = 255;
+                            d[i + 3] = 255; // white cover
+                        }
+                    }
+                }
+                octx.putImageData(img, 0, 0);
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(off, 0, 0, cw * CELL, ch * CELL);
             }
-            el.style.opacity = o.toFixed(3);
-          });
+        };
+
+        const introSpacer = document.querySelector(".intro-spacer");
+        const introTitle = document.querySelector(
+            ".intro-spacer .title-section-parallax",
+        );
+        const introSub = introTitle && introTitle.querySelector(".title-sub");
+        const returnSpacer = document.querySelector(".return-spacer");
+        const returnStage = document.querySelector(".return-stage");
+        const returnTitle =
+            returnStage &&
+            returnStage.querySelector(".cards-title .title-main");
+        const returnSub =
+            returnStage && returnStage.querySelector(".cards-title .title-sub");
+        const returnCards =
+            returnStage &&
+            returnStage.querySelector(".cards-section-parallax > .grid-2col");
+        const overlay = document.querySelector(".parallax-overlay");
+        const phrases = overlay
+            ? [...overlay.querySelectorAll(".overlay-phrase")]
+            : [];
+        const PHRASES = [
+            { start: 0, peak: 0.12, end: 0.38 },
+            { start: 0.24, peak: 0.37, end: 0.56 },
+        ];
+        const track = document.querySelector(".progress-track");
+        const fill = document.querySelector(".progress-fill");
+        let titleH = 0;
+        if (introTitle) {
+            // The parallax: the title leaves the flow and floats fixed over the
+            // intro spacer — the page scrolls underneath while the title rises on
+            // its own slower track, exactly like the pre-migration MainPage.
+            introTitle.style.cssText =
+                "position:fixed;left:50%;transform:translateX(-50%);z-index:10;" +
+                `max-width:1152px;width:calc(100% - ${MOBILE ? 32 : 64}px);`;
         }
-      }
-      const revealFromGround = (el, p) => {
-        if (!el) return;
-        const eased = p * p * (3 - 2 * p);
-        el.style.opacity = p > 0 ? '1' : '0';
-        el.style.transform = `translateY(${((1 - eased) * 105).toFixed(1)}%)`;
-      };
-      const titleP = Math.min(1, Math.max(0, (rp - 0.46) / 0.38));
-      const subP = Math.min(1, Math.max(0, (rp - 0.58) / 0.34));
-      revealFromGround(returnTitle, titleP);
-      revealFromGround(returnSub, subP);
-      if (returnCards) {
-        const cardP = Math.min(1, Math.max(0, (rp - 0.78) / 0.22));
-        const eased = cardP * cardP * (3 - 2 * cardP);
-        returnCards.style.opacity = cardP.toFixed(3);
-        returnCards.style.transform = `translateY(${((1 - eased) * 24).toFixed(1)}px)`;
-      }
-    };
 
-    const update = () => {
-      const vh = innerHeight;
-      introFx(vh);
-      const spacerRect = returnSpacer
-        ? returnSpacer.getBoundingClientRect()
-        : { top: vh * 9, bottom: vh * 9 };
-      returnFx(vh, spacerRect);
-      // left-edge progress track runs across intro + rails + return
-      if (track && fill) {
-        const trackedEnd = spacerRect.bottom + scrollY;
-        track.style.display = scrollY < trackedEnd ? 'block' : 'none';
-        fill.style.height =
-          (Math.min(1, scrollY / trackedEnd) * 100).toFixed(2) + '%';
-      }
-      // Every panel sweeps across the same window — from entering at the
-      // viewport bottom to 20% up — so all motion is uniform and strictly
-      // proportional to scroll.
-      const ps = panels.map((it) => {
-        const rect = it.panel.getBoundingClientRect();
-        const p = Math.min(1, Math.max(0, (vh - rect.top) / (vh * 0.8)));
-        return { rect, p };
-      });
-      // the last panel (EXPERIENCE) leaves with the same dithered wipe,
-      // driven by the return spacer arriving behind it
-      const pAfter = Math.min(
-        1,
-        Math.max(0, (vh - spacerRect.top) / (vh * 0.8))
-      );
-      panels.forEach((it, i) => {
-        const { rect, p } = ps[i];
-        // The canvas reaches into the seam above its panel. Check its actual
-        // bounds so a previously painted frame cannot re-enter as stale pixels.
-        const canvasRect = it.canvas.getBoundingClientRect();
-        if (canvasRect.bottom < -50 || canvasRect.top > vh + 50) return;
-        const pNext = i + 1 < panels.length ? ps[i + 1].p : pAfter;
-        const key = (i === 0 ? 'static' : p) + '|' + pNext;
-        if (key === it.last) return;
-        it.last = key;
-        const w = it.canvas.width;
-        const span = w + it.fade + it.core + it.tail;
-        // travels from just offscreen left to where even the tail has cleared;
-        // the erase runs ahead of the print so the outgoing section is taken
-        // away early rather than lingering on screen. BUILT has no incoming
-        // wash; it starts fully resolved but keeps its outgoing transition.
-        const front = i === 0 ? span : -it.fade + p * span;
-        const erase = -it.fade + Math.min(1, pNext * 1.35) * span;
-        drawWash(it, front, erase);
-        // while being wiped, the title sits under the canvas so the pixel
-        // transition covers it like the rest of the content — no white text,
-        // no flap-out
-        if (it.title) it.title.style.zIndex = pNext > 0 ? '0' : '';
-        const frontT = front / w;
-        const cycle = Math.floor(p * 35);
-        it.chars.forEach((c, j) => {
-          const resolved = frontT >= c.t;
-          c.el.textContent = resolved
-            ? c.el.dataset.char
-            : FLAPS[(j * 7 + cycle) % FLAPS.length];
-          c.el.style.color = resolved ? '' : '#c8c8c8';
-        });
-      });
-    };
+        // Pre-migration intro choreography: the fixed title rises from vertical
+        // centre to the top over the first 55% of the intro scroll (quintic
+        // ease-out), pins there, and fades out over the last 30% of the intro;
+        // the subtitle fades in over the last fifth of the rise. All pure
+        // functions of scrollY.
+        const introFx = (vh) => {
+            if (!introTitle) return;
+            const introH = vh * 1.6;
+            const tp = Math.min(1, scrollY / (introH * 0.55));
+            const eased = 1 - Math.pow(1 - tp, 5);
+            const navH = MOBILE ? 72 : 80;
+            const startTop = (vh - titleH) * 0.5;
+            introTitle.style.top =
+                (startTop + (navH - startTop) * eased).toFixed(1) + "px";
+            const ip = Math.min(1, scrollY / introH);
+            const op = Math.max(0, 1 - Math.max(0, (ip - 0.7) / 0.3));
+            introTitle.style.opacity = op.toFixed(3);
+            introTitle.style.pointerEvents = op > 0 ? "auto" : "none";
+            if (introSub) {
+                introSub.style.opacity = Math.max(0, (tp - 0.8) / 0.2).toFixed(
+                    3,
+                );
+            }
+        };
 
-    let queued = false;
-    const onScroll = () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(() => {
-        queued = false;
-        update();
-      });
-    };
-    addEventListener('scroll', onScroll, { passive: true });
-    addEventListener('resize', measure);
-    if (document.fonts) document.fonts.ready.then(measure);
-    measure();
+        // Return stage: start the overlay sequence before the spacer reaches the
+        // viewport top. The second directory heading then rises through its own
+        // bottom clip line, followed by the subtitle and cards. The spacer length
+        // stays fixed; the phases overlap to keep the movement continuous.
+        const returnFx = (vh, rect) => {
+            const rp = Math.min(
+                1,
+                Math.max(0, (vh * 0.25 - rect.top) / (vh * 1.25)),
+            );
+            if (overlay) {
+                const active = rp > 0 && rp < PHRASES[PHRASES.length - 1].end;
+                overlay.style.display = active ? "block" : "none";
+                if (active) {
+                    phrases.forEach((el, k) => {
+                        const t = PHRASES[k];
+                        let o = 0;
+                        if (rp > t.start && rp < t.end) {
+                            o =
+                                rp <= t.peak
+                                    ? (rp - t.start) / (t.peak - t.start)
+                                    : 1 -
+                                      Math.pow(
+                                          (rp - t.peak) / (t.end - t.peak),
+                                          1.45,
+                                      );
+                        }
+                        el.style.opacity = o.toFixed(3);
+                    });
+                }
+            }
+            const revealFromGround = (el, p) => {
+                if (!el) return;
+                const eased = p * p * (3 - 2 * p);
+                el.style.opacity = p > 0 ? "1" : "0";
+                el.style.transform = `translateY(${((1 - eased) * 105).toFixed(1)}%)`;
+            };
+            const titleP = Math.min(1, Math.max(0, (rp - 0.46) / 0.38));
+            const subP = Math.min(1, Math.max(0, (rp - 0.58) / 0.34));
+            revealFromGround(returnTitle, titleP);
+            revealFromGround(returnSub, subP);
+            if (returnCards) {
+                const cardP = Math.min(1, Math.max(0, (rp - 0.78) / 0.22));
+                const eased = cardP * cardP * (3 - 2 * cardP);
+                returnCards.style.opacity = cardP.toFixed(3);
+                returnCards.style.transform = `translateY(${((1 - eased) * 24).toFixed(1)}px)`;
+            }
+        };
 
-    // Scroll hint: appears after 5s idle, hidden the moment scrolling resumes
-    // (the one timer-based piece — it's a hint, not part of the choreography).
-    const hint = document.querySelector('.scroll-hint');
-    if (hint) {
-      let hintT;
-      const armHint = () => {
-        hint.style.display = 'none';
-        clearTimeout(hintT);
-        hintT = setTimeout(() => {
-          hint.style.display = 'flex';
-        }, 5000);
-      };
-      addEventListener('scroll', armHint, { passive: true });
-      armHint();
+        const update = () => {
+            const vh = innerHeight;
+            introFx(vh);
+            const spacerRect = returnSpacer
+                ? returnSpacer.getBoundingClientRect()
+                : { top: vh * 9, bottom: vh * 9 };
+            returnFx(vh, spacerRect);
+            // left-edge progress track runs across intro + rails + return
+            if (track && fill) {
+                const trackedEnd = spacerRect.bottom + scrollY;
+                track.style.display = scrollY < trackedEnd ? "block" : "none";
+                fill.style.height =
+                    (Math.min(1, scrollY / trackedEnd) * 100).toFixed(2) + "%";
+            }
+            // Every panel sweeps across the same window — from entering at the
+            // viewport bottom to 20% up — so all motion is uniform and strictly
+            // proportional to scroll.
+            const ps = panels.map((it) => {
+                const rect = it.panel.getBoundingClientRect();
+                const p = Math.min(
+                    1,
+                    Math.max(0, (vh - rect.top) / (vh * 0.8)),
+                );
+                return { rect, p };
+            });
+            // the last panel (EXPERIENCE) leaves with the same dithered wipe,
+            // driven by the return spacer arriving behind it
+            const pAfter = Math.min(
+                1,
+                Math.max(0, (vh - spacerRect.top) / (vh * 0.8)),
+            );
+            panels.forEach((it, i) => {
+                const { rect, p } = ps[i];
+                // The canvas reaches into the seam above its panel. Check its actual
+                // bounds so a previously painted frame cannot re-enter as stale pixels.
+                const canvasRect = it.canvas.getBoundingClientRect();
+                if (canvasRect.bottom < -50 || canvasRect.top > vh + 50) return;
+                const pNext = i + 1 < panels.length ? ps[i + 1].p : pAfter;
+                const key = (i === 0 ? "static" : p) + "|" + pNext;
+                if (key === it.last) return;
+                it.last = key;
+                const w = it.canvas.width;
+                const span = w + it.fade + it.core + it.tail;
+                // travels from just offscreen left to where even the tail has cleared;
+                // the erase runs ahead of the print so the outgoing section is taken
+                // away early rather than lingering on screen. BUILT has no incoming
+                // wash; it starts fully resolved but keeps its outgoing transition.
+                const front = i === 0 ? span : -it.fade + p * span;
+                const erase = -it.fade + Math.min(1, pNext * 1.35) * span;
+                drawWash(it, front, erase);
+                // while being wiped, the title sits under the canvas so the pixel
+                // transition covers it like the rest of the content — no white text,
+                // no flap-out
+                if (it.title) it.title.style.zIndex = pNext > 0 ? "0" : "";
+                const frontT = front / w;
+                const cycle = Math.floor(p * 35);
+                it.chars.forEach((c, j) => {
+                    const resolved = frontT >= c.t;
+                    c.el.textContent = resolved
+                        ? c.el.dataset.char
+                        : FLAPS[(j * 7 + cycle) % FLAPS.length];
+                    c.el.style.color = resolved ? "" : "#c8c8c8";
+                });
+            });
+        };
+
+        let queued = false;
+        const onScroll = () => {
+            if (queued) return;
+            queued = true;
+            requestAnimationFrame(() => {
+                queued = false;
+                update();
+            });
+        };
+        addEventListener("scroll", onScroll, { passive: true });
+        addEventListener("resize", measure);
+        if (document.fonts) document.fonts.ready.then(measure);
+        measure();
+
+        // Scroll hint: appears after 5s idle, hidden the moment scrolling resumes
+        // (the one timer-based piece — it's a hint, not part of the choreography).
+        const hint = document.querySelector(".scroll-hint");
+        if (hint) {
+            let hintT;
+            const armHint = () => {
+                hint.style.display = "none";
+                clearTimeout(hintT);
+                hintT = setTimeout(() => {
+                    hint.style.display = "flex";
+                }, 5000);
+            };
+            addEventListener("scroll", armHint, { passive: true });
+            armHint();
+        }
     }
-  }
 </script>

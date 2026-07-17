@@ -72,12 +72,12 @@ export const SHIPS = [
 ];
 
 export const TROPHIES = [
-  { stamp: "GOLD", label: "British Mathematical Olympiad I", year: "2024" },
+  { stamp: "GOLD", label: "British Mathematical Olympiad I", year: "2024,2025" },
   { stamp: "GOLD", label: "British Informatics Olympiad", year: "2025" },
   {
-    stamp: "A*A*A*A",
-    label: "A-Levels · Math, Further Math, Physics, CS",
-    year: "2023–25",
+    stamp: "5 Hackathon Wins",
+    label: "YCxBrowserUse, Bow Capital, SDxAnthropic etc...",
+    year: "2024–26",
   },
 ];
 
@@ -140,8 +140,7 @@ export const DOMAINS = [
   "computer science",
   "history",
   "linguistics",
-  "grand strategy",
-  "crocheting",
+  "data science",
 ];
 
 export const TONGUES = ["english (native)", "中文 (native)", "தமிழ் (learning)"];
