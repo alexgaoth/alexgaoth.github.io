@@ -17,13 +17,13 @@ export const REGENTS = [
   {
     name: 'Immanuel kant',
     glb: '/regents/kant_good.glb',
-    audio: '/regents/kant.mp3',
+    audio: '/regents/LAutunno.mp3',
     bio: 'You ought to synthesize rationalism and empiricism - Kant, probably.',
   },
   {
     name: 'LI, Zi Cheng',
     glb: '/regents/lizicheng_good.glb',
-    audio: '/regents/kant.mp3',
+    audio: '/regents/lizicheng.mp3',
     bio: '闯王 - King of barging/breaking in. Evidently an improper translation, but the energy is there',
   },
 ];
