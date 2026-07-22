@@ -5,13 +5,12 @@
 // is emitted in the build-time HTML so no-JS crawlers see the full text.
 //
 // Interactivity mapping vs the CRA version:
-// - Claude commentary: CRA collapses it behind a JS toggle (first item with
-//   commentary starts expanded). Here it is a <details>/<summary> — the text
-//   is always in the source HTML, and the first commentary gets `open`.
+// - Claude commentary: collapsed behind a <details>/<summary> toggle. The text
+//   stays in the source HTML for crawlers, but every commentary starts closed.
 // - English tap-to-translate segments: the CRA interaction, restored — a
 //   line splits on '，' into tappable segments and each tap reveals that
-//   segment's translation. All translations are still emitted in the source
-//   HTML (display:none) so crawlers keep the full text.
+//   segment's translation. The first segment of the first poem starts revealed;
+//   all translations are still emitted in the source HTML for crawlers.
 // - AI icons: plain <a href> links to the services with the prompt in the
 //   URL's ?q= parameter; a small inline script also copies the prompt to the
 //   clipboard and shows the toast, matching the CRA flow and footer note.
@@ -33,10 +32,6 @@ const {
 
 const getClaudeText = (item) => (lang === 'zh' ? item.claudeZh : item.claudeEn);
 const getContextText = (item) => (lang === 'zh' ? item.context : item.contextEn);
-
-// Mirror of the CRA initial state: the first item with Claude commentary
-// starts expanded.
-const firstClaudeId = items.find((item) => getClaudeText(item))?.id;
 
 // CRA LiteraryLines: an English line splits on '，' into tappable segments.
 const splitSegments = (line) => line.split('，').filter((segment) => segment.trim());
@@ -110,27 +105,30 @@ const splitSegments = (line) => line.split('，').filter((segment) => segment.tr
                   <div class="poetry-body">
                     {lang !== 'en'
                       ? item.lines.map((line) => <p class="poetry-line">{line}</p>)
-                      : item.lines.map((line, lineIndex) => {
+                        : item.lines.map((line, lineIndex) => {
                           const segments = splitSegments(line);
                           const segmentTranslations = item.linesEn?.[lineIndex] || [];
+                          const revealFirstSegment = item === items[0] && lineIndex === 0;
                           return (
                             <div class="poetry-line-group">
                               <p class="poetry-line poetry-line-translatable">
-                                {segments.map((segment, segmentIndex) => (
-                                  <>
-                                    <span class="poetry-seg" title="tap to translate">{segment}</span>
+                                {segments.map((segment, segmentIndex) => {
+                                  const startsRevealed = revealFirstSegment && segmentIndex === 0;
+                                  return <>
+                                    <span class:list={['poetry-seg', { 'poetry-seg-active': startsRevealed }]} title="tap to translate">{segment}</span>
                                     {segmentIndex < segments.length - 1 && (
                                       <span class="poetry-seg-comma">，</span>
                                     )}
-                                  </>
-                                ))}
+                                  </>;
+                                })}
                               </p>
-                              <div class="poetry-line-trans" style="display:none">
-                                {segments.map((_, segmentIndex) => (
-                                  <span class="poetry-seg-en" style="display:none">
+                              <div class="poetry-line-trans" style={revealFirstSegment ? undefined : 'display:none'}>
+                                {segments.map((_, segmentIndex) => {
+                                  const startsRevealed = revealFirstSegment && segmentIndex === 0;
+                                  return <span class="poetry-seg-en" style={startsRevealed ? undefined : 'display:none'}>
                                     {segmentTranslations[segmentIndex] ?? segmentTranslations.join(' ')}
-                                  </span>
-                                ))}
+                                  </span>;
+                                })}
                               </div>
                             </div>
                           );
@@ -138,7 +136,7 @@ const splitSegments = (line) => line.split('，').filter((segment) => segment.tr
                   </div>
 
                   {claudeText ? (
-                    <details class="poetry-claude" open={item.id === firstClaudeId}>
+                    <details class="poetry-claude">
                       <summary class="poetry-claude-toggle">
                         {text.claudeLabel}
                         <span class="poetry-claude-arrow">▾</span>

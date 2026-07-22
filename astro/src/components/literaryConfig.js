@@ -4,10 +4,9 @@
 // LiteraryCollectionPage. Kept in one module so /poetry and /poetry/en (and
 // /ci and /ci/en) cannot drift apart.
 //
-// The English pages carry the CRA `translateHint` string ("tap a phrase to
-// translate") for the tap-to-reveal translations, restored to match the
-// pre-migration interaction (translations stay in the source HTML for
-// crawlers; the reveal is presentation only).
+// English tap-to-reveal translations stay in the source HTML for crawlers.
+// The interaction is demonstrated by an initially revealed phrase instead of
+// a repeated hint beside every poem title.
 
 export const POETRY_TEXT = {
   zh: {
@@ -22,12 +21,12 @@ export const POETRY_TEXT = {
   en: {
     pageTitle: 'Poetry',
     langToggle: '中文 →',
-    abstract: 'Most of these Poems I wrote around age 15, the overarching context is mostly: covid, abroad in the UK, has way too much free time on my hands.',
+    abstract: 'Most of these Poems I wrote around 22/23 during quarantine. A commemoration of my most reflective days. Listed below by accolades.',
     contextLabel: 'Context & Notes',
     claudeLabel: 'What Claude thinks',
     aiToastMsg: 'Prompt copied. Opening AI…',
     footerNote: 'Clicking an AI icon copies a translation & commentary prompt to your clipboard. Paste it after the tab opens.',
-    translateHint: 'tap a phrase to translate',
+    translateHint: '',
   },
 };
 
@@ -51,7 +50,7 @@ export const CI_TEXT = {
     claudeLabel: 'What Claude thinks',
     aiToastMsg: 'Prompt copied. Opening AI…',
     footerNote: 'Clicking an AI icon copies a translation & commentary prompt to your clipboard. Paste it after the tab opens.',
-    translateHint: 'tap a phrase to translate',
+    translateHint: '',
     emptyTitle: 'No Content Yet',
     emptyText: 'Ci pieces are being compiled. Check back soon.',
   },
