@@ -4,10 +4,109 @@
 .poetry-page {
   background: #fdfcf8;
   min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  --flow-near: 0px;
+  --flow-far: 0px;
+  --flow-tilt: 0deg;
+  --flow-opacity: 0.58;
 }
 
 .poetry-page .page-container {
   background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.poetry-flow-field {
+  position: fixed;
+  inset: -12vh -10vw;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+  opacity: var(--flow-opacity);
+  transition: opacity 420ms ease;
+  contain: strict;
+}
+
+.poetry-flow-shape,
+.poetry-flow-thread {
+  position: absolute;
+  display: block;
+  will-change: transform;
+}
+
+.poetry-flow-shape {
+  border: 1px solid rgba(112, 101, 88, 0.075);
+  background: radial-gradient(circle at 38% 42%, rgba(147, 165, 164, 0.055), transparent 67%);
+  box-shadow: inset 0 0 80px rgba(154, 137, 112, 0.025);
+}
+
+.poetry-flow-shape-a {
+  width: min(58vw, 820px);
+  height: min(58vw, 820px);
+  top: -18%;
+  left: -13%;
+  border-radius: 41% 59% 64% 36% / 46% 38% 62% 54%;
+  transform: translate3d(0, var(--flow-near), 0) rotate(calc(-7deg + var(--flow-tilt)));
+  animation: poetry-flow-breathe-a 24s ease-in-out infinite alternate;
+}
+
+.poetry-flow-shape-b {
+  width: min(44vw, 660px);
+  height: min(68vw, 900px);
+  top: 31%;
+  right: -16%;
+  border-radius: 58% 42% 37% 63% / 48% 60% 40% 52%;
+  transform: translate3d(0, var(--flow-far), 0) rotate(calc(11deg - var(--flow-tilt)));
+  animation: poetry-flow-breathe-b 31s ease-in-out infinite alternate;
+}
+
+.poetry-flow-shape-c {
+  width: min(31vw, 460px);
+  height: min(31vw, 460px);
+  bottom: -11%;
+  left: 15%;
+  border-radius: 50%;
+  transform: translate3d(0, var(--flow-far), 0) scale(1);
+  animation: poetry-flow-breathe-c 27s ease-in-out infinite alternate;
+}
+
+.poetry-flow-thread {
+  width: 70vw;
+  height: 24vh;
+  border-top: 1px solid rgba(102, 119, 119, 0.07);
+  border-radius: 50%;
+  transform-origin: center;
+}
+
+.poetry-flow-thread-a {
+  top: 19%;
+  right: -24%;
+  transform: translate3d(0, var(--flow-near), 0) rotate(calc(-13deg + var(--flow-tilt)));
+}
+
+.poetry-flow-thread-b {
+  bottom: 18%;
+  left: -21%;
+  transform: translate3d(0, var(--flow-far), 0) rotate(calc(9deg - var(--flow-tilt)));
+}
+
+@keyframes poetry-flow-breathe-a {
+  from { border-radius: 41% 59% 64% 36% / 46% 38% 62% 54%; }
+  to { border-radius: 53% 47% 44% 56% / 57% 49% 51% 43%; }
+}
+
+@keyframes poetry-flow-breathe-b {
+  from { border-radius: 58% 42% 37% 63% / 48% 60% 40% 52%; }
+  to { border-radius: 43% 57% 58% 42% / 61% 42% 58% 39%; }
+}
+
+@keyframes poetry-flow-breathe-c {
+  from { transform: translate3d(0, var(--flow-far), 0) scale(0.96); }
+  to { transform: translate3d(1.5vw, var(--flow-far), 0) scale(1.04); }
 }
 
 /* Narrower reading column — poetry reads better in an intimate width */
@@ -327,16 +426,6 @@
 }
 
 /* ── Inline translation (English pages only) ── */
-.poetry-translate-hint {
-  display: block;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  color: #c8c2ba;
-  margin-top: 0.3rem;
-  text-transform: uppercase;
-}
-
 .poetry-line-group {
   /* wrapper replacing the plain <p> on English pages */
 }
@@ -495,4 +584,14 @@
   .poetry-context-text {
     font-size: 0.93rem;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poetry-flow-field { opacity: 0.45; }
+  .poetry-flow-shape { animation: none; }
+  .poetry-flow-shape-a { transform: rotate(-7deg); }
+  .poetry-flow-shape-b { transform: rotate(11deg); }
+  .poetry-flow-shape-c { transform: scale(1); }
+  .poetry-flow-thread-a { transform: rotate(-13deg); }
+  .poetry-flow-thread-b { transform: rotate(9deg); }
 }

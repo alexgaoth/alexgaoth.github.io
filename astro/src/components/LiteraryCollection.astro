@@ -44,6 +44,13 @@ const splitSegments = (line) => line.split('，').filter((segment) => segment.tr
 </a>
 
 <div class="poetry-page">
+  <div class="poetry-flow-field" aria-hidden="true">
+    <span class="poetry-flow-shape poetry-flow-shape-a"></span>
+    <span class="poetry-flow-shape poetry-flow-shape-b"></span>
+    <span class="poetry-flow-shape poetry-flow-shape-c"></span>
+    <span class="poetry-flow-thread poetry-flow-thread-a"></span>
+    <span class="poetry-flow-thread poetry-flow-thread-b"></span>
+  </div>
   <div class="page-container">
     <div class="content-wrapper-narrow">
       <div class="poetry-page-header">
@@ -68,17 +75,12 @@ const splitSegments = (line) => line.split('，').filter((segment) => segment.tr
               return (
                 <article class="poetry-card">
                   <div class="poetry-card-header">
-                    <div>
-                      <h2 class="poetry-title">
-                        《{item.title}》
-                        {item.tune ? (
-                          <span style="font-weight: 300; font-size: 0.75em; opacity: 0.45; margin-left: 0.45em; letter-spacing: 0.03em;">{item.tune}</span>
-                        ) : null}
-                      </h2>
-                      {lang === 'en' && text.translateHint ? (
-                        <span class="poetry-translate-hint">{text.translateHint}</span>
+                    <h2 class="poetry-title">
+                      《{item.title}》
+                      {item.tune ? (
+                        <span style="font-weight: 300; font-size: 0.75em; opacity: 0.45; margin-left: 0.45em; letter-spacing: 0.03em;">{item.tune}</span>
                       ) : null}
-                    </div>
+                    </h2>
                     <div class="poetry-card-actions">
                       <button class="poetry-icon-btn" data-copy={buildCopyText(item)} title="Copy poem">
                         <!-- lucide Clipboard -->
@@ -105,7 +107,7 @@ const splitSegments = (line) => line.split('，').filter((segment) => segment.tr
                   <div class="poetry-body">
                     {lang !== 'en'
                       ? item.lines.map((line) => <p class="poetry-line">{line}</p>)
-                        : item.lines.map((line, lineIndex) => {
+                      : item.lines.map((line, lineIndex) => {
                           const segments = splitSegments(line);
                           const segmentTranslations = item.linesEn?.[lineIndex] || [];
                           const revealFirstSegment = item === items[0] && lineIndex === 0;
@@ -195,6 +197,46 @@ const splitSegments = (line) => line.split('，').filter((segment) => segment.tr
     display: block;
   }
 </style>
+
+<script is:inline>
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var field = document.querySelector('.poetry-flow-field');
+    if (!field) return;
+    var lastY = window.scrollY;
+    var lastTime = performance.now();
+    var target = 0;
+    var current = 0;
+    var frame = 0;
+
+    function paint() {
+      current += (target - current) * 0.14;
+      target *= 0.84;
+      field.style.setProperty('--flow-near', current.toFixed(2) + 'px');
+      field.style.setProperty('--flow-far', (-current * 0.58).toFixed(2) + 'px');
+      field.style.setProperty('--flow-tilt', (current * 0.035).toFixed(3) + 'deg');
+      var emphasis = Math.min(Math.abs(current) / 42, 1);
+      field.style.setProperty('--flow-opacity', (0.58 + emphasis * 0.08).toFixed(3));
+      if (Math.abs(target) > 0.05 || Math.abs(current) > 0.05) {
+        frame = requestAnimationFrame(paint);
+      } else {
+        current = 0;
+        frame = 0;
+      }
+    }
+
+    window.addEventListener('scroll', function () {
+      var now = performance.now();
+      var y = window.scrollY;
+      var elapsed = Math.max(8, now - lastTime);
+      var velocity = (y - lastY) / elapsed;
+      target = Math.max(-42, Math.min(42, velocity * 17));
+      lastY = y;
+      lastTime = now;
+      if (!frame) frame = requestAnimationFrame(paint);
+    }, { passive: true });
+  })();
+</script>
 
 <script is:inline>
   // Mirrors the CRA clipboard flow: the copy button copies the poem text and

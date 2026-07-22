@@ -4,9 +4,8 @@
 // LiteraryCollectionPage. Kept in one module so /poetry and /poetry/en (and
 // /ci and /ci/en) cannot drift apart.
 //
-// English tap-to-reveal translations stay in the source HTML for crawlers.
-// The interaction is demonstrated by an initially revealed phrase instead of
-// a repeated hint beside every poem title.
+// English tap-to-reveal translations stay in the source HTML for crawlers;
+// an initially revealed phrase demonstrates the interaction without a label.
 
 export const POETRY_TEXT = {
   zh: {
@@ -26,7 +25,6 @@ export const POETRY_TEXT = {
     claudeLabel: 'What Claude thinks',
     aiToastMsg: 'Prompt copied. Opening AI…',
     footerNote: 'Clicking an AI icon copies a translation & commentary prompt to your clipboard. Paste it after the tab opens.',
-    translateHint: '',
   },
 };
 
@@ -50,7 +48,6 @@ export const CI_TEXT = {
     claudeLabel: 'What Claude thinks',
     aiToastMsg: 'Prompt copied. Opening AI…',
     footerNote: 'Clicking an AI icon copies a translation & commentary prompt to your clipboard. Paste it after the tab opens.',
-    translateHint: '',
     emptyTitle: 'No Content Yet',
     emptyText: 'Ci pieces are being compiled. Check back soon.',
   },
