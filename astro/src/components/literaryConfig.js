@@ -20,7 +20,7 @@ export const POETRY_TEXT = {
   en: {
     pageTitle: 'Poetry',
     langToggle: '中文 →',
-    abstract: 'Most of these Poems I wrote around 22/23 during quarantine. A commemoration of my most reflective days. Listed below by accolades.',
+    abstract: 'Most of these Poems I wrote around 2022/2023 during quarantine. A commemoration of my most reflective days. Ordered below by accolades.',
     contextLabel: 'Context & Notes',
     claudeLabel: 'What Claude thinks',
     aiToastMsg: 'Prompt copied. Opening AI…',
