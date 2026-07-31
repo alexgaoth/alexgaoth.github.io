@@ -20,7 +20,7 @@ export const content = {
         },
         {
           role: "Software & DevOps Intern",
-          company: "Climind, San Francisco",
+          company: "Climind, San Francisco (remote)",
           period: "May 2024 - August 2025",
           description: "Built and deployed a web crawler that collected ESG reporting data and bond information, producing over 100,000 tokens to enhance Climind's language model training. Contributed to the improvement of Climind's LLM by supporting data quality, model performance, and workflow optimization. Applied DevOps practices: Containerization (docker), CI/CD pipeline to ensure efficient and reliable development processes."
         },

@@ -14,9 +14,11 @@ export const profileData = {
   focus: [
     'math-cs @ ucsd',
     'building signalor.app',
+    'software & devops intern @ ibm',
     'helping around sdx @ ucsd',
     'writing thoughts, poetry, and ci',
   ],
+  email: 'alexgaoth@gmail.com',
   facts: [
     { label: 'name', value: 'alex gao' },
     { label: 'handle', value: 'alexgaoth' },

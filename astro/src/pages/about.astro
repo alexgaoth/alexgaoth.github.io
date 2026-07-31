@@ -1,11 +1,39 @@
 ---
-// Static port of the old React page ProfilePage.jsx (/about).
-// Inline JSX style objects converted to the scoped <style> block below;
-// React hover state -> CSS :hover; isMobile state -> 768px media query.
+// /about — the canonical identity page. Deliberately static: no islands, no
+// motion, one narrow column, everything in source HTML. This is the page to
+// link in a bio and the one an AI search surface should be able to cite, so
+// every fact here must be checkable elsewhere on the site.
+//
+// Register: academic, but inside the existing ink/mono system (DESIGN.md) —
+// Space Mono/Grotesk, black on white, structure carries the sobriety rather
+// than a second typeface. Sections are numbered like a paper's.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContentPage from '../components/ContentPage.astro';
 import { APP_ROUTES, SITE, buildAppUrl } from '../config/site.js';
 import { profileData } from '../data/profileData.js';
+import { content } from '../data/content.js';
+import { WRITINGS } from '../data/homeRailData.js';
+
+// Selected work, ordered as a CV would order it — current first. Names must
+// match entries in content.js so /projects stays the single source of truth.
+const SELECTED = [
+  'Signalor',
+  'dont-hallucinate',
+  'Political Speech Classifier',
+  'UCSD Crimes log tracker',
+  '3D Fractal Simulator',
+];
+const byName = new Map(content.projects.content.map((p) => [p.name, p]));
+const selectedWork = SELECTED.map((name) => byName.get(name)).filter(Boolean);
+
+// One outbound link per project, picked as the strongest proof it exists.
+// pypi outranks liveDemo because some liveDemo values are announcement posts
+// (dont-hallucinate points at an X thread) — a registry entry is harder proof.
+const proofLink = (p) => p.pypi || p.liveDemo || p.github || null;
+const proofLabel = (p) =>
+  p.pypi ? 'pypi' : p.liveDemo ? 'live' : p.github ? 'source' : null;
+
+const { experience, education, achievements } = content.resume.content;
 
 const profileStructuredData = [
   {
@@ -21,24 +49,22 @@ const profileStructuredData = [
       // /about is the canonical identity page — everything
       // below mirrors facts visible on this page, nothing more.
       sameAs: [...SITE.socialProfiles, SITE.personalUrl],
+      email: `mailto:${profileData.email}`,
       description: SITE.description,
       jobTitle: 'Student Builder',
       affiliation: [
         { '@type': 'CollegeOrUniversity', name: 'UC San Diego' },
       ],
+      alumniOf: education.map((e) => ({
+        '@type': 'EducationalOrganization',
+        name: e.institution,
+      })),
+      award: achievements.map((a) => `${a.title}, ${a.organization} (${a.year})`),
       knowsAbout: ['software', 'writing', 'mathematical thinking'],
+      knowsLanguage: ['English', 'Chinese', 'Tamil'],
       mainEntityOfPage: buildAppUrl(APP_ROUTES.about),
     },
   },
-];
-
-const DOORS = [
-  { path: APP_ROUTES.resume, label: '/resume', desc: 'the formal record' },
-  { path: APP_ROUTES.projects, label: '/projects', desc: 'things i made' },
-  { path: APP_ROUTES.thoughts, label: '/thoughts', desc: 'history, lacan, ai' },
-  { path: APP_ROUTES.art, label: '/art', desc: 'poetry, ci, regents' },
-  { path: APP_ROUTES.gallery, label: '/gallery', desc: 'photographs' },
-  { path: APP_ROUTES.now, label: '/now', desc: 'this month, live', live: true },
 ];
 ---
 
@@ -49,16 +75,14 @@ const DOORS = [
   path={APP_ROUTES.about}
   structuredData={profileStructuredData}
 >
-  <ContentPage wrapperClassName="content-wrapper">
+  <ContentPage wrapperClassName="content-wrapper-narrow">
     <div class="profile-root">
-      {/* header stack: eyebrow → mega title → sub */}
       <header class="profile-header">
-        <div class="profile-eyebrow-slot">
-          <span class="eyebrow">{'// who'}</span>
-        </div>
+        <span class="eyebrow">{'// who'}</span>
         <h1 class="profile-title">
           ALEX GAO<span class="profile-title-dot">.</span>
         </h1>
+        <p class="profile-onpaper">tianhao gao · alexgaoth</p>
         <div class="profile-intro">
           {profileData.intro.map((paragraph) => (
             <p class="profile-intro-p">{paragraph}</p>
@@ -66,100 +90,151 @@ const DOORS = [
         </div>
       </header>
 
-      {/* two columns on desktop, one on mobile */}
-      <div class="profile-columns">
-        {/* left — focus + doors */}
-        <div class="profile-col">
-          <div class="block">
-            <div class="block-label">
-              <span class="eyebrow">{'// focus'}</span>
-            </div>
-            <div class="rule-top">
-              {profileData.focus.map((item, i) => (
-                <div class="focus-row">
-                  <span class="focus-index">{String(i + 1).padStart(2, '0')}</span>
-                  <span class="focus-text">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+      <section class="block">
+        <div class="block-head">
+          <span class="block-index">01</span>
+          <span class="eyebrow">{'// now'}</span>
+        </div>
+        <ul class="plain-list rule-top">
+          {profileData.focus.map((item) => (
+            <li class="focus-row">{item}</li>
+          ))}
+        </ul>
+        <a href={APP_ROUTES.now} class="block-more">
+          <span class="rail-pulse now-dot" />this month, in detail /now →
+        </a>
+      </section>
 
-          <div class="block">
-            <div class="block-label">
-              <span class="eyebrow">{'// doors'}</span>
+      <section class="block">
+        <div class="block-head">
+          <span class="block-index">02</span>
+          <span class="eyebrow">{'// selected work'}</span>
+        </div>
+        <div class="rule-top">
+          {selectedWork.map((p) => (
+            <article class="entry">
+              <div class="entry-head">
+                <h2 class="entry-title">{p.name}</h2>
+                {proofLink(p) && (
+                  <a
+                    href={proofLink(p)}
+                    class="entry-proof"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >{proofLabel(p)} ↗</a>
+                )}
+              </div>
+              <p class="entry-desc">{p.description}</p>
+              <p class="entry-tech">{p.tech}</p>
+            </article>
+          ))}
+        </div>
+        <a href={APP_ROUTES.projects} class="block-more">everything i've made /projects →</a>
+      </section>
+
+      <section class="block">
+        <div class="block-head">
+          <span class="block-index">03</span>
+          <span class="eyebrow">{'// writing'}</span>
+        </div>
+        <div class="rule-top">
+          {WRITINGS.map((w) => (
+            <a href={`${APP_ROUTES.thoughts}/${w.slug}`} class="row-link">
+              <span class="row-main">{w.title}</span>
+              <span class="row-meta">{w.date} · {w.tag} · {w.read}</span>
+            </a>
+          ))}
+        </div>
+        <a href={APP_ROUTES.thoughts} class="block-more">all essays /thoughts →</a>
+      </section>
+
+      <section class="block">
+        <div class="block-head">
+          <span class="block-index">04</span>
+          <span class="eyebrow">{'// record'}</span>
+        </div>
+        <div class="rule-top">
+          {experience.map((e) => (
+            <div class="record-row">
+              <span class="record-period">{e.period}</span>
+              <span class="record-main">
+                <span class="record-role">{e.role}</span>
+                <span class="record-org">{e.company}</span>
+              </span>
             </div>
-            <div class="doors-grid">
-              {DOORS.map((door) => (
-                <a href={door.path} class="door-card">
-                  <div class="door-head">
-                    <span class="door-label">
-                      {door.label}
-                      {door.live && <span class="rail-pulse door-live-dot" />}
-                    </span>
-                    <span class="door-arrow">→</span>
-                  </div>
-                  <span class="door-desc">{door.desc}</span>
-                </a>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* right — elsewhere + record */}
-        <div class="profile-col">
-          <div class="block">
-            <div class="block-label">
-              <span class="eyebrow">{'// elsewhere'}</span>
+        <div class="sub-label"><span class="eyebrow">{'// education'}</span></div>
+        <div class="rule-top">
+          {education.map((e) => (
+            <div class="record-row">
+              <span class="record-period">{e.year}</span>
+              <span class="record-main">
+                <span class="record-role">{e.institution}</span>
+                <span class="record-org">{e.degree}</span>
+              </span>
             </div>
-            <div class="rule-top">
-              {profileData.links.map((link) => (
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="elsewhere-row"
-                >
-                  <span class="elsewhere-label">{link.label}</span>
-                  <span class="elsewhere-handle">{link.handle}</span>
-                  <span class="elsewhere-arrow">→</span>
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <div class="block">
-            <div class="block-label">
-              <span class="eyebrow">{'// on record'}</span>
-            </div>
-            <div class="rule-top">
-              {profileData.facts.map((fact) => (
-                <div class="fact-row">
-                  <span class="fact-label">{fact.label}</span>
-                  <span class="fact-value">{fact.value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div class="block">
-            <div class="block-label">
-              <span class="eyebrow">{'// also answers to'}</span>
-            </div>
-            <p class="aliases">
-              {profileData.aliases.map((alias, i) => (
-                <span class="alias">
-                  {alias}
-                  {i < profileData.aliases.length - 1 && (
-                    <span class="alias-sep"> &nbsp;·&nbsp; </span>
-                  )}
-                </span>
-              ))}
-            </p>
-          </div>
+          ))}
         </div>
-      </div>
 
-      {/* footer rail */}
+        <div class="sub-label"><span class="eyebrow">{'// awards'}</span></div>
+        <div class="rule-top">
+          {achievements.map((a) => (
+            <div class="record-row">
+              <span class="record-period">{a.year}</span>
+              <span class="record-main">
+                <span class="record-role">{a.title}</span>
+                <span class="record-org">{a.organization}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+        <a href={APP_ROUTES.resume} class="block-more">the full record /resume →</a>
+      </section>
+
+      <section class="block">
+        <div class="block-head">
+          <span class="block-index">05</span>
+          <span class="eyebrow">{'// elsewhere'}</span>
+        </div>
+        <div class="rule-top">
+          <a href={`mailto:${profileData.email}`} class="row-link">
+            <span class="row-main">email</span>
+            <span class="row-meta">{profileData.email}</span>
+          </a>
+          {profileData.links.map((link) => (
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="row-link"
+            >
+              <span class="row-main">{link.label}</span>
+              <span class="row-meta">{link.handle}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* identity block — kept verbatim for findability, see profileData.js */}
+      <section class="block">
+        <div class="block-head">
+          <span class="block-index">06</span>
+          <span class="eyebrow">{'// on record'}</span>
+        </div>
+        <div class="rule-top">
+          {profileData.facts.map((fact) => (
+            <div class="fact-row">
+              <span class="fact-label">{fact.label}</span>
+              <span class="fact-value">{fact.value}</span>
+            </div>
+          ))}
+        </div>
+        <div class="sub-label"><span class="eyebrow">{'// also answers to'}</span></div>
+        <p class="aliases">{profileData.aliases.join('  ·  ')}</p>
+      </section>
+
       <footer class="profile-footer">
         <span class="mirrors">
           {profileData.mirrors.map((m, i) => (
@@ -179,23 +254,19 @@ const DOORS = [
   .profile-root {
     font-family: 'Space Mono', monospace;
     color: #000;
+    padding-bottom: 3rem;
   }
 
   .eyebrow {
-    font-family: 'Space Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: #888;
-    font-weight: 400;
   }
 
   /* ── header ── */
   .profile-header {
-    margin-bottom: clamp(1.6rem, 3vw, 2.6rem);
-  }
-  .profile-eyebrow-slot {
-    margin-bottom: 0.6rem;
+    margin-bottom: clamp(2rem, 5vw, 3.2rem);
   }
   .profile-title {
     font-family: 'Space Grotesk', sans-serif;
@@ -203,237 +274,255 @@ const DOORS = [
     font-size: clamp(2rem, 5.2vw, 3.8rem);
     letter-spacing: -0.035em;
     line-height: 0.95;
-    margin: 0 0 0.9rem;
+    margin: 0.6rem 0 0.5rem;
   }
   .profile-title-dot {
     color: #ccc;
   }
+  .profile-onpaper {
+    margin: 0 0 1.2rem;
+    font-size: 0.72rem;
+    color: #999;
+    letter-spacing: 0.04em;
+  }
   .profile-intro {
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
+    gap: 0.7rem;
     max-width: 62ch;
   }
+  /* the one place on the site that gets paper-like leading — it is the only
+     block a reader is expected to read straight through */
   .profile-intro-p {
     margin: 0;
-    font-size: clamp(0.72rem, 0.9vw, 0.85rem);
-    line-height: 1.7;
-    color: #555;
-    letter-spacing: 0.02em;
+    font-size: 0.82rem;
+    line-height: 1.9;
+    color: #333;
+    letter-spacing: 0.01em;
   }
 
-  /* ── layout ── */
-  .profile-columns {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-    gap: clamp(1.6rem, 3vw, 2.6rem);
-    align-items: start;
-  }
-  .profile-col {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.4rem, 2.4vw, 2rem);
-  }
+  /* ── sections ── */
   .block {
     display: flex;
     flex-direction: column;
+    margin-bottom: clamp(1.8rem, 4vw, 2.8rem);
   }
-  .block-label {
-    margin-bottom: 7px;
+  .block-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .block-index {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: #bbb;
+  }
+  .sub-label {
+    margin: 1.2rem 0 8px;
   }
   .rule-top {
     border-top: 1px solid #000;
   }
-
-  /* ── focus ── */
-  .focus-row {
-    display: flex;
-    gap: 10px;
-    align-items: baseline;
-    padding: 7px 6px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  }
-  .focus-index {
-    color: #bbb;
-    font-size: 10px;
-    min-width: 16px;
-  }
-  .focus-text {
-    font-size: 12px;
-    line-height: 1.4;
-  }
-
-  /* ── doors ── */
-  .doors-grid {
-    display: grid;
-    grid-template-columns: 1fr; /* full-width tap bars on mobile */
-    gap: 8px;
-  }
-  @media (min-width: 768px) {
-    .doors-grid {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-  }
-  .door-card {
-    border: 1px solid #000;
-    padding: 12px 14px;
-    background: transparent;
+  .block-more {
+    align-self: flex-start;
+    margin-top: 10px;
+    font-size: 11px;
     color: #000;
-    transition: background 0.15s, color 0.15s;
     text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-family: 'Space Mono', monospace;
+    opacity: 0.85;
   }
-  .door-card:hover {
-    background: #000;
-    color: #fff;
+  .block-more:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
-  .door-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
-  }
-  .door-label {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    font-size: 15px;
-    letter-spacing: -0.015em;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-  }
-  .door-live-dot {
+  .now-dot {
     display: inline-block;
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     background: #0a7;
     border-radius: 50%;
-  }
-  .door-card:hover .door-live-dot {
-    background: #0f6;
-  }
-  .door-arrow {
-    font-size: 12px;
-  }
-  .door-desc {
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    color: #888;
-  }
-  .door-card:hover .door-desc {
-    color: rgba(255, 255, 255, 0.6);
+    margin-right: 7px;
   }
 
-  /* ── elsewhere ── */
-  .elsewhere-row {
-    display: grid;
-    grid-template-columns: 96px 1fr auto;
-    gap: 10px;
-    padding: 11px 6px; /* mobile */
-    border-bottom: 1px solid #eee;
-    align-items: baseline;
-    text-decoration: none;
-    background: transparent;
-    color: #000;
-    transition: background 0.12s, color 0.12s;
-    font-family: 'Space Mono', monospace;
-  }
-  @media (min-width: 768px) {
-    .elsewhere-row {
-      padding: 7px 6px;
-    }
-  }
-  .elsewhere-row:hover {
-    background: #000;
-    color: #fff;
-  }
-  .elsewhere-label {
-    font-size: 9.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #999;
-    white-space: nowrap;
-  }
-  .elsewhere-row:hover .elsewhere-label {
-    color: rgba(255, 255, 255, 0.6);
-  }
-  .elsewhere-handle {
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .elsewhere-arrow {
-    font-size: 12px;
-  }
-
-  /* ── on record ── */
-  .fact-row {
-    display: grid;
-    grid-template-columns: 96px 1fr;
-    gap: 10px;
-    padding: 6px 6px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-    align-items: baseline;
-    font-family: 'Space Mono', monospace;
-  }
-  .fact-label {
-    font-size: 9.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #999;
-  }
-  .fact-value {
-    font-size: 11.5px;
-    line-height: 1.4;
-  }
-
-  /* ── aliases ── */
-  .aliases {
+  /* ── now list ── */
+  .plain-list {
+    list-style: none;
     margin: 0;
-    font-size: 11.5px;
-    line-height: 1.7;
-    letter-spacing: 0.02em;
-    text-transform: lowercase;
+    padding: 0;
   }
-  .alias {
-    white-space: nowrap;
-  }
-  .alias-sep {
-    color: #bbb;
+  .focus-row {
+    padding: 8px 6px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.78rem;
   }
 
-  /* ── footer rail ── */
-  .profile-footer {
+  /* ── work entries ── */
+  .entry {
+    padding: 12px 6px;
+    border-bottom: 1px solid #eee;
+  }
+  .entry-head {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
     align-items: baseline;
     gap: 12px;
-    margin-top: clamp(2rem, 4vw, 3.2rem);
-    padding-top: 0.45rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
   }
-  .mirrors {
-    font-size: 10px;
-    letter-spacing: 0.22em;
+  .entry-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.92rem;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .entry-proof {
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
+    border: 1px solid currentColor;
+    padding: 2px 5px;
+    white-space: nowrap;
+    color: #000;
+    text-decoration: none;
+  }
+  .entry-proof:hover {
+    background: #000;
+    color: #fff;
+  }
+  .entry-desc {
+    margin: 6px 0 4px;
+    font-size: 0.74rem;
+    line-height: 1.75;
+    color: #555;
+    max-width: 68ch;
+  }
+  .entry-tech {
+    margin: 0;
+    font-size: 0.66rem;
+    color: #999;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── generic rows ── */
+  .row-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 6px;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: #000;
+    transition: background 0.12s, color 0.12s;
+  }
+  .row-link:hover {
+    background: #000;
+    color: #fff;
+  }
+  .row-main {
+    font-size: 0.78rem;
+  }
+  .row-meta {
+    font-size: 0.66rem;
+    color: #888;
+    text-align: right;
+  }
+  .row-link:hover .row-meta {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* ── record rows ── */
+  .record-row {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr;
+    gap: 12px;
+    padding: 10px 6px;
+    border-bottom: 1px solid #eee;
+  }
+  .record-period {
+    font-size: 0.66rem;
+    color: #999;
+    padding-top: 2px;
+  }
+  .record-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .record-role {
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .record-org {
+    font-size: 0.68rem;
+    color: #777;
+    line-height: 1.5;
+  }
+
+  /* ── facts / aliases ── */
+  .fact-row {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 12px;
+    padding: 8px 6px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.72rem;
+  }
+  .fact-label {
+    color: #999;
+  }
+  .aliases {
+    margin: 0;
+    font-size: 0.72rem;
+    color: #555;
+    line-height: 1.9;
+  }
+
+  /* ── footer ── */
+  .profile-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 10.5px;
     color: #888;
   }
-  .mirror {
-    white-space: nowrap;
-  }
-  .mirror-link {
-    color: inherit;
-    text-decoration: none;
-  }
+  .mirror-link,
   .home-link {
-    font-size: 11px;
     color: #000;
-    letter-spacing: 0.04em;
     text-decoration: none;
-    opacity: 0.85;
-    white-space: nowrap;
+  }
+  .mirror-link:hover,
+  .home-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ── mobile: simplify layout, never content (DESIGN.md) ── */
+  @media (max-width: 767px) {
+    .record-row,
+    .fact-row {
+      grid-template-columns: 1fr;
+      gap: 3px;
+    }
+    .row-link {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      padding: 11px 6px;
+    }
+    .row-meta {
+      text-align: left;
+    }
+    .focus-row,
+    .entry {
+      padding-top: 11px;
+      padding-bottom: 11px;
+    }
   }
 </style>
