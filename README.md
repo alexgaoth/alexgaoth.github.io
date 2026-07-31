@@ -1,5 +1,53 @@
 # alexgaoth.github.io
 
+## TODO — planned rebuild
+
+Two structural changes, not tweaks. The current format is the thing being replaced.
+
+**1. `/about` → the static identity page.** Turn it into a plain, static,
+"ai-researcher / academia" page: no motion, no islands, fast, readable. This
+becomes the canonical answer to "who is this person" — the page to link in a bio
+and the one AI search surfaces should cite. Today that answer only exists on the
+intro doorway (`intro.alexgaoth.com`), which canonicalizes away.
+
+*Decided:* academic register **within** the existing ink/mono system — Space
+Mono/Grotesk, black on white, one narrow column, zero motion, structure carries
+the sobriety. No DESIGN.md exception needed. Fold the intro site's tldr
+(Math-CS @ UCSD · building Signalor · interning at IBM/Bloomberg · "talk to me
+abt…") into this page; the intro site then has no unique content left.
+
+**2. `/` → one 3D object, driven by scroll.** The dithered-wash transition is a
+lame translation of the ink-on-paper language into motion — replace it. The home
+rails (BUILT / WRITING / EXPERIENCE) become faces/perspectives of a single
+three.js object that the scroll position rotates through. At the end of the
+scroll, it resolves into the four directory squares and the subpage strips.
+
+*Decided:* a four-faced solid on an **orthographic** camera — white faces, 1px
+black edges, no shading, no shadows, no PBR. It reads as a rotating technical
+drawing, not a webgl demo. A quarter-turn per section; at the end the solid
+**unfolds into its own net**, and the net's four panels land as the directory
+cards. The form and the sitemap are the same shape.
+
+*Decided:* **desktop only.** Mobile gets no canvas and no three.js payload — the
+static panels as one continuous ledger, per DESIGN.md. The 3D is a desktop reward.
+
+Constraints that survive the rebuild:
+- Static HTML stays complete in source — the 3D is chrome over content, never the
+  content itself (see the `/regents` pattern: static shell + `client:only` island).
+  Text stays in the DOM and the camera moves behind it; never text-as-texture.
+- Keep the existing choreography contract (`index.astro`): every visual state is a
+  pure function of `scrollY`, so scrolling back runs it in reverse. Swapping the
+  renderer must not swap that.
+- Procedural geometry only — no GLTF/meshopt (that's the `/regents` weight profile,
+  and `/` is the most-crawled route). Hydrate on idle, not load.
+- No URL changes (ADDITION-RULES golden rule 1).
+- `prefers-reduced-motion` keeps a working, static page.
+
+Open: the 4th face. Three rails occupy three faces; the fourth is the directory
+face that unfolds into the 2×2. Confirm before building the geometry.
+
+---
+
 Personal website repo for Alex Gao (`alexgaoth`). Two deployed surfaces:
 
 | Surface | Path | Stack | Host | Domain |
