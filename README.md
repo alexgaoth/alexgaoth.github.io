@@ -16,35 +16,39 @@ the sobriety. No DESIGN.md exception needed. Fold the intro site's tldr
 (Math-CS @ UCSD · building Signalor · interning at IBM/Bloomberg · "talk to me
 abt…") into this page; the intro site then has no unique content left.
 
-**2. `/` → one 3D object, driven by scroll.** The dithered-wash transition is a
-lame translation of the ink-on-paper language into motion — replace it. The home
-rails (BUILT / WRITING / EXPERIENCE) become faces/perspectives of a single
-three.js object that the scroll position rotates through. At the end of the
-scroll, it resolves into the four directory squares and the subpage strips.
+**2. `/` → a scroll-driven WebGL layer. PARKED.**
 
-*Decided:* a four-faced solid on an **orthographic** camera — white faces, 1px
-black edges, no shading, no shadows, no PBR. It reads as a rotating technical
-drawing, not a webgl demo. A quarter-turn per section; at the end the solid
-**unfolds into its own net**, and the net's four panels land as the directory
-cards. The form and the sitemap are the same shape.
+Four concepts were built and none was right: a folding sheet, an ink star
+chart, a transit map and a handscroll. The verdict on all four was the same —
+not bold enough. Parked pending one concept chosen deliberately rather than
+picked from a shortlist.
 
-*Decided:* **desktop only.** Mobile gets no canvas and no three.js payload — the
-static panels as one continuous ledger, per DESIGN.md. The 3D is a desktop reward.
+All of it lives on the **`home-3d`** branch; `master` carries no 3D code at
+all. Nothing is lost and nothing is in the way.
 
-Constraints that survive the rebuild:
-- Static HTML stays complete in source — the 3D is chrome over content, never the
-  content itself (see the `/regents` pattern: static shell + `client:only` island).
-  Text stays in the DOM and the camera moves behind it; never text-as-texture.
-- Keep the existing choreography contract (`index.astro`): every visual state is a
-  pure function of `scrollY`, so scrolling back runs it in reverse. Swapping the
-  renderer must not swap that.
-- Procedural geometry only — no GLTF/meshopt (that's the `/regents` weight profile,
-  and `/` is the most-crawled route). Hydrate on idle, not load.
+What is worth keeping when this restarts — it is concept-independent, and a new
+style is one file:
+
+- `astro/src/lib/homeSceneData.js` — the spine: three acts, then four finale
+  cards, derived from the data the site already publishes. Add a project and
+  the animation gains it.
+- `astro/src/lib/homeScroll.js` — the scroll contract. Every visual state is a
+  pure function of `scrollY`, so any style runs exactly in reverse when you
+  scroll back. Also reports where the four cards physically are, measured from
+  the DOM.
+- `astro/src/islands/scenes/registry.js` — styles declare id, camera, enabled.
+- `scripts/check-scenes.mjs` — fails the build if the spine breaks or a scene
+  module has a named export (which silently unmounts the canvas).
+- The isolation that must not regress: a 4KB eager chunk on `/`, three.js
+  behind a dynamic import, zero payload on mobile and under
+  `prefers-reduced-motion`, and a complete static page without any of it.
+
+Constraints that survive whatever comes next:
+- Static HTML stays complete in source — chrome over content, never the content
+  itself. Text stays in the DOM; never text-as-texture.
+- Desktop only. Mobile gets the ledger.
 - No URL changes (ADDITION-RULES golden rule 1).
-- `prefers-reduced-motion` keeps a working, static page.
-
-Open: the 4th face. Three rails occupy three faces; the fourth is the directory
-face that unfolds into the 2×2. Confirm before building the geometry.
+- Procedural geometry only on `/` — it is the most-crawled route.
 
 ---
 
