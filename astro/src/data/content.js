@@ -102,7 +102,7 @@ export const content = {
           "/resources/julia_set1.png",
           "/resources/julia_set2.png"
         ],
-        liveDemo: "https://alexgaoth.com/JuliaSetFractal/",
+        liveDemo: "https://intro.alexgaoth.com/JuliaSetFractal/",
         github: "https://github.com/alexgaoth/JuliaSetFractal"
       },
       {
@@ -149,6 +149,27 @@ export const content = {
         tech: "Godot, GDscript",
         description: "A self drawn, self coded 2D platformer",
         image:"/resources/godot_game.png",
+      },
+      {
+        name: "claude-iterate",
+        tech: "Claude Code, Markdown agents",
+        description: "A Claude Code plugin that runs a builder/critic improvement loop: fresh critic agents review each round against a frozen goal until the work passes.",
+        image:"/resources/default.jpg",
+        github: "https://github.com/alexgaoth/claude-iterate"
+      },
+      {
+        name: "routine-architect",
+        tech: "Claude Code, Python, JSON",
+        description: "A Claude Code skill that deploys a fleet of scheduled cloud agents from a git-committed manifest, with a daily watchdog that audits the fleet and reports in.",
+        image:"/resources/default.jpg",
+        github: "https://github.com/alexgaoth/routine-architect"
+      },
+      {
+        name: "Outcast Virus",
+        tech: "Python, ORB-SLAM3, YOLO11, React, Three.js, Jetson",
+        description: "Drone OS for GPS-denied environments: visual SLAM navigation, onboard perception, and RL swarm coordination. 1st place, Logistics & Cybersecurity track at the DS3 x SIC x Bow Capital hackathon.",
+        image:"/resources/default.jpg",
+        liveDemo: "https://devpost.com/software/outcast-virus"
       },
       {
         name: "This very website",

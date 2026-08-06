@@ -79,6 +79,8 @@ Put the `.glb` (and optional looping `.mp3`) in `astro/public/regents/`, then ad
 - `astro/src/data/homeRailData.js` → `EXPERIENCE` / `EDUCATION` / `TROPHIES` (the homepage panel — hand-tightened wording, edit separately).
 - `astro/src/data/profileData.js` → facts/focus on /about.
 - Replace `resume.pdf` in **both** `astro/public/` (served at alexgaoth.com/resume.pdf) and the repo root (intro site).
+- Also regenerate `astro/public/resources/resume.jpg` — the homepage directory card shows it, so it silently goes stale:
+  `pdftoppm -f 1 -l 1 -jpeg -scale-to-x 1600 -scale-to-y -1 resume.pdf out`, then crop the top to 1600×1201.
 - If identity-level facts change (job title, school), also update the Person JSON-LD in
   `astro/src/layouts/BaseLayout.astro` and `astro/src/pages/about.astro` — schema must match visible text.
 
