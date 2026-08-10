@@ -240,6 +240,12 @@ export const content = {
         author: "george orwell (1984)",
         description: "so for a future one want, one need to strangle the present power",
         relatedArticles: null
+      },
+      {
+        quote: "my dogmatic slumber was interrupted",
+        author: "immanuel kant",
+        description: "the momemnt where the Aufhenben happens and synthesis occur",
+        relatedArticles: null
       }
     ],
     previewImage: "/resources/zaporo_cossak.jpg"
