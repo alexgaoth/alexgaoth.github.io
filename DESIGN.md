@@ -2,7 +2,7 @@
 
 Working reference for building or rebuilding pages so they feel like one site.
 The canonical expression of this language is the home page panel rail
-(`main-section/src/components/main/HomePreviewRail.jsx`). When in doubt, copy it.
+(`astro/src/pages/index.astro`, BUILT → WRITING → EXPERIENCE). When in doubt, copy it.
 
 ## The site in one line
 
@@ -118,9 +118,9 @@ rows, keep every fact.**
 - **One column.** The `1.35fr 1fr` split collapses and the secondary/meta column
   is dropped entirely if it crowds (BUILT drops the hero card, EXPERIENCE drops
   trophies/domains/tongues). Cut, don't cram.
-- **Fewer rows, not smaller type.** Cap logs at ~5 entries on mobile (BUILT shows
-  `SHIPS.slice(0, 5)`); the footer rail ("see them all · /projects →") carries
-  the rest.
+- **Fewer rows, not smaller type.** Cap logs at ~5 entries on mobile (BUILT hides
+  rows past 5 via `.ship-mobile-hidden`); the footer rail ("see them all ·
+  /projects →") carries the rest.
 - **Tap, not hover.** Hover-invert has no mobile equivalent, so anything tappable
   must read as tappable at rest: full-width, bordered or ruled, trailing `→`.
   Information that only appears on hover (the BUILT hero image swap) is
@@ -155,5 +155,6 @@ rows, keep every fact.**
   (#4e–#6a range on the #fdfcf8 paper); the "this is an aside" signal comes from
   structure — mono eyebrow labels, a left hairline rule, smaller size — not from
   grey italics.
-- SEO: every page renders `src/components/SEO.jsx` (helmet meta + JSON-LD);
-  aliases and searchable queries live in `src/data/profileData.js`. Keep them.
+- SEO: `astro/src/layouts/BaseLayout.astro` owns the head (meta, canonical, OG,
+  JSON-LD via `structuredData`); aliases and searchable queries live in
+  `astro/src/data/profileData.js`. Keep them.

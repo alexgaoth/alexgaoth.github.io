@@ -4,7 +4,7 @@
 
 Two structural changes, not tweaks. The current format is the thing being replaced.
 
-**1. `/about` → the static identity page.** Turn it into a plain, static,
+**1. `/about` → the static identity page. SHIPPED.** Turned into a plain, static,
 "ai-researcher / academia" page: no motion, no islands, fast, readable. This
 becomes the canonical answer to "who is this person" — the page to link in a bio
 and the one AI search surfaces should cite. Today that answer only exists on the
@@ -16,26 +16,31 @@ the sobriety. No DESIGN.md exception needed. Fold the intro site's tldr
 (Math-CS @ UCSD · building Signalor · interning at IBM/Bloomberg · "talk to me
 abt…") into this page; the intro site then has no unique content left.
 
-**2. `/` → a scroll-driven WebGL layer. PARKED.**
+**2. `/` → a scroll-driven WebGL layer. PARKED, fifth attempt.**
 
-Four concepts were built and none was right: a folding sheet, an ink star
-chart, a transit map and a handscroll. The verdict on all four was the same —
-not bold enough. Parked pending one concept chosen deliberately rather than
-picked from a shortlist.
+Five concepts built, none kept. Four (folding sheet, ink star chart, transit
+map, handscroll) were judged not bold enough and sit on the **`home-3d`**
+branch. The fifth — "one stroke 一笔", a single calligraphic brushstroke
+dragging down the page, coiling once per act and fraying into four tails that
+land on the directory cards — is retired to the **`home-one-stroke`** branch.
+What the animation should be is an open question again.
 
-All of it lives on the **`home-3d`** branch; `master` carries no 3D code at
-all. Nothing is lost and nothing is in the way.
+`master` carries no 3D code and no canvas. The homepage is the static ledger
+plus the DOM choreography in `index.astro` (fixed title rise, directory
+reveal, progress track, scroll hint). Also retired with the stroke: the two
+fixed overlay phrases that used to play over the return stage ("this site is
+an index…" / "if you found things here interesting…").
 
-What is worth keeping when this restarts — it is concept-independent, and a new
+The concept-independent machinery, on `home-one-stroke` unless noted — a new
 style is one file:
 
+- `astro/src/lib/homeScroll.js` — **on master**, since the DOM choreography
+  uses it. The scroll contract: every visual state is a pure function of
+  `scrollY`, so any style runs exactly in reverse when you scroll back. Also
+  reports where the four cards physically are, measured from the DOM.
 - `astro/src/lib/homeSceneData.js` — the spine: three acts, then four finale
   cards, derived from the data the site already publishes. Add a project and
   the animation gains it.
-- `astro/src/lib/homeScroll.js` — the scroll contract. Every visual state is a
-  pure function of `scrollY`, so any style runs exactly in reverse when you
-  scroll back. Also reports where the four cards physically are, measured from
-  the DOM.
 - `astro/src/islands/scenes/registry.js` — styles declare id, camera, enabled.
 - `scripts/check-scenes.mjs` — fails the build if the spine breaks or a scene
   module has a named export (which silently unmounts the canvas).

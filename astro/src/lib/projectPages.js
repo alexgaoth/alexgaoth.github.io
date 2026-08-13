@@ -4,10 +4,8 @@
 import { content } from '../data/content.js';
 import { SHIPS } from '../data/homeRailData.js';
 
-// Must match projectSlug() in ProjectsPage.jsx — /projects#project-<slug>
-// anchors and these page URLs share slugs.
-export const projectSlug = (name) =>
-  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+export { projectSlug } from './slug.js';
+import { projectSlug } from './slug.js';
 
 // The projects worth a standalone page (plan candidates).
 const FEATURED_SLUGS = [

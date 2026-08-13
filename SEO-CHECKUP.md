@@ -39,8 +39,9 @@ plus the recurring checkup script. Delete the one-time sections as they complete
   at their `https://alexgaoth.com/projects/<slug>` pages (entity consolidation).
 - [ ] **robots.txt policy note** — add a comment stating AI crawlers are deliberately allowed,
   so the stance reads as policy, not accident.
-- [ ] **Dead liveDemo links** — `alexgaoth.com/JuliaSetFractal/` and `/UCSD_Crimes/` in
-  `astro/src/data/content.js` likely 404 (old GH-Pages project sites). Find their real homes or drop the links.
+- [ ] **Dead liveDemo link** — `alexgaoth.com/UCSD_Crimes/` in `astro/src/data/content.js` likely
+  404 (old GH-Pages project site). Find its real home or drop the link. (JuliaSetFractal fixed
+  2026-08 → `intro.alexgaoth.com/JuliaSetFractal/`.)
 
 ## 4. Recurring — monthly (~1h)
 

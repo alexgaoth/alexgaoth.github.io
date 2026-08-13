@@ -17,7 +17,8 @@
       "Bash(npx skills *)",
       "Bash(npx eslint *)",
       "WebFetch(domain:api.anthropic.com)",
-      "Bash(unzip *)"
+      "Bash(unzip *)",
+      "Bash(git fetch *)"
     ]
   }
 }

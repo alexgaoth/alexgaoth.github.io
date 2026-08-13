@@ -29,9 +29,14 @@ const shipHref = (ship) =>
         ? `${APP_ROUTES.projects}#project-${ship.anchor}`
         : APP_ROUTES.projects;
 
+// SHIPS is the full ranked list (newest first); the panel shows the top X
+// that fit the build log. Mobile trims further via .ship-mobile-hidden.
+const HOME_SHIP_COUNT = 8;
+const homeShips = SHIPS.slice(0, HOME_SHIP_COUNT);
+
 // Hero shows the featured ship by default; hovering a build-log row swaps it
 // (client enhancement only — the static default must stay complete).
-const featured = SHIPS[0];
+const featured = homeShips[0];
 ---
 
 <BaseLayout
@@ -90,7 +95,7 @@ const featured = SHIPS[0];
                     >
                         <span class="built-hero-media">
                             {
-                                SHIPS.map((ship, i) => (
+                                homeShips.map((ship, i) => (
                                     <img
                                         src={ship.img}
                                         alt={ship.name}
@@ -159,7 +164,7 @@ const featured = SHIPS[0];
                         </div>
                         <ul class="ship-list" id="built-log-list">
                             {
-                                SHIPS.map((ship, i) => (
+                                homeShips.map((ship, i) => (
                                     <li
                                         class:list={[
                                             {
@@ -331,8 +336,8 @@ const featured = SHIPS[0];
                 </footer>
             </section>
 
-            <!-- Return stage: scroll distance for the overlay phrases; the
-           directory scrolls into view through it (pre-migration return). -->
+            <!-- Return stage: empty scroll distance the directory scrolls into
+           view through (pre-migration return). -->
             <div class="return-spacer"></div>
 
             <!-- ── Directory: second title + cards, entrance driven by the return -->
@@ -425,28 +430,6 @@ const featured = SHIPS[0];
         </div>
 
         <!-- Fixed parallax chrome (hidden without JS / reduced motion) -->
-        <div class="parallax-overlay" aria-hidden="true">
-            <div class="overlay-phrase">
-                <span class="overlay-label">// 01</span>
-                <p>
-                    this site is an index of things i find worth sharing. look
-                    around — there might just be something that interests you.
-                </p>
-            </div>
-            <div class="overlay-phrase">
-                <span class="overlay-label">// 02</span>
-                <p>
-                    if you found things here interesting, i will be just as
-                    interesting in person.<br />
-                    reach me <a
-                        href="https://intro.alexgaoth.com/#contact"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        tabindex="-1">in all these different ways</a
-                    >
-                </p>
-            </div>
-        </div>
         <div class="progress-track" aria-hidden="true">
             <div class="progress-fill"></div>
         </div>
@@ -499,51 +482,6 @@ const featured = SHIPS[0];
         will-change: transform, opacity;
     }
     /* ── fixed parallax chrome (all shown/driven by the FX script only) ── */
-    .parallax-overlay {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: 8;
-        display: none;
-    }
-    .overlay-phrase {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: min(640px, calc(100vw - 4rem));
-        opacity: 0;
-        border-left: 1px solid rgba(0, 0, 0, 0.18);
-        padding-left: 1.25rem;
-        font-family: "Space Mono", monospace;
-    }
-    .overlay-label {
-        display: block;
-        font-size: 0.74rem;
-        letter-spacing: 0.1em;
-        color: rgba(0, 0, 0, 0.35);
-        margin-bottom: 0.6rem;
-    }
-    .overlay-phrase p {
-        font-size: 0.82rem;
-        font-weight: 400;
-        letter-spacing: 0.01em;
-        line-height: 1.85;
-        margin: 0;
-        color: #000;
-    }
-    @media (max-width: 767px) {
-        .overlay-phrase p {
-            font-size: 0.72rem;
-            line-height: 1.8;
-        }
-    }
-    .overlay-phrase a {
-        color: inherit;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-        pointer-events: auto;
-    }
     .progress-track {
         position: fixed;
         left: clamp(1.2rem, 3vw, 2.8rem);
@@ -1000,164 +938,25 @@ const featured = SHIPS[0];
     }
 </script>
 
+
 <script>
-    // Scroll-driven rail FX: WRITING and EXPERIENCE are hidden under a white
-    // cover and get "printed" by a full-height Bayer-dithered wash sweeping
-    // left→right. BUILT enters cleanly, then shares the outgoing wash used by
-    // the other panels. Titles split-flap while their incoming sweep runs.
-    // Everything is a pure function of scroll position — scrolling back runs it
-    // in reverse. Enhancement only: static HTML stays complete, and we skip
-    // entirely under prefers-reduced-motion.
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        const BAYER = [
-            [0, 8, 2, 10],
-            [12, 4, 14, 6],
-            [3, 11, 1, 9],
-            [15, 7, 13, 5],
-        ];
-        // flap alphabet skips narrow glyphs (I, J, L) to keep width jitter low
-        const FLAPS = "ABCDEFGHKMNPRSTUVWXYZ#%&=+*";
-        // one breakpoint, per DESIGN.md; coarser cells keep mobile repaints cheap
-        const MOBILE = innerWidth < 768;
-        const CELL = MOBILE ? 4 : 3; // dither cell size, px
-        // bar geometry maxima — scaled to panel width in measure() so the bar
-        // never outsizes a narrow screen
-        const CORE = 120; // solid core of the wash bar, px
-        const FADE = 80; // dithered leading edge, px
-        const TAIL = 240; // dithered dissolve trailing the core, px
+    // DOM choreography for the intro and return stages: the fixed title rise,
+    // the directory reveal, the progress track and the scroll hint. The rail
+    // panels themselves get no transition — the visual layer that drew them is
+    // parked (see README), and this script paints nothing.
+    //
+    // Scroll state comes from lib/homeScroll.js, so a visual layer added later
+    // reads the same numbers. Enhancement only: the static HTML is complete, and
+    // on mobile or under prefers-reduced-motion none of this runs at all —
+    // the page then reads as one continuous ledger, per DESIGN.md.
+    import {
+        motionEnabled,
+        subscribe,
+        INTRO_VH,
+        RETURN_VH,
+    } from "../lib/homeScroll.js";
 
-        const panels = [...document.querySelectorAll(".rail-panel")].map(
-            (panel) => {
-                const canvas = document.createElement("canvas");
-                // extends up over the inter-section gap so the wipe bar is one
-                // continuous stroke across the seam between old and new section
-                canvas.style.cssText =
-                    "position:absolute;left:0;right:0;bottom:0;" +
-                    "top:calc(var(--rail-gap) * -1);" +
-                    "height:calc(100% + var(--rail-gap));width:100%;" +
-                    "pointer-events:none;z-index:3;image-rendering:pixelated;";
-                canvas.setAttribute("aria-hidden", "true");
-                panel.prepend(canvas);
-
-                // Wrap the title's text into per-letter spans; the h2 keeps its real
-                // name for assistive tech via aria-label. The colored "." span is an
-                // element child and stays untouched — the board's fixed punctuation.
-                const title = panel.querySelector(".rail-title");
-                const chars = [];
-                if (title) {
-                    title.setAttribute("aria-label", title.textContent);
-                    [...title.childNodes].forEach((node) => {
-                        if (
-                            node.nodeType !== Node.TEXT_NODE ||
-                            !node.textContent.trim()
-                        )
-                            return;
-                        const frag = document.createDocumentFragment();
-                        [...node.textContent].forEach((ch) => {
-                            const s = document.createElement("span");
-                            s.textContent = ch;
-                            s.dataset.char = ch;
-                            s.setAttribute("aria-hidden", "true");
-                            frag.appendChild(s);
-                            chars.push({ el: s, t: 0 });
-                        });
-                        node.replaceWith(frag);
-                    });
-                }
-                // resolve thresholds spread across the whole sweep so the flapping is
-                // visible for the full transition, not just while the front crosses
-                // the title's own pixels
-                chars.forEach((c, i) => {
-                    c.t = (i + 1) / (chars.length + 1);
-                });
-                const off = document.createElement("canvas");
-                return {
-                    panel,
-                    canvas,
-                    ctx: canvas.getContext("2d"),
-                    off,
-                    octx: off.getContext("2d"),
-                    title,
-                    chars,
-                    last: -1,
-                };
-            },
-        );
-
-        const measure = () => {
-            panels.forEach((it) => {
-                const cr = it.canvas.getBoundingClientRect();
-                const w = Math.max(1, Math.round(cr.width));
-                it.canvas.width = w;
-                it.canvas.height = Math.max(1, Math.round(cr.height));
-                it.off.width = Math.ceil(it.canvas.width / CELL);
-                it.off.height = Math.ceil(it.canvas.height / CELL);
-                it.core = Math.min(CORE, w * 0.16);
-                it.fade = Math.min(FADE, w * 0.1);
-                it.tail = Math.min(TAIL, w * 0.3);
-                it.last = "";
-            });
-            const vh = innerHeight;
-            if (introSpacer)
-                introSpacer.style.height = Math.round(vh * 1.6) + "px";
-            if (returnSpacer)
-                returnSpacer.style.height = Math.round(vh * 1.1) + "px";
-            if (introTitle) titleH = introTitle.offsetHeight;
-            update();
-        };
-
-        // Bar coverage at column x for a wipe front f: dithered leading edge
-        // ahead of the front, solid core behind it, dithered tail dissolving out.
-        const barCov = (x, f, it) => {
-            if (x > f) return 1 - (x - f) / it.fade;
-            if (x > f - it.core) return 1;
-            return 1 - (f - it.core - x) / it.tail;
-        };
-
-        // Paints the full-panel overlay at cell resolution into a small offscreen
-        // canvas, then scales it up unsmoothed for the chunky 1-bit look.
-        // Two fronts share one geometry: `front` prints this section (white cover
-        // ahead of it, content behind), `erase` is the NEXT section's front
-        // wiping this one away again (content ahead of it, white behind).
-        const drawWash = (it, front, erase) => {
-            const { ctx, canvas, off, octx } = it;
-            const w = canvas.width;
-            const h = canvas.height;
-            ctx.clearRect(0, 0, w, h);
-            if (erase - it.core - it.tail >= w) {
-                ctx.fillStyle = "#fff"; // section fully wiped away
-                ctx.fillRect(0, 0, w, h);
-                return;
-            }
-            if (front - it.core - it.tail < w || erase > -it.fade) {
-                const cw = off.width;
-                const ch = off.height;
-                const img = octx.createImageData(cw, ch);
-                const d = img.data;
-                for (let cx = 0; cx < cw; cx++) {
-                    const x = cx * CELL + CELL / 2;
-                    const b = Math.max(
-                        barCov(x, front, it),
-                        barCov(x, erase, it),
-                    );
-                    const covered = x > front || x <= erase;
-                    if (b <= 0 && !covered) continue; // fully transparent column
-                    for (let cy = 0; cy < ch; cy++) {
-                        const i = (cy * cw + cx) * 4;
-                        if (b * 16 > BAYER[cx % 4][cy % 4]) {
-                            d[i + 3] = 255; // black cell
-                        } else if (covered) {
-                            d[i] = d[i + 1] = d[i + 2] = 255;
-                            d[i + 3] = 255; // white cover
-                        }
-                    }
-                }
-                octx.putImageData(img, 0, 0);
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(off, 0, 0, cw * CELL, ch * CELL);
-            }
-        };
-
+    if (motionEnabled()) {
         const introSpacer = document.querySelector(".intro-spacer");
         const introTitle = document.querySelector(
             ".intro-spacer .title-section-parallax",
@@ -1173,91 +972,59 @@ const featured = SHIPS[0];
         const returnCards =
             returnStage &&
             returnStage.querySelector(".cards-section-parallax > .grid-2col");
-        const overlay = document.querySelector(".parallax-overlay");
-        const phrases = overlay
-            ? [...overlay.querySelectorAll(".overlay-phrase")]
-            : [];
-        const PHRASES = [
-            { start: 0, peak: 0.12, end: 0.38 },
-            { start: 0.24, peak: 0.37, end: 0.56 },
-        ];
         const track = document.querySelector(".progress-track");
         const fill = document.querySelector(".progress-fill");
         let titleH = 0;
+
         if (introTitle) {
             // The parallax: the title leaves the flow and floats fixed over the
-            // intro spacer — the page scrolls underneath while the title rises on
-            // its own slower track, exactly like the pre-migration MainPage.
+            // intro spacer — the page scrolls underneath while the title rises
+            // on its own slower track.
             introTitle.style.cssText =
                 "position:fixed;left:50%;transform:translateX(-50%);z-index:10;" +
-                `max-width:1152px;width:calc(100% - ${MOBILE ? 32 : 64}px);`;
+                "max-width:1152px;width:calc(100% - 64px);";
         }
 
-        // Pre-migration intro choreography: the fixed title rises from vertical
-        // centre to the top over the first 55% of the intro scroll (quintic
-        // ease-out), pins there, and fades out over the last 30% of the intro;
-        // the subtitle fades in over the last fifth of the rise. All pure
-        // functions of scrollY.
-        const introFx = (vh) => {
+        // The fixed title rises from vertical centre to the top over the first
+        // 55% of the intro scroll (quintic ease-out), pins there, and fades out
+        // over the last 30%; the subtitle fades in over the last fifth of the
+        // rise. All pure functions of the shared scroll state.
+        const introFx = (state, vh) => {
             if (!introTitle) return;
-            const introH = vh * 1.6;
-            const tp = Math.min(1, scrollY / (introH * 0.55));
-            const eased = 1 - Math.pow(1 - tp, 5);
-            const navH = MOBILE ? 72 : 80;
+            const eased = 1 - Math.pow(1 - state.rise, 5);
             const startTop = (vh - titleH) * 0.5;
             introTitle.style.top =
-                (startTop + (navH - startTop) * eased).toFixed(1) + "px";
-            const ip = Math.min(1, scrollY / introH);
-            const op = Math.max(0, 1 - Math.max(0, (ip - 0.7) / 0.3));
+                (startTop + (80 - startTop) * eased).toFixed(1) + "px";
+            const op = Math.max(0, 1 - Math.max(0, (state.intro - 0.7) / 0.3));
             introTitle.style.opacity = op.toFixed(3);
             introTitle.style.pointerEvents = op > 0 ? "auto" : "none";
             if (introSub) {
-                introSub.style.opacity = Math.max(0, (tp - 0.8) / 0.2).toFixed(
-                    3,
-                );
+                introSub.style.opacity = Math.max(
+                    0,
+                    (state.rise - 0.8) / 0.2,
+                ).toFixed(3);
             }
         };
 
-        // Return stage: start the overlay sequence before the spacer reaches the
-        // viewport top. The second directory heading then rises through its own
-        // bottom clip line, followed by the subtitle and cards. The spacer length
-        // stays fixed; the phases overlap to keep the movement continuous.
-        const returnFx = (vh, rect) => {
-            const rp = Math.min(
-                1,
-                Math.max(0, (vh * 0.25 - rect.top) / (vh * 1.25)),
+        const revealFromGround = (el, p) => {
+            if (!el) return;
+            const eased = p * p * (3 - 2 * p);
+            el.style.opacity = p > 0 ? "1" : "0";
+            el.style.transform = `translateY(${((1 - eased) * 105).toFixed(1)}%)`;
+        };
+
+        // Return stage: the second directory heading rises through its own
+        // bottom clip line, followed by the subtitle and the cards.
+        const returnFx = (state) => {
+            const rp = state.ret;
+            revealFromGround(
+                returnTitle,
+                Math.min(1, Math.max(0, (rp - 0.46) / 0.38)),
             );
-            if (overlay) {
-                const active = rp > 0 && rp < PHRASES[PHRASES.length - 1].end;
-                overlay.style.display = active ? "block" : "none";
-                if (active) {
-                    phrases.forEach((el, k) => {
-                        const t = PHRASES[k];
-                        let o = 0;
-                        if (rp > t.start && rp < t.end) {
-                            o =
-                                rp <= t.peak
-                                    ? (rp - t.start) / (t.peak - t.start)
-                                    : 1 -
-                                      Math.pow(
-                                          (rp - t.peak) / (t.end - t.peak),
-                                          1.45,
-                                      );
-                        }
-                        el.style.opacity = o.toFixed(3);
-                    });
-                }
-            }
-            const revealFromGround = (el, p) => {
-                if (!el) return;
-                const eased = p * p * (3 - 2 * p);
-                el.style.opacity = p > 0 ? "1" : "0";
-                el.style.transform = `translateY(${((1 - eased) * 105).toFixed(1)}%)`;
-            };
-            const titleP = Math.min(1, Math.max(0, (rp - 0.46) / 0.38));
-            const subP = Math.min(1, Math.max(0, (rp - 0.58) / 0.34));
-            revealFromGround(returnTitle, titleP);
-            revealFromGround(returnSub, subP);
+            revealFromGround(
+                returnSub,
+                Math.min(1, Math.max(0, (rp - 0.58) / 0.34)),
+            );
             if (returnCards) {
                 const cardP = Math.min(1, Math.max(0, (rp - 0.78) / 0.22));
                 const eased = cardP * cardP * (3 - 2 * cardP);
@@ -1266,88 +1033,34 @@ const featured = SHIPS[0];
             }
         };
 
-        const update = () => {
-            const vh = innerHeight;
-            introFx(vh);
-            const spacerRect = returnSpacer
-                ? returnSpacer.getBoundingClientRect()
-                : { top: vh * 9, bottom: vh * 9 };
-            returnFx(vh, spacerRect);
-            // left-edge progress track runs across intro + rails + return
-            if (track && fill) {
-                const trackedEnd = spacerRect.bottom + scrollY;
-                track.style.display = scrollY < trackedEnd ? "block" : "none";
-                fill.style.height =
-                    (Math.min(1, scrollY / trackedEnd) * 100).toFixed(2) + "%";
-            }
-            // Every panel sweeps across the same window — from entering at the
-            // viewport bottom to 20% up — so all motion is uniform and strictly
-            // proportional to scroll.
-            const ps = panels.map((it) => {
-                const rect = it.panel.getBoundingClientRect();
-                const p = Math.min(
-                    1,
-                    Math.max(0, (vh - rect.top) / (vh * 0.8)),
-                );
-                return { rect, p };
-            });
-            // the last panel (EXPERIENCE) leaves with the same dithered wipe,
-            // driven by the return spacer arriving behind it
-            const pAfter = Math.min(
-                1,
-                Math.max(0, (vh - spacerRect.top) / (vh * 0.8)),
-            );
-            panels.forEach((it, i) => {
-                const { rect, p } = ps[i];
-                // The canvas reaches into the seam above its panel. Check its actual
-                // bounds so a previously painted frame cannot re-enter as stale pixels.
-                const canvasRect = it.canvas.getBoundingClientRect();
-                if (canvasRect.bottom < -50 || canvasRect.top > vh + 50) return;
-                const pNext = i + 1 < panels.length ? ps[i + 1].p : pAfter;
-                const key = (i === 0 ? "static" : p) + "|" + pNext;
-                if (key === it.last) return;
-                it.last = key;
-                const w = it.canvas.width;
-                const span = w + it.fade + it.core + it.tail;
-                // travels from just offscreen left to where even the tail has cleared;
-                // the erase runs ahead of the print so the outgoing section is taken
-                // away early rather than lingering on screen. BUILT has no incoming
-                // wash; it starts fully resolved but keeps its outgoing transition.
-                const front = i === 0 ? span : -it.fade + p * span;
-                const erase = -it.fade + Math.min(1, pNext * 1.35) * span;
-                drawWash(it, front, erase);
-                // while being wiped, the title sits under the canvas so the pixel
-                // transition covers it like the rest of the content — no white text,
-                // no flap-out
-                if (it.title) it.title.style.zIndex = pNext > 0 ? "0" : "";
-                const frontT = front / w;
-                const cycle = Math.floor(p * 35);
-                it.chars.forEach((c, j) => {
-                    const resolved = frontT >= c.t;
-                    c.el.textContent = resolved
-                        ? c.el.dataset.char
-                        : FLAPS[(j * 7 + cycle) % FLAPS.length];
-                    c.el.style.color = resolved ? "" : "#c8c8c8";
-                });
-            });
-        };
+        subscribe(
+            (state) => {
+                const vh = innerHeight;
+                introFx(state, vh);
+                returnFx(state);
+                if (track && fill) {
+                    const trackedEnd = state.returnRect.bottom + scrollY;
+                    track.style.display =
+                        scrollY < trackedEnd ? "block" : "none";
+                    fill.style.height = (state.total * 100).toFixed(2) + "%";
+                }
+            },
+            {
+                onResize: () => {
+                    const vh = innerHeight;
+                    if (introSpacer)
+                        introSpacer.style.height =
+                            Math.round(vh * INTRO_VH) + "px";
+                    if (returnSpacer)
+                        returnSpacer.style.height =
+                            Math.round(vh * RETURN_VH) + "px";
+                    if (introTitle) titleH = introTitle.offsetHeight;
+                },
+            },
+        );
 
-        let queued = false;
-        const onScroll = () => {
-            if (queued) return;
-            queued = true;
-            requestAnimationFrame(() => {
-                queued = false;
-                update();
-            });
-        };
-        addEventListener("scroll", onScroll, { passive: true });
-        addEventListener("resize", measure);
-        if (document.fonts) document.fonts.ready.then(measure);
-        measure();
-
-        // Scroll hint: appears after 5s idle, hidden the moment scrolling resumes
-        // (the one timer-based piece — it's a hint, not part of the choreography).
+        // Scroll hint: appears after 5s idle, hidden the moment scrolling
+        // resumes (the one timer-based piece — it's a hint, not choreography).
         const hint = document.querySelector(".scroll-hint");
         if (hint) {
             let hintT;

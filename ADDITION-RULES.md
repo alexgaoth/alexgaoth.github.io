@@ -50,7 +50,9 @@ Then append the piece to the matching plain-text export `astro/public/poetry.txt
 - Standalone page at /projects/<slug> (optional, for projects worth indexing): in `astro/src/lib/projectPages.js`
   add the slug to `FEATURED_SLUGS` and write 1–5 paragraphs in `PROSE`. The slug is the name lowercased with
   non-alphanumerics → `-`. The page and sitemap entry appear automatically.
-- Homepage BUILT panel: add a ship to `SHIPS` in `astro/src/data/homeRailData.js`; its `anchor` must equal the project slug.
+- Homepage BUILT panel: automatic — the build log derives from `projects.content`, newest first, and shows the
+  top X that fit (panel slices to 8). Optionally hand-tighten year/name/stack/status per slug in `SHIP_FACTS`
+  (`astro/src/data/homeRailData.js`); a project without an entry gets derived defaults and the build year.
 
 ## Quote
 
@@ -89,3 +91,12 @@ Put the `.glb` (and optional looping `.mp3`) in `astro/public/regents/`, then ad
 Create `astro/src/pages/<name>.astro` wrapped in `BaseLayout` (title, description, keywords, `path`), with one `<h1>`,
 real `<a href>` links, and content in source HTML. Add the route to `STATIC_ROUTES` in `astro/src/pages/sitemap.xml.js`
 and link it from at least one existing page. Interactive parts go in `astro/src/islands/` behind `client:load`/`client:only`.
+
+## Homepage animation
+
+Parked. `master` has no WebGL layer on `/` — the homepage is the static ledger
+plus the DOM choreography in `index.astro`. Five concepts were built and none
+kept; they live on the `home-3d` and `home-one-stroke` branches, along with the
+scaffolding a sixth would reuse (the immutable three-acts-then-four-cards
+spine, the scene registry, the build guard). See README section 2 before
+starting another one.
