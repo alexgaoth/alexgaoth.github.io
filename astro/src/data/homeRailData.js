@@ -3,6 +3,7 @@
 import { APP_ROUTES } from '../config/site.js';
 import { content } from './content.js';
 import { projectSlug } from '../lib/slug.js';
+import { githubCardImage } from '../lib/projectImage.js';
 
 // Homepage-only facts and hand-tightened copy, keyed by project slug.
 // Optional — a project without an entry still ships with defaults derived
@@ -61,6 +62,8 @@ const SHIP_FACTS = {
   'claude-iterate': { year: "2026" },
   'routine-architect': { year: "2026" },
   'outcast-virus': { year: "2026", status: "devpost" },
+  'weighted-map': { year: "2026" },
+  'ferrodoc': { year: "2026" },
 };
 
 // Built things that never got a /projects card.
@@ -90,7 +93,7 @@ export const SHIPS = [
         facts.status ??
         (p.liveDemo ? 'live' : p.pypi ? 'pypi' : p.github ? 'github' : 'shipped'),
       desc: facts.desc,
-      img: facts.img ?? p.image ?? p.images?.[0] ?? '/resources/default.jpg',
+      img: facts.img ?? githubCardImage(p) ?? p.image ?? p.images?.[0] ?? '/resources/default.jpg',
       anchor: slug,
     };
   }),

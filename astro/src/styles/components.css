@@ -1392,9 +1392,17 @@ a.tag-white:hover {
 
 .project-image {
   width: 100%;
-  height: auto;
+  /* One fixed ratio for every card (GitHub social cards are 1200×630);
+     other shapes letterbox into the container's grey background. */
+  aspect-ratio: 1200 / 630;
   display: block;
   object-fit: contain;
+}
+
+/* GitHub-card images sit inside a repo link; keep it filling the container */
+.project-image-container > a {
+  width: 100%;
+  display: block;
 }
 
 /* Side arrow buttons — centered on each edge */

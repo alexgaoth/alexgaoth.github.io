@@ -47,6 +47,8 @@ Then append the piece to the matching plain-text export `astro/public/poetry.txt
 
 - Card on /projects: add to `projects.content` in `astro/src/data/content.js`
   (name, tech, description, image/images, liveDemo/github/pypi links).
+  GitHub-only projects (repo link, no liveDemo) may omit the image: the card
+  shows the repo's GitHub social card, linked to the repo (`lib/projectImage.js`).
 - Standalone page at /projects/<slug> (optional, for projects worth indexing): in `astro/src/lib/projectPages.js`
   add the slug to `FEATURED_SLUGS` and write 1–5 paragraphs in `PROSE`. The slug is the name lowercased with
   non-alphanumerics → `-`. The page and sitemap entry appear automatically.

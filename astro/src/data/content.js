@@ -172,6 +172,21 @@ export const content = {
         liveDemo: "https://devpost.com/software/outcast-virus"
       },
       {
+        name: "weighted_map",
+        tech: "Python, WebGL, GeoPandas, OSRM",
+        description: "The contiguous US redrawn so distance from any of 253 origins is travel time, not space. Interactive WebGL, drive or fly, orbitable in 3-D.",
+        image:"/resources/weighted-map-driving-time.jpg",
+        liveDemo: "https://cool-maps.vercel.app",
+        github: "https://github.com/alexgaoth/weighted_map"
+      },
+      {
+        name: "ferrodoc",
+        tech: "Rust, Python, WASM",
+        description: "A pandoc-compatible document converter in Rust — CommonMark, GFM, HTML, DOCX — in process rather than by subprocess.",
+        github: "https://github.com/alexgaoth/ferrodoc",
+        pypi: "https://pypi.org/project/ferrodoc/"
+      },
+      {
         name: "This very website",
         tech: "html, css, js, React",
         description: "written from the very scratch, where people can learn more about me",

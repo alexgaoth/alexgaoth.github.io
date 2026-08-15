@@ -3,10 +3,15 @@
 // Renders every carousel image in source HTML (first visible, rest hidden);
 // a tiny script on the projects page wires up the prev/next buttons.
 // lucide-react icons are inlined as SVGs with the same paths.
+import { githubCardImage } from '../../lib/projectImage.js';
+
 const { project } = Astro.props;
 
-const images =
-  project.images && project.images.length > 0
+// GitHub-only projects show the repo's social card, linked to the repo.
+const githubCard = githubCardImage(project);
+const images = githubCard
+  ? [githubCard]
+  : project.images && project.images.length > 0
     ? project.images
     : project.image
       ? [project.image]
@@ -17,15 +22,21 @@ const hasCarousel = images.length > 1;
 <div class="project-card">
   {images.length > 0 && (
     <div class="project-image-container">
-      {images.map((src, i) => (
-        <img
-          src={src}
-          alt={`${project.name} preview`}
-          class="project-image"
-          style={i === 0 ? undefined : 'display:none'}
-          loading={i === 0 ? undefined : 'lazy'}
-        />
-      ))}
+      {images.map((src, i) =>
+        githubCard ? (
+          <a href={project.github} target="_blank" rel="noopener noreferrer">
+            <img src={src} alt={`${project.name} on GitHub`} class="project-image" />
+          </a>
+        ) : (
+          <img
+            src={src}
+            alt={`${project.name} preview`}
+            class="project-image"
+            style={i === 0 ? undefined : 'display:none'}
+            loading={i === 0 ? undefined : 'lazy'}
+          />
+        ),
+      )}
 
       {hasCarousel && (
         <>
