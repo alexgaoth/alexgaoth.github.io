@@ -42,11 +42,26 @@ const featuredSlugs = new Set(getFeaturedProjects().map((entry) => entry.slug));
   .project-page-link {
     font-family: 'Space Mono', monospace;
     font-size: 0.72rem;
-    margin: -0.4rem 0 1rem;
+    /* was -0.4rem, which pulled the text onto the card's bottom border */
+    margin: 0.5rem 0 1rem;
     text-align: right;
   }
   .project-page-link a { color: #888; text-decoration: none; }
   .project-page-link a:hover { color: #000; }
+
+  /* tap, not hover: a ruled full-width row that clears 40px */
+  @media (max-width: 767px) {
+    .project-page-link {
+      margin: 0 0 1rem;
+      text-align: left;
+    }
+    .project-page-link a {
+      display: block;
+      padding: 12px 6px;
+      border-bottom: 1px solid #eee;
+      color: #000;
+    }
+  }
 </style>
 
 <script>

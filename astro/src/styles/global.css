@@ -82,7 +82,6 @@ body {
   margin-top: 0;
 }
 
-
 .fade-scroll-hint {
   font-style: italic;
   font-size: 0.75rem;
@@ -157,18 +156,11 @@ body {
 }
 
 /* display:none removes the element from flow entirely (visibility:hidden keeps its space) */
-@media (min-width: 769px) {
-  .hidden {
-    display: none;
-  }
-}
-
 @media (max-width: 769px) {
   .reverse-hidden {
     display: none;
   }
 }
-
 
 .footer {
   font-size: 0.85rem;
@@ -193,6 +185,12 @@ body {
     background 0.3s ease,
     color 0.3s ease,
     padding 0.3s ease;
+}
+
+/* was three inline style="margin-top:0.5rem" attributes, which no media query
+   could reach */
+.mainpage-footer-strip + .mainpage-footer-strip {
+  margin-top: 0.5rem;
 }
 
 .mainpage-footer-strip .art-strip-arrow {
@@ -406,6 +404,44 @@ body {
 
 .art-strip:hover .art-strip-desc {
   opacity: 0.7;
+}
+
+/* On mobile the strips are the second half of the directory index, so they
+   drop the nudge (no desktop card grid to line up with), lose the doubled
+   hairline every top+bottom border pair was drawing, and take the same row
+   rhythm as the cards above them. See the mobile block in index.astro. */
+@media (max-width: 767px) {
+  .mainpage-footer {
+    transform: none;
+    margin-top: 0;
+  }
+
+  .mainpage-footer-strip,
+  .mainpage-footer-strip + .mainpage-footer-strip {
+    margin-top: 0;
+    padding: 13px 2px;
+    border-top: 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .mainpage-footer-strip .art-strip-label {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .mainpage-footer-strip .art-strip-arrow {
+    margin-left: auto;
+    font-size: 11px;
+    color: #bbb;
+    opacity: 1;
+  }
+
+  /* left edge, like every other line on the page */
+  .mainpage-footer .footer {
+    text-align: left;
+    padding: 2rem 2px 1rem;
+    font-size: 0.72rem;
+  }
 }
 
 /* Live indicator pulse used in HomePreviewRail */

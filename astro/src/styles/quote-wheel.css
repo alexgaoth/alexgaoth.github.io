@@ -107,11 +107,15 @@
 @media (max-width: 768px) {
   .quote-wheel-container {
     padding: 0 0.5rem;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
   }
 
+  /* the wheel stays — it is the page's toy — but 320px of it was a third of
+     the viewport spent on quotes too faint to read */
   .quote-wheel-viewport {
-    --quote-wheel-spacing: 72px;
-    height: 320px;
+    --quote-wheel-spacing: 56px;
+    height: 216px;
     max-width: 100%;
   }
 

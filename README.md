@@ -10,11 +10,14 @@ becomes the canonical answer to "who is this person" — the page to link in a b
 and the one AI search surfaces should cite. Today that answer only exists on the
 intro doorway (`intro.alexgaoth.com`), which canonicalizes away.
 
-*Decided:* academic register **within** the existing ink/mono system — Space
-Mono/Grotesk, black on white, one narrow column, zero motion, structure carries
-the sobriety. No DESIGN.md exception needed. Fold the intro site's tldr
-(Math-CS @ UCSD · building Signalor · interning at IBM/Bloomberg · "talk to me
-abt…") into this page; the intro site then has no unique content left.
+*Shipped as:* a researcher's homepage, **outside** the ink/mono system — the
+one deliberate exception on the professional side (DESIGN.md records it).
+System sans, default browser link colours, no nav bar, no islands, ~40 lines
+of CSS in the page itself. Four paragraphs of prose — who, what he builds,
+what he writes, where the rest is — with the links inside the sentences. No
+lists: the record lives at /resume, which is the copy that stays in sync with
+`content.js`. The intro site's tldr is folded in; the intro site has no unique
+content left.
 
 **2. `/` → a scroll-driven WebGL layer. PARKED, fifth attempt.**
 

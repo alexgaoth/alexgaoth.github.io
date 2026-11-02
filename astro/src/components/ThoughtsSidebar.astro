@@ -25,6 +25,7 @@ const truncate = (title, max = 40) => (title.length > max ? `${title.substring(0
 
 <aside class="thoughts-sidebar">
   <div class="sidebar-content">
+    <span class="sidebar-archive-label">{'// archive'}</span>
     {years.map((year) => (
       <details class="sidebar-year" open>
         <summary class="sidebar-year-title clickable">{year}</summary>
@@ -51,6 +52,22 @@ const truncate = (title, max = 40) => (title.length > max ? `${title.substring(0
 </aside>
 
 <style>
+  /* Only earns a heading once the sidebar stops being a rail and becomes a
+     block under the content (<=1024px, components.css). */
+  .sidebar-archive-label {
+    display: none;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 0.9rem;
+  }
+  @media (max-width: 1024px) {
+    .sidebar-archive-label {
+      display: block;
+    }
+  }
+
   /* <summary> replaces the CRA's h4/h5 toggles — keep their look. */
   summary { list-style: none; cursor: pointer; }
   summary::-webkit-details-marker { display: none; }

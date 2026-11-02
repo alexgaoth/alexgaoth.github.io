@@ -11,13 +11,13 @@ orientation and the owner's priorities.
 - Build + validate: `cd astro && npm run build` — fails on bad thought
   frontmatter.
 - Crawler-view audit: `node scripts/audit-raw-html.mjs astro/dist index.html:/ about.html:/about`.
+  Standing FAILs, all accepted: /art + /gallery (400-char text floor), /poetry + /ci (link count).
 
 ## Gotchas
 
-- The homepage has no canvas on `master`; the 3D concepts are parked on the
-  `home-3d` and `home-one-stroke` branches (README says which is which). Don't
-  reinvent the scaffolding — the spine, the registry and the build guard are
-  on `home-one-stroke`.
+- The homepage has no canvas on `master`. Before starting a sixth concept,
+  read README section 2 — the spine, the scene registry and the build guard
+  already exist on `home-one-stroke`; don't reinvent the scaffolding.
 - `@react-three/drei` and `simplex-noise` look unused but are required by
   `RegentsScene.jsx` and `ArtBackground.jsx` — don't prune them from
   `astro/package.json`.
@@ -25,10 +25,16 @@ orientation and the owner's priorities.
   `prefers-reduced-motion`. To verify it visually without the Chrome
   extension: `npm run preview`, then drive headless Chrome (puppeteer-core,
   `/usr/bin/google-chrome`, `--headless=new --enable-unsafe-swiftshader`) and
-  screenshot while scrolling.
+  screenshot while scrolling. `loading="lazy"` images never load in a
+  `fullPage` shot — blank boxes there are not broken images; measure instead.
+- Astro scoped `<style>` compiles to `[data-astro-cid-*]`, outranking plain
+  class rules in `components.css` — a component's media overrides belong in
+  that component. `components.css` also still carries React-era rules for
+  elements the Astro port never renders — grep the markup before trusting one.
 - Static HTML must stay complete without JS: canvas layers are chrome over
   content — text lives in the DOM, never as texture.
 - Verifying a deploy: Vercel's ETag on a static file equals the file's md5 —
-  compare against local `md5sum`. As of 2026-08 this machine's network resets
-  TLS to alexgaoth.com (site is fine globally; vercel.com loads) — check the
-  live site through an external proxy, not local curl or Chrome.
+  compare against local `md5sum`. This machine's network has intermittently
+  reset TLS to alexgaoth.com (site fine globally; seen 2026-08, cleared days
+  later) — if local curl/Chrome fail, verify through an external proxy before
+  concluding the site is down.

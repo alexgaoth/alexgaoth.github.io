@@ -68,10 +68,6 @@ const featured = homeShips[0];
                             'th' is the initials of my chinese first name, and u
                             can find me elsewhere all by alexgaoth
                         </p>
-                        <p class="hidden">
-                            mobile-first redesign coming — works better on
-                            desktop for now
-                        </p>
                     </div>
                 </header>
             </div>
@@ -376,6 +372,9 @@ const featured = homeShips[0];
                                     <p class="card-description">
                                         {CARD_DESCRIPTIONS[key]}
                                     </p>
+                                    <span class="card-arrow" aria-hidden="true"
+                                        >→</span
+                                    >
                                 </a>
                             ))
                         }
@@ -394,7 +393,6 @@ const featured = homeShips[0];
                     <a
                         href={APP_ROUTES.gallery}
                         class="art-strip mainpage-footer-strip"
-                        style="margin-top:0.5rem"
                     >
                         <span class="art-strip-label">/gallery</span>
                         <span class="art-strip-arrow">→</span>
@@ -402,7 +400,6 @@ const featured = homeShips[0];
                     <a
                         href={APP_ROUTES.about}
                         class="art-strip mainpage-footer-strip"
-                        style="margin-top:0.5rem"
                     >
                         <span class="art-strip-label">/about</span>
                         <span class="art-strip-arrow">→</span>
@@ -410,7 +407,6 @@ const featured = homeShips[0];
                     <a
                         href={SITE.personalUrl}
                         class="art-strip mainpage-footer-strip"
-                        style="margin-top:0.5rem"
                     >
                         <span class="art-strip-label">#contact</span>
                         <span class="art-strip-arrow">→</span>
@@ -558,6 +554,20 @@ const featured = homeShips[0];
         letter-spacing: 0.04em;
         text-decoration: none;
         opacity: 0.85;
+    }
+    /* Side by side, the tracked note wrapped straight through the route link.
+       Stack them, and let the link carry a real tap target. */
+    @media (max-width: 767px) {
+        .rail-footer {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 2px;
+        }
+        .rail-footer-link {
+            display: block;
+            font-size: 12px;
+            padding: 10px 0 3px;
+        }
     }
     .built-grid {
         display: grid;
@@ -886,6 +896,70 @@ const featured = homeShips[0];
     }
     .cards-title .title-main {
         margin-top: 0;
+    }
+
+    .card-arrow {
+        display: none;
+    }
+
+    /* ── mobile rhythm ────────────────────────────────────────────────────
+       One scale for the whole page, because mixing them is what made it read
+       as packed here and empty there:
+         13px  inside a row      20px  between blocks in a panel
+         48px  between sections
+       The panels already obeyed it. The tail did not: it was four 2px-bordered
+       cards 9px apart, then four strips whose top+bottom borders doubled every
+       hairline, then centred legal text — three languages in 900px. Below,
+       all eight destinations become one hairline-ruled index in the same row
+       language as the build log above it, and the footer joins the left edge
+       everything else sits on. */
+    @media (max-width: 767px) {
+        /* the second title only exists to be revealed by the >=768px
+           choreography; on mobile it is a verbatim repeat of the header */
+        .cards-title {
+            display: none;
+        }
+        .rail-panel:first-of-type {
+            --rail-gap: 48px;
+        }
+
+        .cards-section-parallax > .grid-2col {
+            gap: 0;
+            border-top: 1px solid #000;
+        }
+        :global(.cards-section-parallax > .grid-2col > .card) {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-areas: "title arrow" "desc desc";
+            align-items: baseline;
+            column-gap: 10px;
+            border: 0;
+            border-bottom: 1px solid #eee;
+            padding: 13px 2px;
+        }
+        /* four 172px previews were 688px of scroll saying nothing the titles
+           don't; the links all stay */
+        :global(.cards-section-parallax > .grid-2col > .card .card-image) {
+            display: none;
+        }
+        :global(.cards-section-parallax > .grid-2col > .card .title-card) {
+            grid-area: title;
+            font-size: 13px;
+            margin: 0;
+        }
+        :global(.cards-section-parallax > .grid-2col > .card .card-description) {
+            grid-area: desc;
+            font-size: 10.5px;
+            margin-top: 3px;
+            opacity: 1;
+            color: #888;
+        }
+        :global(.cards-section-parallax > .grid-2col > .card .card-arrow) {
+            display: block;
+            grid-area: arrow;
+            font-size: 11px;
+            color: #bbb;
+        }
     }
 </style>
 

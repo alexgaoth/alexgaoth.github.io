@@ -1,39 +1,32 @@
 ---
-// /about — the canonical identity page. Deliberately static: no islands, no
-// motion, one narrow column, everything in source HTML. This is the page to
-// link in a bio and the one an AI search surface should be able to cite, so
-// every fact here must be checkable elsewhere on the site.
+// /about — the canonical identity page, and the one page deliberately outside
+// the ink/mono design system (DESIGN.md). A researcher's homepage: system
+// sans, default browser link colours, no nav bar, no islands, no motion.
 //
-// Register: academic, but inside the existing ink/mono system (DESIGN.md) —
-// Space Mono/Grotesk, black on white, structure carries the sobriety rather
-// than a second typeface. Sections are numbered like a paper's.
+// It is PROSE, on purpose. No lists, no year/role grid, no tables — the moment
+// this page starts tabulating it becomes a second /resume, and /resume already
+// exists and is the one that stays in sync with content.js. Everything here is
+// paragraphs with the links sitting inside the sentences.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ContentPage from '../components/ContentPage.astro';
 import { APP_ROUTES, SITE, buildAppUrl } from '../config/site.js';
 import { profileData } from '../data/profileData.js';
 import { content } from '../data/content.js';
-import { WRITINGS } from '../data/homeRailData.js';
 
-// Selected work, ordered as a CV would order it — current first. Names must
-// match entries in content.js so /projects stays the single source of truth.
-const SELECTED = [
-  'Signalor',
-  'dont-hallucinate',
-  'Political Speech Classifier',
-  'UCSD Crimes log tracker',
-  '3D Fractal Simulator',
-];
-const byName = new Map(content.projects.content.map((p) => [p.name, p]));
-const selectedWork = SELECTED.map((name) => byName.get(name)).filter(Boolean);
+const { education, achievements } = content.resume.content;
 
-// One outbound link per project, picked as the strongest proof it exists.
-// pypi outranks liveDemo because some liveDemo values are announcement posts
-// (dont-hallucinate points at an X thread) — a registry entry is harder proof.
-const proofLink = (p) => p.pypi || p.liveDemo || p.github || null;
-const proofLabel = (p) =>
-  p.pypi ? 'pypi' : p.liveDemo ? 'live' : p.github ? 'source' : null;
+// Bare hostnames — the point of the line is that three hosts are one person,
+// so the scheme and the trailing slash are noise.
+const mirrors = profileData.mirrors.map((m) => ({
+  href: m.href,
+  host: m.href.replace(/^https:\/\//, '').replace(/\/$/, ''),
+}));
 
-const { experience, education, achievements } = content.resume.content;
+// The socials, named in a sentence rather than listed. 'x / twitter' is the
+// data's label for one thing; prose only wants the first half of it.
+const socials = profileData.links.map((l) => ({
+  href: l.href,
+  word: l.label.split(' / ')[0],
+}));
 
 const profileStructuredData = [
   {
@@ -69,460 +62,123 @@ const profileStructuredData = [
 ---
 
 <BaseLayout
-  title="About — Alex Gao (alexgaoth)"
-  description="Alex Gao (alexgaoth) — Math-CS at UC San Diego. Who he is, what he builds and writes, and where to find him."
+  title="Alex Gao (alexgaoth)"
+  description="Alex Gao (alexgaoth) — math and computer science at UC San Diego, CTO of Signalor. What he builds, what he writes, and where to find the rest."
   keywords={[...profileData.searchableQueries, 'about', 'profile', 'Tianhao Gao']}
   path={APP_ROUTES.about}
   structuredData={profileStructuredData}
 >
-  <ContentPage wrapperClassName="content-wrapper-narrow">
-    <div class="profile-root">
-      <header class="profile-header">
-        <span class="eyebrow">{'// who'}</span>
-        <h1 class="profile-title">
-          ALEX GAO<span class="profile-title-dot">.</span>
-        </h1>
-        <p class="profile-onpaper">tianhao gao · alexgaoth</p>
-        <div class="profile-intro">
-          {profileData.intro.map((paragraph) => (
-            <p class="profile-intro-p">{paragraph}</p>
-          ))}
-        </div>
-      </header>
+  <main class="acad">
+    <h1>Alex Gao</h1>
+    <p class="onpaper">tianhao gao &middot; alexgaoth</p>
 
-      <section class="block">
-        <div class="block-head">
-          <span class="block-index">01</span>
-          <span class="eyebrow">{'// now'}</span>
-        </div>
-        <ul class="plain-list rule-top">
-          {profileData.focus.map((item) => (
-            <li class="focus-row">{item}</li>
-          ))}
-        </ul>
-        <a href={APP_ROUTES.now} class="block-more">
-          <span class="rail-pulse now-dot" />this month, in detail /now →
-        </a>
-      </section>
+    <hr />
 
-      <section class="block">
-        <div class="block-head">
-          <span class="block-index">02</span>
-          <span class="eyebrow">{'// selected work'}</span>
-        </div>
-        <div class="rule-top">
-          {selectedWork.map((p) => (
-            <article class="entry">
-              <div class="entry-head">
-                <h2 class="entry-title">{p.name}</h2>
-                {proofLink(p) && (
-                  <a
-                    href={proofLink(p)}
-                    class="entry-proof"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >{proofLabel(p)} ↗</a>
-                )}
-              </div>
-              <p class="entry-desc">{p.description}</p>
-              <p class="entry-tech">{p.tech}</p>
-            </article>
-          ))}
-        </div>
-        <a href={APP_ROUTES.projects} class="block-more">everything i've made /projects →</a>
-      </section>
+    <p>
+      i'm alex gao — tianhao on paper, alexgaoth everywhere else. the 'th' is my
+      chinese first name, and it's there so you can find me easier. i study math
+      and computer science at <a href="https://ucsd.edu">uc san diego</a>, after
+      two years at st paul's in london doing double maths, physics and computer
+      science, where i also picked up golds at the british informatics olympiad
+      and the british mathematical olympiad.
+    </p>
 
-      <section class="block">
-        <div class="block-head">
-          <span class="block-index">03</span>
-          <span class="eyebrow">{'// writing'}</span>
-        </div>
-        <div class="rule-top">
-          {WRITINGS.map((w) => (
-            <a href={`${APP_ROUTES.thoughts}/${w.slug}`} class="row-link">
-              <span class="row-main">{w.title}</span>
-              <span class="row-meta">{w.date} · {w.tag} · {w.read}</span>
-            </a>
-          ))}
-        </div>
-        <a href={APP_ROUTES.thoughts} class="block-more">all essays /thoughts →</a>
-      </section>
+    <p>
+      most of what i do is build. i cofounded
+      <a href="https://signalor.app">signalor</a> with matthieu fuller and have
+      been its cto since 2025 — it reads what the internet says about a brand
+      and turns that into something an investor can act on. this summer i was a
+      software and devops intern at ibm in san jose, on the aiops team behind
+      watsonx assistant for z; before that i wrote crawlers for esg and bond
+      data at climind, remotely from london while i was still sitting a-levels.
+      there are smaller things too: a
+      <a href="https://intro.alexgaoth.com/JuliaSetFractal/">3d julia set simulator</a>
+      i made at fifteen because i was in love with pure maths, a
+      <a href="https://pypi.org/project/dont-hallucinate/">tool</a> that catches
+      coding agents when they fail and tells them off, a tracker for ucsd's
+      crime log.
+    </p>
 
-      <section class="block">
-        <div class="block-head">
-          <span class="block-index">04</span>
-          <span class="eyebrow">{'// record'}</span>
-        </div>
-        <div class="rule-top">
-          {experience.map((e) => (
-            <div class="record-row">
-              <span class="record-period">{e.period}</span>
-              <span class="record-main">
-                <span class="record-role">{e.role}</span>
-                <span class="record-org">{e.company}</span>
-              </span>
-            </div>
-          ))}
-        </div>
+    <p>
+      the other half is writing. i like to think, and make others think — mostly
+      history and philosophy: what happened at
+      <a href={`${APP_ROUTES.thoughts}/winning-the-battle-of-manzikert`}>manzikert</a>
+      versus what everyone later decided happened, lacan's
+      <a href={`${APP_ROUTES.thoughts}/submitting-to-the-symbolic-order`}>symbolic order</a>,
+      whether china could invent a nation and defend it at the same time. i keep
+      chinese poetry and ci as well, most of it written around fifteen, abroad,
+      with too much free time.
+    </p>
 
-        <div class="sub-label"><span class="eyebrow">{'// education'}</span></div>
-        <div class="rule-top">
-          {education.map((e) => (
-            <div class="record-row">
-              <span class="record-period">{e.year}</span>
-              <span class="record-main">
-                <span class="record-role">{e.institution}</span>
-                <span class="record-org">{e.degree}</span>
-              </span>
-            </div>
-          ))}
-        </div>
+    <p>
+      everything i've built is at <a href={APP_ROUTES.projects}>/projects</a>,
+      with source on <a href="https://github.com/alexgaoth">github</a>. the
+      essays are at <a href={APP_ROUTES.thoughts}>/thoughts</a> and the verse at
+      <a href={APP_ROUTES.writing}>/writing</a>. the plain record — every job,
+      every date — is at <a href={APP_ROUTES.resume}>/resume</a>, and whatever
+      i'm actually doing this month is at <a href={APP_ROUTES.now}>/now</a>.
+      otherwise: <a href={`mailto:${profileData.email}`}>{profileData.email}</a>,
+      and alexgaoth on {socials.map((sc, i) => (
+        <><a href={sc.href} rel="me">{sc.word}</a>{i < socials.length - 2 ? ', ' : i === socials.length - 2 ? ' and ' : ''}</>
+      ))} — same handle everywhere, which was the whole point.
+    </p>
 
-        <div class="sub-label"><span class="eyebrow">{'// awards'}</span></div>
-        <div class="rule-top">
-          {achievements.map((a) => (
-            <div class="record-row">
-              <span class="record-period">{a.year}</span>
-              <span class="record-main">
-                <span class="record-role">{a.title}</span>
-                <span class="record-org">{a.organization}</span>
-              </span>
-            </div>
-          ))}
-        </div>
-        <a href={APP_ROUTES.resume} class="block-more">the full record /resume →</a>
-      </section>
+    <p class="home"><a href={APP_ROUTES.home}>&larr; alexgaoth.com</a></p>
 
-      <section class="block">
-        <div class="block-head">
-          <span class="block-index">05</span>
-          <span class="eyebrow">{'// elsewhere'}</span>
-        </div>
-        <div class="rule-top">
-          <a href={`mailto:${profileData.email}`} class="row-link">
-            <span class="row-main">email</span>
-            <span class="row-meta">{profileData.email}</span>
-          </a>
-          {profileData.links.map((link) => (
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="row-link"
-            >
-              <span class="row-main">{link.label}</span>
-              <span class="row-meta">{link.handle}</span>
-            </a>
-          ))}
-        </div>
-      </section>
+    <hr />
 
-      {/* identity block — kept verbatim for findability, see profileData.js */}
-      <section class="block">
-        <div class="block-head">
-          <span class="block-index">06</span>
-          <span class="eyebrow">{'// on record'}</span>
-        </div>
-        <div class="rule-top">
-          {profileData.facts.map((fact) => (
-            <div class="fact-row">
-              <span class="fact-label">{fact.label}</span>
-              <span class="fact-value">{fact.value}</span>
-            </div>
-          ))}
-        </div>
-        <div class="sub-label"><span class="eyebrow">{'// also answers to'}</span></div>
-        <p class="aliases">{profileData.aliases.join('  ·  ')}</p>
-      </section>
-
-      <footer class="profile-footer">
-        <span class="mirrors">
-          {profileData.mirrors.map((m, i) => (
-            <span class="mirror">
-              <a href={m.href} class="mirror-link">{m.label}</a>
-              {i < profileData.mirrors.length - 1 && ' · '}
-            </span>
-          ))}
-        </span>
-        <a href={APP_ROUTES.home} class="home-link">/ →</a>
-      </footer>
-    </div>
-  </ContentPage>
+    {/* kept verbatim for findability — see profileData.js */}
+    <p class="fine">
+      also indexed as {profileData.aliases.join(', ')}. mirrors: {mirrors.map((m, i) => (
+        <><a href={m.href}>{m.host}</a>{i < mirrors.length - 1 ? ', ' : '.'}</>
+      ))}
+    </p>
+  </main>
 </BaseLayout>
 
 <style>
-  .profile-root {
-    font-family: 'Space Mono', monospace;
-    color: #000;
-    padding-bottom: 3rem;
+  /* The site-wide reset in global.css zeroes every margin, so the browser
+     defaults this page wants have to be asked for back. That is the whole
+     stylesheet — no colours on links, no borders, no grid. */
+  .acad {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #222;
+    max-width: 38rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.1rem 4rem;
   }
 
-  .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #888;
-  }
-
-  /* ── header ── */
-  .profile-header {
-    margin-bottom: clamp(2rem, 5vw, 3.2rem);
-  }
-  .profile-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    font-size: clamp(2rem, 5.2vw, 3.8rem);
-    letter-spacing: -0.035em;
-    line-height: 0.95;
-    margin: 0.6rem 0 0.5rem;
-  }
-  .profile-title-dot {
-    color: #ccc;
-  }
-  .profile-onpaper {
-    margin: 0 0 1.2rem;
-    font-size: 0.72rem;
-    color: #999;
-    letter-spacing: 0.04em;
-  }
-  .profile-intro {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    max-width: 62ch;
-  }
-  /* the one place on the site that gets paper-like leading — it is the only
-     block a reader is expected to read straight through */
-  .profile-intro-p {
-    margin: 0;
-    font-size: 0.82rem;
-    line-height: 1.9;
-    color: #333;
-    letter-spacing: 0.01em;
-  }
-
-  /* ── sections ── */
-  .block {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: clamp(1.8rem, 4vw, 2.8rem);
-  }
-  .block-head {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .block-index {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: #bbb;
-  }
-  .sub-label {
-    margin: 1.2rem 0 8px;
-  }
-  .rule-top {
-    border-top: 1px solid #000;
-  }
-  .block-more {
-    align-self: flex-start;
-    margin-top: 10px;
-    font-size: 11px;
-    color: #000;
-    text-decoration: none;
-    opacity: 0.85;
-  }
-  .block-more:hover {
-    opacity: 1;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .now-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #0a7;
-    border-radius: 50%;
-    margin-right: 7px;
-  }
-
-  /* ── now list ── */
-  .plain-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .focus-row {
-    padding: 8px 6px;
-    border-bottom: 1px solid #eee;
-    font-size: 0.78rem;
-  }
-
-  /* ── work entries ── */
-  .entry {
-    padding: 12px 6px;
-    border-bottom: 1px solid #eee;
-  }
-  .entry-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 12px;
-  }
-  .entry-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    font-size: 0.92rem;
-    letter-spacing: -0.015em;
+  .acad h1 {
+    font-size: 1.6rem;
+    font-weight: bold;
     margin: 0;
   }
-  .entry-proof {
-    font-size: 8.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    border: 1px solid currentColor;
-    padding: 2px 5px;
-    white-space: nowrap;
-    color: #000;
-    text-decoration: none;
+
+  .acad p {
+    margin: 0 0 1.15em;
   }
-  .entry-proof:hover {
-    background: #000;
-    color: #fff;
+
+  .acad hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1.3rem 0;
   }
-  .entry-desc {
-    margin: 6px 0 4px;
-    font-size: 0.74rem;
-    line-height: 1.75;
+
+  .onpaper {
+    color: #666;
+    font-size: 13px;
+    margin: 0.15rem 0 0;
+  }
+
+  .home {
+    margin-bottom: 0;
+  }
+
+  .fine {
+    font-size: 13px;
     color: #555;
-    max-width: 68ch;
-  }
-  .entry-tech {
-    margin: 0;
-    font-size: 0.66rem;
-    color: #999;
-    letter-spacing: 0.02em;
-  }
-
-  /* ── generic rows ── */
-  .row-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 12px;
-    padding: 10px 6px;
-    border-bottom: 1px solid #eee;
-    text-decoration: none;
-    color: #000;
-    transition: background 0.12s, color 0.12s;
-  }
-  .row-link:hover {
-    background: #000;
-    color: #fff;
-  }
-  .row-main {
-    font-size: 0.78rem;
-  }
-  .row-meta {
-    font-size: 0.66rem;
-    color: #888;
-    text-align: right;
-  }
-  .row-link:hover .row-meta {
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  /* ── record rows ── */
-  .record-row {
-    display: grid;
-    grid-template-columns: 8.5rem 1fr;
-    gap: 12px;
-    padding: 10px 6px;
-    border-bottom: 1px solid #eee;
-  }
-  .record-period {
-    font-size: 0.66rem;
-    color: #999;
-    padding-top: 2px;
-  }
-  .record-main {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-  }
-  .record-role {
-    font-size: 0.78rem;
-    font-weight: 600;
-  }
-  .record-org {
-    font-size: 0.68rem;
-    color: #777;
-    line-height: 1.5;
-  }
-
-  /* ── facts / aliases ── */
-  .fact-row {
-    display: grid;
-    grid-template-columns: 6rem 1fr;
-    gap: 12px;
-    padding: 8px 6px;
-    border-bottom: 1px solid #eee;
-    font-size: 0.72rem;
-  }
-  .fact-label {
-    color: #999;
-  }
-  .aliases {
-    margin: 0;
-    font-size: 0.72rem;
-    color: #555;
-    line-height: 1.9;
-  }
-
-  /* ── footer ── */
-  .profile-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 12px;
-    flex-wrap: wrap;
-    padding-top: 0.6rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-    font-size: 10.5px;
-    color: #888;
-  }
-  .mirror-link,
-  .home-link {
-    color: #000;
-    text-decoration: none;
-  }
-  .mirror-link:hover,
-  .home-link:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  /* ── mobile: simplify layout, never content (DESIGN.md) ── */
-  @media (max-width: 767px) {
-    .record-row,
-    .fact-row {
-      grid-template-columns: 1fr;
-      gap: 3px;
-    }
-    .row-link {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 3px;
-      padding: 11px 6px;
-    }
-    .row-meta {
-      text-align: left;
-    }
-    .focus-row,
-    .entry {
-      padding-top: 11px;
-      padding-bottom: 11px;
-    }
+    margin-bottom: 0;
   }
 </style>

@@ -1,31 +1,16 @@
-// Data for /about (ProfilePage). The aliases, facts, and searchable queries
-// exist for findability — keep them intact even if the presentation changes.
+// Data for /about (ProfilePage). The aliases and searchable queries exist for
+// findability — keep them intact even if the presentation changes. /about is
+// prose, so its sentences live in about.astro; what stays here is the identity
+// strings those sentences and the JSON-LD both need. Anything that changes
+// month to month belongs in public/profile.json (/now), not here.
 export const profileData = {
-  intro: [
-    "i'm alex gao — tianhao on paper, alexgaoth everywhere else. the 'th' is my chinese first name, so you can find me easier.",
-    'math-cs at uc san diego. i build software, write about history and philosophy, and keep chinese poetry on the side. i like to think, and make others think.',
-  ],
   aliases: [
     'Alex Gao',
     'alexgaoth',
     'Tianhao Gao',
     'Tianhao (Alex) Gao',
   ],
-  focus: [
-    'math-cs @ ucsd',
-    'building signalor.app',
-    'software & devops intern @ ibm',
-    'helping around sdx @ ucsd',
-    'writing thoughts, poetry, and ci',
-  ],
   email: 'alexgaoth@gmail.com',
-  facts: [
-    { label: 'name', value: 'alex gao' },
-    { label: 'handle', value: 'alexgaoth' },
-    { label: 'site', value: 'alexgaoth.com' },
-    { label: 'school', value: 'uc san diego · math-cs' },
-    { label: 'focus', value: 'software, writing, mathematical thinking' },
-  ],
   links: [
     { label: 'github', handle: 'alexgaoth', href: 'https://github.com/alexgaoth' },
     { label: 'linkedin', handle: 'in/alexgaoth', href: 'https://linkedin.com/in/alexgaoth' },

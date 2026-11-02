@@ -81,7 +81,9 @@ Put the `.glb` (and optional looping `.mp3`) in `astro/public/regents/`, then ad
 
 - `astro/src/data/content.js` → `resume` (the /resume page).
 - `astro/src/data/homeRailData.js` → `EXPERIENCE` / `EDUCATION` / `TROPHIES` (the homepage panel — hand-tightened wording, edit separately).
-- `astro/src/data/profileData.js` → facts/focus on /about.
+- `astro/src/data/profileData.js` → the socials, aliases and mirrors named in /about's prose.
+  /about itself is four hand-written paragraphs in `about.astro` — edit them there, and keep them
+  prose (see DESIGN.md). Anything that changes month to month goes in `public/profile.json` (/now).
 - Replace `resume.pdf` in **both** `astro/public/` (served at alexgaoth.com/resume.pdf) and the repo root (intro site).
 - Also regenerate `astro/public/resources/resume.jpg` — the homepage directory card shows it, so it silently goes stale:
   `pdftoppm -f 1 -l 1 -jpeg -scale-to-x 1600 -scale-to-y -1 resume.pdf out`, then crop the top to 1600×1201.

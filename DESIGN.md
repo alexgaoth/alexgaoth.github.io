@@ -131,9 +131,18 @@ rows, keep every fact.**
   at their clamp minimum (1.8–2rem); sub lines stay one sentence. Inline `·`
   lists may wrap — each item stays `white-space: nowrap` so items break between
   dots, not mid-word.
-- **About page**: single column (auto-fit grid collapses), doors become
-  full-width tap bars instead of a 2-up grid, footer mirrors wrap. Every
-  SEO-bearing block (facts, aliases, searchable queries) stays.
+- **Nav bar**: one row that scrolls sideways, never a wrapping block. The
+  bordered pills stay (they are the site's language); a partly-clipped pill at
+  the right edge is the affordance. `.page-container` reserves 66px for it.
+- **About page**: already one narrow column at every width — it needs no
+  mobile rules beyond `max-width` and it should keep needing none.
+- **One row language per list.** The homepage tail used to be four 2px cards
+  9px apart, then four strips whose top+bottom borders doubled every hairline,
+  then centred legal text — three languages in 900px. On mobile all eight
+  destinations are one hairline-ruled index (13px padding, single bottom rule,
+  right-aligned `→`) in the same row language as the build log. Bordered boxes
+  still mark a specific thing you enter (a thought, a door, /now); ruled rows
+  mark a list of places to go. Don't mix the two inside one block.
 - **Cream wash**: gradient stops are percentages of section height — keep the
   band where the content actually sits (top-weighted on desktop's 100vh
   sections; wider on mobile's natural-height sections, fading at the edges).
@@ -141,8 +150,16 @@ rows, keep every fact.**
 ## Site structure / roles
 
 - `/` (main page) — the professional, serious layer: BUILT / WRITING / EXPERIENCE panels.
-- `/about`, `/resume`, `/projects`, `/thoughts`, `/quotes` — content pages under
+- `/resume`, `/projects`, `/thoughts`, `/quotes` — content pages under
   `NavigationBar` (via `ContentPage` layout), same ink-on-paper language.
+- `/about` — the one deliberate exception on the professional side: a
+  researcher's homepage (system sans, default browser link blue, no nav bar,
+  no islands, no motion). **Prose only — no lists, no year/role grid, no
+  tables.** The moment it tabulates it becomes a second /resume, and /resume
+  is the one that stays in sync with `content.js`; here the facts sit inside
+  sentences and the links sit inside the facts. Lowercase, first person, no
+  credential voice. Its whole stylesheet lives in `about.astro` and exists
+  mostly to undo the global reset. Nothing else may borrow this look.
 - Doors to the personal side: `/art` (ink-wash, serif, its own quiet language),
   `/poetry`, `/ci`, `/regents` (Cormorant Garamond, paper grain), `/now`
   (warm paper `#efe9d6`, draggable slip/cards, live guest marks), and `/gallery`
