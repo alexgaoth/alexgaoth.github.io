@@ -57,9 +57,15 @@ const shows = [
     <div class="page-container" style="background-color:#fff">
         <canvas id="qj" class="fx-canvas" aria-hidden="true"></canvas>
         <div class="fx-note" aria-hidden="true">
-            <svg class="fx-note-arrow"><path class="fx-note-halo"></path><path class="fx-note-line"></path></svg>
+            <svg class="fx-note-arrow">
+                <path class="fx-note-halo"></path>
+                <path class="fx-note-line"></path>
+            </svg>
             <p class="fx-note-text"></p>
         </div>
+        <p class="fx-formula" aria-hidden="true">
+            q<sub>n+1</sub> = q<sub>n</sub><sup>2</sup> + c<br />q ∈ ℍ · c = −0.2 + 0.8i · k = 0
+        </p>
         <div
             class="content-wrapper"
             style="padding-top:2.5rem;padding-bottom:3rem"
@@ -69,11 +75,20 @@ const shows = [
                 // its font has loaded (two seconds at most), so it never shows
                 // in a fallback face before Space Grotesk arrives.
                 (() => {
-                    if (innerWidth < 768 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+                    if (
+                        innerWidth < 768 ||
+                        matchMedia("(prefers-reduced-motion: reduce)").matches
+                    )
+                        return;
                     const root = document.documentElement;
                     const show = () => root.classList.remove("fx-font-wait");
                     root.classList.add("fx-font-wait");
-                    document.fonts.load('700 60px "Space Grotesk"', "alex gaoth's directory").then(show, show);
+                    document.fonts
+                        .load(
+                            '700 60px "Space Grotesk"',
+                            "alex gaoth's directory",
+                        )
+                        .then(show, show);
                     setTimeout(show, 2000);
                 })();
             </script>
@@ -82,6 +97,8 @@ const shows = [
                     class="title-section-parallax"
                     style="position:relative"
                 >
+                    <!-- the "o" spans must touch "ga" and "th": any space or line break there shows as a space -->
+                    <!-- prettier-ignore -->
                     <h1 class="title-main">
                         alex ga<span class="title-o"><span class="title-o-glyph">o</span></span>th's directory
                     </h1>
@@ -105,7 +122,15 @@ const shows = [
                     <p class="fx-lead">hi i am alex</p>
                     <p class="fx-line">so great that you're here</p>
                     <p class="fx-line">
-                        explore this quaternion julia fractal with me
+                        explore my favourite mathematical object with me
+                    </p>
+                    <p class="fx-line">as i show you around</p>
+                    <br />
+                    <p class="fx-line">
+                        if we haven't met,
+                        <a class="fx-inline" href="https://intro.alexgaoth.com">
+                            here is a super quick intro
+                        </a>
                     </p>
                 </div>
             </section>
@@ -118,17 +143,18 @@ const shows = [
                     <p class="fx-line">here are some things i have built</p>
                     <div class="fx-show">
                         <a class="fx-show-frame" href={shows[0].href}>
-                            {
-                                shows.map((ship, i) => (
-                                    <img
-                                        src={ship.img}
-                                        alt={ship.name}
-                                        data-href={ship.href}
-                                        class:list={["fx-show-img", { on: i === 0 }]}
-                                        loading={i === 0 ? "eager" : "lazy"}
-                                    />
-                                ))
-                            }
+                            {shows.map((ship, i) => (
+                                <img
+                                    src={ship.img}
+                                    alt={ship.name}
+                                    data-href={ship.href}
+                                    class:list={[
+                                        "fx-show-img",
+                                        { on: i === 0 },
+                                    ]}
+                                    loading={i === 0 ? "eager" : "lazy"}
+                                />
+                            ))}
                         </a>
                     </div>
                 </div>
@@ -138,12 +164,16 @@ const shows = [
 
             <section class="fx-section low" data-text="fractal">
                 <div class="fx-text">
-                    <p class="fx-lead">this is a high dimensional julia set fractal</p>
+                    <p class="fx-lead">including this</p>
+                    <p class="fx-line">a quaternion julia set fractal</p>
                     <p class="fx-line">
-                        read more about it <a
+                        read more about it
+                        <a
                             class="fx-inline"
-                            href="https://paulbourke.net/fractals/quatjulia/">here</a
+                            href="https://paulbourke.net/fractals/quatjulia/"
                         >
+                            here
+                        </a>
                     </p>
                 </div>
             </section>
@@ -152,15 +182,17 @@ const shows = [
 
             <section class="fx-section right" data-text="writing">
                 <div class="fx-text">
-                    <p class="fx-lead">i like to think and make others think</p>
+                    <p class="fx-lead">i enjoy thinking deeply</p>
                     <p class="fx-line">
-                        so i write, to write well is to think clearly
+                        so i write! to write well is to think clearly
                     </p>
+
                     <p class="fx-line">
-                        i enjoy imagining all people thinking rationally <a
-                            class="fx-inline"
-                            href="https://sublationism.com">here</a
-                        >
+                        i attempt to theorize a society where everyone thinking
+                        rationally{" "}
+                        <a class="fx-inline" href="https://sublationism.com">
+                            here
+                        </a>
                     </p>
                 </div>
             </section>
@@ -171,23 +203,28 @@ const shows = [
                 <div class="fx-text">
                     <p class="fx-lead">i believe in just doing things</p>
                     <p class="fx-line">
-                        that yielded with a great range of interesting stories,
+                        it yielded me with a great deal of interesting stories,
                         experience
                     </p>
-                    <p class="fx-line">explore the rest of the site for my takes</p>
-                    <p class="fx-line">i strongly recommend</p>
+                    <p class="fx-line">
+                        i strongly recommend explore the rest of the site
+                    </p>
                 </div>
             </section>
 
             <div class="fx-gap g5" aria-hidden="true"></div>
 
-            <!-- What each view shows, for the faint arrows the fractal layer
-           draws while that view holds. dx/dy place the caption, in viewport
-           heights from the view's subject. -->
+            <!-- What each view shows, for the arrows the fractal layer draws
+           while that view holds. dx/dy place the caption, in viewport heights
+           from the view's subject: each sits in its frame's empty paper (top
+           right for the face, bottom left for the cliff). -->
             <ol class="fx-notes" hidden>
-                <li data-shot="egg" data-dx="-0.3" data-dy="0.36">a 3d slice of a 4d set, tilted toward the fourth dimension</li>
-                <li data-shot="face" data-dx="0.4" data-dy="0.3">cut open: the face is the flat 2d julia set</li>
-                <li data-shot="cliff" data-dx="0.4" data-dy="-0.28">the edge of the 2d set, as a cliff in 3d</li>
+                <li data-shot="face" data-dx="0.45" data-dy="-0.27">
+                    cut open: the face is the flat 2d julia set
+                </li>
+                <li data-shot="cliff" data-dx="-0.45" data-dy="0.25">
+                    the edge of the 2d set, as a cliff in 3d
+                </li>
             </ol>
 
             <!-- Return stage: empty scroll distance the directory scrolls into
@@ -199,6 +236,8 @@ const shows = [
                 <div class="cards-section-parallax" style="position:relative">
                     <div class="cards-title">
                         <div class="return-reveal-line">
+                            <!-- the "o" spans must touch "ga" and "th": any space or line break there shows as a space -->
+                            <!-- prettier-ignore -->
                             <h2 class="title-main">
                                 alex ga<span class="title-o"><span class="title-o-glyph">o</span></span>th's directory
                             </h2>
@@ -218,26 +257,24 @@ const shows = [
                         </div>
                     </div>
                     <div class="grid-2col">
-                        {
-                            Object.entries(content).map(([key, data]) => (
-                                <a href={`/${key}`} class="card">
-                                    <div class="card-image">
-                                        <img
-                                            src={data.previewImage}
-                                            alt={`${data.title} preview`}
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                    <h3 class="title-card">{data.title}</h3>
-                                    <p class="card-description">
-                                        {CARD_DESCRIPTIONS[key]}
-                                    </p>
-                                    <span class="card-arrow" aria-hidden="true"
-                                        >→</span
-                                    >
-                                </a>
-                            ))
-                        }
+                        {Object.entries(content).map(([key, data]) => (
+                            <a href={`/${key}`} class="card">
+                                <div class="card-image">
+                                    <img
+                                        src={data.previewImage}
+                                        alt={`${data.title} preview`}
+                                        loading="lazy"
+                                    />
+                                </div>
+                                <h3 class="title-card">{data.title}</h3>
+                                <p class="card-description">
+                                    {CARD_DESCRIPTIONS[key]}
+                                </p>
+                                <span class="card-arrow" aria-hidden="true">
+                                    →
+                                </span>
+                            </a>
+                        ))}
                     </div>
                 </div>
 
@@ -282,7 +319,8 @@ const shows = [
                         </p>
                     </div>
                 </div>
-            </div><!-- /return-stage -->
+            </div>
+            <!-- /return-stage -->
         </div>
 
         <!-- Fixed parallax chrome (hidden without JS / reduced motion) -->
@@ -318,7 +356,8 @@ const shows = [
         position: relative;
         z-index: 1;
     }
-    /* a faint arrow and a short caption naming what a view shows */
+    /* a short arrow and a caption naming what a view shows, set in the
+       frame's empty paper as plain text */
     .fx-note {
         position: fixed;
         inset: 0;
@@ -345,19 +384,48 @@ const shows = [
         stroke-opacity: 0.6;
     }
     .fx-note-line {
-        stroke: #8c8c8c;
-        stroke-width: 1;
+        stroke: #555;
+        stroke-width: 1.25;
     }
     .fx-note-text {
         position: absolute;
         margin: 0;
         max-width: 17rem;
-        padding: 2px 6px;
         transform: translateY(-50%);
-        background: rgba(255, 255, 255, 0.8);
-        font: 10.5px/1.5 "Space Mono", monospace;
+        font-size: clamp(0.82rem, 1vw, 0.98rem);
+        font-weight: 400;
+        line-height: 1.55;
+        color: #555;
+    }
+    /* the set's definition, small in the corner while the fractal shows */
+    .fx-formula {
+        display: none;
+        position: fixed;
+        right: clamp(1.2rem, 2.4vw, 2.4rem);
+        bottom: 1.1rem;
+        z-index: 2;
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.7;
         letter-spacing: 0.02em;
         color: #8a8a8a;
+        /* a soft paper halo, so it still reads where the fractal fills the corner */
+        text-shadow:
+            0 0 2px #fff,
+            0 0 4px #fff,
+            0 0 9px #fff;
+        text-align: right;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+    :global(html.fx-live) .fx-formula {
+        display: block;
+    }
+    .fx-formula sub,
+    .fx-formula sup {
+        font-size: 0.72em;
+        line-height: 0;
     }
 
     /* Both "o"s and the ball are one object. When the ball is shown or
@@ -531,7 +599,9 @@ const shows = [
         color: inherit;
         text-decoration: none;
         border-bottom: 1px solid rgba(0, 0, 0, 0.18);
-        transition: background 0.12s, color 0.12s;
+        transition:
+            background 0.12s,
+            color 0.12s;
     }
     .fx-inline:hover {
         background: #000;
@@ -594,12 +664,24 @@ const shows = [
         :global(html.fx-live) .fx-gap {
             display: block;
         }
-        .g0 { height: 60vh; }
-        .g1 { height: 100vh; }
-        .g2 { height: 100vh; }
-        .g3 { height: 520vh; }
-        .g4 { height: 100vh; }
-        .g5 { height: 60vh; }
+        .g0 {
+            height: 60vh;
+        }
+        .g1 {
+            height: 100vh;
+        }
+        .g2 {
+            height: 100vh;
+        }
+        .g3 {
+            height: 520vh;
+        }
+        .g4 {
+            height: 100vh;
+        }
+        .g5 {
+            height: 60vh;
+        }
     }
 
     /* ── kept from the homepage: intro, return stage, chrome ── */
@@ -685,7 +767,9 @@ const shows = [
             font-size: 13px;
             margin: 0;
         }
-        :global(.cards-section-parallax > .grid-2col > .card .card-description) {
+        :global(
+            .cards-section-parallax > .grid-2col > .card .card-description
+        ) {
             grid-area: desc;
             font-size: 10.5px;
             margin-top: 3px;
@@ -723,10 +807,21 @@ const shows = [
             const text = section.querySelector(".fx-text");
             const top = section.getBoundingClientRect().top + scrollY;
             const a = top - 0.28 * vh;
-            const b = top + section.offsetHeight - text.offsetHeight - 0.28 * vh;
-            set(Math.min(imgs.length - 1, Math.max(0, Math.floor(((scrollY - a) / (b - a)) * imgs.length))));
+            const b =
+                top + section.offsetHeight - text.offsetHeight - 0.28 * vh;
+            set(
+                Math.min(
+                    imgs.length - 1,
+                    Math.max(
+                        0,
+                        Math.floor(((scrollY - a) / (b - a)) * imgs.length),
+                    ),
+                ),
+            );
         };
-        addEventListener("scroll", () => requestAnimationFrame(follow), { passive: true });
+        addEventListener("scroll", () => requestAnimationFrame(follow), {
+            passive: true,
+        });
     }
 </script>
 
@@ -793,7 +888,10 @@ const shows = [
             const startTop = (vh - titleH) * 0.5;
             introTitle.style.top =
                 (startTop + (80 - startTop) * eased).toFixed(1) + "px";
-            const op = Math.max(0, 1 - Math.max(0, (intro - FADE) / (1 - FADE)));
+            const op = Math.max(
+                0,
+                1 - Math.max(0, (intro - FADE) / (1 - FADE)),
+            );
             introTitle.style.opacity = op.toFixed(3);
             introTitle.style.pointerEvents = op > 0 ? "auto" : "none";
             if (introSub) {

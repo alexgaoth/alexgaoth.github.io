@@ -109,8 +109,10 @@ What to edit for what:
 
 - Words, the slideshow, section lengths: `astro/src/pages/index.astro` (sections, the `shows`
   list, the `.fx-gap` heights and the live section heights in its style).
-- Notes (a faint arrow and one caption on a view): the hidden `.fx-notes` list in the same file,
-  one `<li>` per view, by shot id; `data-dx`/`data-dy` place the caption, in viewport heights.
+- Notes (a short arrow and one caption on a view): the hidden `.fx-notes` list in the same file,
+  one `<li>` per view, by shot id; `data-dx`/`data-dy` place the caption, in viewport heights from
+  the view's subject — keep it in the frame's empty paper, since the caption has no box.
+- The formula in the bottom-right corner: `.fx-formula` in the same file.
 - Intro length and the title's rise: `INTRO_VH` / `RISE` / `FADE` in the page's choreography script;
   how long the title holds still while its "o" becomes the ball: `TITLE_HOLD_VH` in
   `astro/src/lib/homeScroll.js` (the fractal layer reads it too).
@@ -121,6 +123,8 @@ What to edit for what:
 - How long holds and moves last, the ball's size and place in the titles' "o", the notes' look:
   the constants at the top of `astro/src/lib/qjulia/home.js`; the letter ↔ ball animations are
   the `.title-o` CSS in `index.astro`.
+- Speed bumps — how long a fast first pass is held at the first "o", at "cut open" and at the
+  landing: `BUMPS` in `home.js` (`bumpSpans` says where). `/?nobumps` shows the page without them.
 
 Check on a desktop-width window: mobile, reduced motion and no-WebGL2 get the words as one plain
 column, which must stay complete on its own.

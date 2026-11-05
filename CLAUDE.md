@@ -29,7 +29,8 @@ orientation and the owner's priorities.
   `/usr/bin/google-chrome-stable`, `--headless=new --use-gl=angle --use-angle=gl
   --ignore-gpu-blocklist` — WebGL2 needs the GPU) and screenshot while
   scrolling; `/?debug` exposes `window.qjHome`, and `window.qjStats.mode ===
-  'idle'` means the frame is sharp. Headless draws no classic scrollbar, but
+  'idle'` means the frame is sharp. Add `&nobumps` when a script jumps the
+  scroll: the speed bumps hold programmatic scrolls like a fast visitor. Headless draws no classic scrollbar, but
   the owner's Chrome has a 15px one: map page positions onto the fixed canvas
   with its `clientWidth`, never `innerWidth`. `loading="lazy"` images never
   load in a `fullPage` shot — blank boxes there are not broken images.

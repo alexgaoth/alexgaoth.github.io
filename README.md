@@ -28,7 +28,8 @@ title then rises off it, and the ball grows through the slice's
 four-dimensional stages, holds a view beside each of four short sections of
 text, and lands in the second title's "o" above the directory cards, where the
 letter takes over from it. The camera is a pure function of `scrollY`, so scrolling back
-runs it in reverse.
+runs it in reverse. A fast first pass is held for a moment at the three moments that only
+work if seen: the first "o" turning into the ball, "cut open", and the landing.
 
 - `astro/src/pages/index.astro` — the words, the slideshow, the notes, the
   section lengths, the letter ↔ ball CSS, and the intro/return choreography.

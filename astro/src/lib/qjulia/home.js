@@ -16,13 +16,17 @@ const TAN = Math.tan((40 * Math.PI) / 360); // the ball's lens: 40° vertical
 const BEAT_VH = 0.8;      // a beat (a view with no words) holds this many viewport heights
 const MOVE_MIN_VH = 0.4;  // and the moves around it never get less than this
 const VIA_TIME = 0.35;    // extra time a move gets for each via point it passes
-const NOTE_ALPHA = 0.85;  // the notes stay faint
+const NOTE_ALPHA = 1;     // how strong the notes are at their fullest
+// Speed bumps: how long each of three moments must be on screen before the
+// scroll may pass it (ms). See bumpCheck.
+const BUMPS = { o: 900, face: 1400, land: 800 };
 
 const clamp01 = (n) => Math.min(1, Math.max(0, n));
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 const root = document.documentElement;
 const canvas = document.getElementById('qj');
 const note = document.querySelector('.fx-note');
+const formula = document.querySelector('.fx-formula');
 const docTop = (el) => el.getBoundingClientRect().top + scrollY;
 
 // Where a letter's ink sits on screen: centre and radius, from the font's own
@@ -259,6 +263,7 @@ function measure() {
     A.notes.push({ text: li.textContent.trim(), a: w.a, b: w.b, c: w.c, d: w.d, tx, ty, cx, cy });
   });
   A.noteOn = null;
+  A.windows = windows;
   if (debug) window.qjHome = { A, stations: out };
 }
 
@@ -320,12 +325,66 @@ function syncPage(p) {
   setBall(A.o1.el, show && y <= A.release, flip);
   setBall(A.o2.el, !landed, flip);
   canvas.style.opacity = show ? '' : '0';
+  formula.style.opacity = show ? '1' : '0';
   for (const t of A.texts) t.el.style.opacity = presence(y, t).toFixed(3);
   let on = null, most = 0;
   for (const n of A.notes) { const o = presence(y, n); if (o > most) { most = o; on = n; } }
   if (on && on !== A.noteOn) drawNote(on);
   A.noteOn = on;
   note.style.opacity = (most * NOTE_ALPHA).toFixed(3);
+}
+
+// Speed bumps. Most visitors fly through a first pass, and three moments only
+// work if they are seen: the first title's "o" turning into the ball (a 0.75 s
+// animation in the title's still zone), "cut open" (the flat 2d julia set
+// inside the solid, with its note), and the ball going into the second
+// title's "o". Whoever reaches the end of one sooner than BUMPS allows after
+// it came on screen is held there for the rest of that time. Each holds once
+// per visit, only going down, and never for a deliberate jump (End, a
+// scrollbar drag, a link) of more than a screen and a half at once.
+const bumpSeen = {};  // when each moment came on screen, or true once passed
+let held = null;      // the bump holding the scroll: { y, until }
+let lastY = 0;
+const bumpSpans = () => [
+  ['o', A.wake, A.hold - 2],
+  ['face', A.windows.face.b, A.windows.face.c],
+  ['land', A.land, A.land + 2],
+];
+function stopDown(e) {
+  const down = e.type === 'wheel' ? e.deltaY > 0
+    : ['ArrowDown', 'PageDown', 'End'].includes(e.key) || (e.key === ' ' && !e.shiftKey);
+  if (held && down) e.preventDefault();
+}
+function release() {
+  held = null;
+  removeEventListener('wheel', stopDown);
+  removeEventListener('keydown', stopDown);
+}
+function bumpCheck() {
+  const y = scrollY, now = performance.now(), jump = Math.abs(y - lastY) > 1.5 * A.vh;
+  lastY = y;
+  if (held) {
+    if (now >= held.until) release();
+    else if (y > held.y) scrollTo({ top: held.y, behavior: 'instant' });
+    return;
+  }
+  for (const [name, from, to] of bumpSpans()) {
+    if (bumpSeen[name] === true) continue;
+    if (jump) { if (y > to) bumpSeen[name] = true; continue; }
+    if (y >= from && bumpSeen[name] === undefined) bumpSeen[name] = now;
+    if (y > to && bumpSeen[name] !== undefined) {
+      const until = bumpSeen[name] + BUMPS[name];
+      bumpSeen[name] = true;
+      if (now < until) {
+        held = { y: Math.round(to), until };
+        scrollTo({ top: held.y, behavior: 'instant' });
+        addEventListener('wheel', stopDown, { passive: false });
+        addEventListener('keydown', stopDown);
+        setTimeout(release, until - now);
+        return;
+      }
+    }
+  }
 }
 
 export async function run() {
@@ -338,6 +397,11 @@ export async function run() {
   root.classList.add('fx-live');
   measure();
   syncPage(scrollY / Math.max(1, root.scrollHeight - innerHeight));
+  lastY = scrollY;
+  for (const [name, , to] of bumpSpans()) if (scrollY > to) bumpSeen[name] = true;
+  // ?nobumps turns them off, for checking the pacing (and for tools that jump
+  // the scroll around, which would otherwise be held like a fast visitor)
+  if (!new URLSearchParams(location.search).has('nobumps')) addEventListener('scroll', bumpCheck, { passive: true });
   const relayout = () => {
     const live = !window.qjStats.mode.startsWith('poster');
     root.classList.toggle('fx-live', live);
