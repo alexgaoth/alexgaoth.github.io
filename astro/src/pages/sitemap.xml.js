@@ -1,7 +1,7 @@
 // Honest lastmod only: thoughts use modified||date; static routes carry none
 // (a fake build-date lastmod trains crawlers to ignore the signal).
 import { buildAbsoluteUrl, getThoughts, thoughtUrl } from '../lib/thoughts.js';
-import { getFeaturedProjects } from '../lib/projectPages.js';
+import { getProjectGroups } from '../lib/projectPages.js';
 
 const STATIC_ROUTES = [
   '/',
@@ -19,7 +19,7 @@ const STATIC_ROUTES = [
   '/ci',
   '/ci/en',
   '/writing',
-  ...getFeaturedProjects().map((entry) => `/projects/${entry.slug}`),
+  ...getProjectGroups().map((group) => `/projects/${group.slug}`),
 ];
 
 export async function GET() {

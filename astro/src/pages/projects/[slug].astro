@@ -1,193 +1,52 @@
 ---
-// Standalone project pages: one real URL per major
-// project with the existing description, facts, screenshots, and links —
-// plus truthful SoftwareApplication/CreativeWork and BreadcrumbList JSON-LD.
+// A project group's subpage: the group's own copy, then one ProjectCard per
+// member. Groups come from content.projects.groups; see projectPages.js.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavigationBar from '../../components/NavigationBar.astro';
-import { APP_ROUTES, SITE, buildAppUrl } from '../../config/site.js';
-import { getFeaturedProjects } from '../../lib/projectPages.js';
+import ProjectCard from '../../components/projects/ProjectCard.astro';
+import { APP_ROUTES } from '../../config/site.js';
+import { getProjectGroups, projectSlug } from '../../lib/projectPages.js';
 
 export function getStaticPaths() {
-  return getFeaturedProjects().map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry },
+  return getProjectGroups().map((group) => ({
+    params: { slug: group.slug },
+    props: { group },
   }));
 }
 
-const { entry } = Astro.props;
-const { project, ship, schemaType, images, slug, prose } = entry;
-
-const pagePath = `${APP_ROUTES.projects}/${slug}`;
-const pageUrl = buildAppUrl(pagePath);
-const title = `${project.name} — Alex Gao`;
-
-const links = [
-  project.liveDemo ? { label: 'live', href: project.liveDemo } : null,
-  project.github ? { label: 'github', href: project.github } : null,
-  project.pypi ? { label: 'pypi', href: project.pypi } : null,
-].filter(Boolean);
-
-const facts = [
-  ship?.year && { label: 'year', value: ship.year },
-  ship?.status && { label: 'status', value: ship.status },
-  { label: 'stack', value: project.tech },
-].filter(Boolean);
-
-const projectSchema = {
-  '@context': 'https://schema.org',
-  '@type': schemaType,
-  name: project.name,
-  description: project.description,
-  url: pageUrl,
-  image: images.map((img) => `${SITE.appUrl}${img}`),
-  author: {
-    '@type': 'Person',
-    name: SITE.name,
-    alternateName: SITE.handle,
-    url: SITE.rootUrl,
-  },
-  ...(ship?.year ? { dateCreated: ship.year } : {}),
-  ...(links.length ? { sameAs: links.map((l) => l.href) } : {}),
-  ...(schemaType === 'SoftwareApplication'
-    ? { applicationCategory: 'WebApplication', operatingSystem: 'Web' }
-    : {}),
-};
-
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: buildAppUrl('/') },
-    { '@type': 'ListItem', position: 2, name: "Things That I've Made", item: buildAppUrl(APP_ROUTES.projects) },
-    { '@type': 'ListItem', position: 3, name: project.name, item: pageUrl },
-  ],
-};
+const { group } = Astro.props;
 ---
 
 <BaseLayout
-  title={title}
-  description={project.description}
-  keywords={['Alex Gao', 'alexgaoth', project.name, ...project.tech.split(',').map((t) => t.trim())]}
-  path={pagePath}
-  imagePath={images[0]}
-  structuredData={[projectSchema, breadcrumbSchema]}
+  title={`${group.name} — Alex Gao`}
+  description={group.description}
+  keywords={['Alex Gao', 'alexgaoth', group.name, ...group.tech.split(',').map((t) => t.trim())]}
+  path={`${APP_ROUTES.projects}/${group.slug}`}
+  imagePath={group.image}
 >
-  <NavigationBar />
+  <NavigationBar backHref={APP_ROUTES.projects} backLabel="Back" />
   <div class="page-container">
     <div class="content-wrapper-narrow">
-      <nav class="project-crumbs" aria-label="Breadcrumb">
-        <a href="/">home</a> / <a href={APP_ROUTES.projects}>projects</a> / <span>{slug}</span>
-      </nav>
+      <h1 class="title-page">{group.name}</h1>
+      <p class="group-desc">{group.description}</p>
 
-      <h1 class="title-page">{project.name}</h1>
-      <p class="project-desc">{project.description}</p>
-
-      {prose.length > 0 && (
-        <div class="project-prose">
-          {prose.map((paragraph) => (
-            <p>{paragraph}</p>
-          ))}
-        </div>
-      )}
-
-      <dl class="project-facts">
-        {facts.map((fact) => (
-          <div class="project-fact">
-            <dt>{fact.label}</dt>
-            <dd>{fact.value}</dd>
+      <div class="grid-1col">
+        {group.members.map((project) => (
+          <div id={`project-${projectSlug(project.name)}`}>
+            <ProjectCard project={project} />
           </div>
         ))}
-      </dl>
-
-      {links.length > 0 && (
-        <p class="project-links">
-          {links.map((link) => (
-            <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label} →</a>
-          ))}
-        </p>
-      )}
-
-      <div class="project-shots">
-        {images.map((img, i) => (
-          <img
-            src={img}
-            alt={`${project.name} — screenshot ${i + 1}`}
-            loading={i === 0 ? 'eager' : 'lazy'}
-          />
-        ))}
       </div>
-
-      <p class="project-back">
-        <a href={`${APP_ROUTES.projects}#project-${slug}`}>← all projects</a>
-      </p>
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .project-crumbs {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem;
-    color: #888;
-    margin-bottom: 1.4rem;
-  }
-  .project-crumbs a { color: #888; }
-  .project-crumbs a:hover { color: #000; }
-  .project-desc {
-    font-family: 'Space Mono', monospace;
+  .group-desc {
     font-size: 0.82rem;
     line-height: 1.7;
     max-width: 62ch;
-    color: #333;
-    margin-bottom: 1.4rem;
-  }
-  .project-prose {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.78rem;
-    line-height: 1.75;
-    max-width: 62ch;
-    color: #444;
-    margin-bottom: 1.6rem;
-  }
-  .project-prose p { margin: 0 0 0.9em; }
-  .project-facts { margin: 0 0 1.2rem; }
-  .project-fact {
-    display: flex;
-    gap: 12px;
-    padding: 6px 0;
-    border-bottom: 1px solid #eee;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.74rem;
-  }
-  .project-fact dt {
-    width: 64px;
-    flex-shrink: 0;
-    color: #888;
-    text-transform: uppercase;
-    font-size: 0.62rem;
-    letter-spacing: 0.14em;
-    padding-top: 2px;
-  }
-  .project-fact dd { margin: 0; }
-  .project-links {
-    display: flex;
-    gap: 16px;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.78rem;
+    color: #666;
     margin-bottom: 1.8rem;
   }
-  .project-links a { color: #000; }
-  .project-shots { display: flex; flex-direction: column; gap: 12px; }
-  .project-shots img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border: 1px solid #eee;
-  }
-  .project-back {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
-    margin-top: 2rem;
-  }
-  .project-back a { color: #000; }
 </style>

@@ -3,41 +3,38 @@
 // profile.json fetched at runtime can override NowPage's display, but this is the fallback.
 
 export const NOW_FALLBACK = {
-  date: "may 16, 2026",
-  location: "San Jose, california",
-  why: "home for summer · sdx @ ucsd",
+  date: "nov 3, 2026",
+  location: "san francisco, california",
+  why: "mts intern · hypercubic (yc f25)",
   tz: "pdt",
   tzIana: "America/Los_Angeles",
   building: [
-    { name: "signalor.app", detail: "v0.3 · google analytics for brands · in production", tag: "live" },
-    { name: "sdx @ ucsd", detail: "design-engineering club · 3 brand pitches this week", tag: "wip" },
-    { name: "this very site", detail: "preview rail redesign · the page you are on", tag: "wip" },
+    { name: "awesome-reverse-engineered", detail: "17k reverse-engineered tools · search site, skill, mcp · nightly refresh", tag: "live" },
+    { name: "oats", detail: "on-device conversation map · mac app", tag: "live" },
+    { name: "signalor.app", detail: "consumer sentiment data for investors · yc w27 applied", tag: "live" },
+    { name: "sublationism.com", detail: "the manifesto, formerly gaoism · formal reading in lean 4", tag: "wip" },
   ],
   learning: [
-    { name: "rust", detail: "beyond the learning curve dip" },
+    { name: "rust", detail: "ferrodoc shipped; still learning" },
     { name: "தமிழ் / tamil", detail: "" },
-    { name: "writing more clearly", detail: "fewer words, harder meaning" },
+    { name: "speaking better", detail: "" },
   ],
   consuming: [
     { kind: "sound", val: "soldier of heaven — sabaton", meta: "on repeat" },
-    { kind: "read",  val: "the undiscovered self — c.g. jung", meta: "ch. 4 of 7" },
+    { kind: "read", val: "the undiscovered self — c.g. jung", meta: "ch. 4 of 7" },
     { kind: "watch", val: "xavier: renegade angel", meta: "s2" },
-    { kind: "play",  val: "EU4", meta: "full achievement soon" },
+    { kind: "play", val: "EU4", meta: "full achievement soon" },
   ],
   writing: [
-    { state: "wip",  val: "Ethics for the future (Gaoism)" },
-    { state: "wip",  val: "mathematical decomposition of hegel (not analytical philosophy)" },
+    { state: "shipped", val: "sublationism manifesto (was: ethics for the future / gaoism)" },
+    { state: "wip", val: "sublationism in lean 4 — the mathematical decomposition of hegel, in practice" },
     { state: "stuck", val: "a story about the fall of nineveh" },
   ],
   quickThoughts: [
-    {
-      thought: "the borrow checker is just the compiler asking you to think about ownership explicitly. it's not hard, it's unfamiliar.",
-      date: "may 15, 2026",
-    },
-    {
-      thought: "every abstraction is a lie that happens to be useful.",
-      date: "may 12, 2026",
-    },
+    { thought: "life is just a matter of playing a bunch of games. you need to play a game, but you can choose which one you partake in.", date: "aug 2026" },
+    { thought: "one must essentially think that they're onto something most of the time to actually be onto something.", date: "aug 2026" },
+    { thought: "the borrow checker is just the compiler asking you to think about ownership explicitly. it's not hard, it's unfamiliar.", date: "may 15, 2026" },
+    { thought: "every abstraction is a lie that happens to be useful.", date: "may 12, 2026" },
   ],
 };
 

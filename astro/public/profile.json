@@ -1,39 +1,44 @@
 {
   "now": {
-    "date": "may 16, 2026",
-    "location": "San Jose, california",
-    "why": "home for summer · sdx @ ucsd",
+    "date": "nov 3, 2026",
+    "location": "san francisco, california",
+    "why": "mts intern · hypercubic (yc f25)",
     "tz": "pdt",
     "tzIana": "America/Los_Angeles",
     "building": [
       {
-        "name": "signalor.app",
-        "detail": "v0.3 · google analytics for brands · in production",
+        "name": "awesome-reverse-engineered",
+        "detail": "17k reverse-engineered tools · search site, skill, mcp · nightly refresh",
         "tag": "live"
       },
       {
-        "name": "sdx @ ucsd",
-        "detail": "design-engineering club · 3 brand pitches this week",
-        "tag": "wip"
+        "name": "oats",
+        "detail": "on-device conversation map · mac app",
+        "tag": "live"
       },
       {
-        "name": "this very site",
-        "detail": "preview rail redesign · the page you are on",
+        "name": "signalor.app",
+        "detail": "consumer sentiment data for investors · yc w27 applied",
+        "tag": "live"
+      },
+      {
+        "name": "sublationism.com",
+        "detail": "the manifesto, formerly gaoism · formal reading in lean 4",
         "tag": "wip"
       }
     ],
     "learning": [
       {
         "name": "rust",
-        "detail": "beyond the learning curve dip"
+        "detail": "ferrodoc shipped; still learning"
       },
       {
         "name": "தமிழ் / tamil",
         "detail": ""
       },
       {
-        "name": "writing more clearly",
-        "detail": "fewer words, harder meaning"
+        "name": "speaking better",
+        "detail": ""
       }
     ],
     "consuming": [
@@ -60,12 +65,12 @@
     ],
     "writing": [
       {
-        "state": "wip",
-        "val": "Ethics for the future (Gaoism)"
+        "state": "shipped",
+        "val": "sublationism manifesto (was: ethics for the future / gaoism)"
       },
       {
         "state": "wip",
-        "val": "mathematical decomposition of hegel (not analytical philosophy)"
+        "val": "sublationism in lean 4 — the mathematical decomposition of hegel, in practice"
       },
       {
         "state": "stuck",
@@ -73,6 +78,14 @@
       }
     ],
     "quickThoughts": [
+      {
+        "thought": "life is just a matter of playing a bunch of games. you need to play a game, but you can choose which one you partake in.",
+        "date": "aug 2026"
+      },
+      {
+        "thought": "one must essentially think that they're onto something most of the time to actually be onto something.",
+        "date": "aug 2026"
+      },
       {
         "thought": "the borrow checker is just the compiler asking you to think about ownership explicitly. it's not hard, it's unfamiliar.",
         "date": "may 15, 2026"

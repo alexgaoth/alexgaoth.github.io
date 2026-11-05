@@ -20,7 +20,7 @@ export async function GET() {
 
 - [Home](${buildAbsoluteUrl('/')}): directory of everything below
 - [About](${buildAbsoluteUrl('/about')}): who alex is — aliases, facts, links
-- [Resume](${buildAbsoluteUrl('/resume')}): experience and skills ([PDF](${buildAbsoluteUrl('/resume.pdf')}))
+- [Me at Work](${buildAbsoluteUrl('/resume')}): what Alex thought about working at Hypercubic, IBM and Signalor ([resume PDF](${buildAbsoluteUrl('/resume.pdf')}))
 - [Projects](${buildAbsoluteUrl('/projects')}): software and creative work
 - [Thoughts](${buildAbsoluteUrl('/thoughts')}): essays ([RSS](${buildAbsoluteUrl('/rss.xml')}))
 - [Writing](${buildAbsoluteUrl('/writing')}): all writing — essays, poetry, ci

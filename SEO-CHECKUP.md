@@ -7,12 +7,12 @@ plus the recurring checkup script. Delete the one-time sections as they complete
 ## 1. One-time, right after the Vercel flip
 
 - [ ] **Production audit** — every route must serve real HTML with self-canonicals:
-  `node scripts/audit-raw-html.mjs https://alexgaoth.com / /about /resume /projects /thoughts /thoughts/winning-the-battle-of-manzikert /writing /quotes /now /poetry /poetry/en /ci /ci/en /regents /projects/signalor`
+  `node scripts/audit-raw-html.mjs https://alexgaoth.com / /about /resume /projects /thoughts /thoughts/winning-the-battle-of-manzikert /writing /quotes /now /poetry /poetry/en /ci /ci/en /regents /projects/maps`
 - [ ] **404 behavior** — `curl -sI https://alexgaoth.com/asdf` returns status 404 and the styled 404 page.
 - [ ] **Feeds live** — `/sitemap.xml`, `/rss.xml`, `/llms.txt`, `/profile.json` all 200 with fresh content.
 - [ ] **Search Console** — resubmit `sitemap.xml`; *Validate Fix* on the old robots.txt issue;
-  *Request indexing* for `/`, `/about`, `/thoughts`, each essay, `/projects/signalor`.
-- [ ] **Social preview caches** — run `/thoughts/winning-the-battle-of-manzikert` and `/projects/signalor`
+  *Request indexing* for `/`, `/about`, `/thoughts`, each essay, `/projects/maps`.
+- [ ] **Social preview caches** — run `/thoughts/winning-the-battle-of-manzikert` and `/projects/maps`
   through Facebook Sharing Debugger, X card validator, LinkedIn Post Inspector; confirm route-specific
   title/image, hit re-scrape where stale.
 - [ ] **Lighthouse mobile** on `/`, one essay, `/regents` — record scores as the post-migration baseline.
@@ -33,10 +33,11 @@ plus the recurring checkup script. Delete the one-time sections as they complete
   with both Google and AI-answer systems. Personal essays don't need them.
 - [ ] **Default OG image** — replace logo.jpg with a purpose-made 1200×630 card; per-essay images
   already work.
-- [ ] **Image weight** — `signalor.png` and `godot_game.png` are ~1MB each; compress like the
+- [ ] **Image weight** — `godot_game.png` is ~1MB; compress like the
   zaporo/default pass (resize + q82). Add width/height attributes where layout shift is visible.
 - [ ] **GitHub READMEs** — point signalor, UCSD_Crimes, JuliaSetFractal, dont-hallucinate repos
-  at their `https://alexgaoth.com/projects/<slug>` pages (entity consolidation).
+  at `https://alexgaoth.com/projects` (entity consolidation; the per-project pages were retired
+  2026-11 and redirect there).
 - [ ] **robots.txt policy note** — add a comment stating AI crawlers are deliberately allowed,
   so the stance reads as policy, not accident.
 - [ ] **Dead liveDemo link** — `alexgaoth.com/UCSD_Crimes/` in `astro/src/data/content.js` likely

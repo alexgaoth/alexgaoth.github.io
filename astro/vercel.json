@@ -12,6 +12,31 @@
       "source": "/main-section/:path*",
       "destination": "https://alexgaoth.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/projects/signalor",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/projects/this-very-website",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/projects/ucsd-crimes-log-tracker",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/projects/3d-fractal-simulator",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/projects/dont-hallucinate",
+      "destination": "/projects",
+      "permanent": true
     }
   ]
 }

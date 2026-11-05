@@ -1,77 +1,101 @@
 ---
-// Static port of the old React page ResumePage.jsx (data={content.resume}).
+// /resume, "Me at Work": Alex's own words on each place he has worked,
+// hand-written here (source: Me_at_work.md). The record itself is the PDF.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContentPage from '../components/ContentPage.astro';
 import { APP_ROUTES } from '../config/site.js';
-import { content } from '../data/content.js';
 
-const data = content.resume;
+const external = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
 <BaseLayout
-  title="Resume — Alex Gao"
-  description="Alex Gao (alexgaoth) resume."
-  keywords={['Alex Gao', 'alexgaoth', 'resume', 'UCSD']}
+  title="Me at Work — Alex Gao"
+  description="Alex Gao (alexgaoth): his resume, and what he thought about working at Hypercubic, IBM and Signalor."
+  keywords={['Alex Gao', 'alexgaoth', 'resume', 'Hypercubic', 'IBM', 'Signalor']}
   path={APP_ROUTES.resume}
 >
   <ContentPage>
-    <h1 class="title-page">Resume</h1>
+    <h1 class="title-page">Me at Work</h1>
     <p class="mb-small">
-      To view my proper resume here:{' '}
-      <a href="https://alexgaoth.com/resume.pdf" target="_blank" rel="noopener noreferrer">view resume</a>
+      here is my <a href="https://alexgaoth.com/resume.pdf" {...external}>resume</a>
     </p>
     <div class="space-y-large">
       <section>
         <h2 class="title-section">Experience</h2>
-        {data.content.experience.map((job) => (
-          <div class="experience-item">
-            <div class="experience-header">
-              <h3 class="experience-role">{job.role}</h3>
-              <span class="experience-period">{job.period}</span>
-            </div>
-            <p class="font-medium mb-small">{job.company}</p>
-            <p class="text-gray">{job.description}</p>
+        <p class="mb-medium">
+          rather than just relisting my resume in a in-style DOM, below is what i thought about each experience
+        </p>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <h3 class="experience-role">Hypercubic</h3>
           </div>
-        ))}
-      </section>
-
-      <section>
-        <h2 class="title-section">Skills</h2>
-        <div class="skills-grid">
-          {data.content.skills.map((skill) => (
-            <a
-              href={skill.href}
-              class="tag-white"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {skill.name}
-            </a>
-          ))}
+          <div class="space-y-small">
+            <p class="text-gray">
+              Working here match almost exactly to what i imagined. An early stage startup that moving at terminal velocity.
+            </p>
+            <p class="text-gray">
+              Burning tokens at a rate where most dont in a month or many, I was still surprised at the amount of work i get done per day. Other than scoping and architecting the actual work, most of the thinking is a continuous search of bottlenecks.
+            </p>
+            <p class="text-gray">
+              It is the increasing the change of acceleration, what i call on the job, increasing the <a class="dark" href="https://en.wikipedia.org/wiki/Jerk_(physics)" {...external}>jerk</a>
+            </p>
+            <p class="text-gray">
+              I liked our office. The mold allegation might be true or might not be, but I dont really feel it.
+            </p>
+          </div>
         </div>
-      </section>
 
-      <section>
-        <h2 class="title-section">Language</h2>
-        <div class="skills-grid">
-          {data.content.languages.map((language) => (
-            <span class="tag-white">{language}</span>
-          ))}
+        <div class="experience-item">
+          <div class="experience-header">
+            <h3 class="experience-role">IBM</h3>
+          </div>
+          <div class="space-y-small">
+            <p class="text-gray">
+              The campus of <a class="dark" href="https://www.google.com/maps/search/?api=1&query=555+Bailey+Avenue%2C+San+Jose%2C+CA" {...external}>555 Bailey Avenue</a>, and it's surrounding hills, lives in my mind as the definition of what dry California look like.
+            </p>
+            <p class="text-gray">
+              The campus doesn't have free catering (paid ones are unanimously tasteless), so I had to source my own food.
+            </p>
+            <p class="text-gray">
+              so apologies to the 10 group lunch and 5 potlucks I have invaded.
+            </p>
+            <p class="text-gray">
+              People here, especially my team, are very nice.
+            </p>
+          </div>
         </div>
-      </section>
 
-      <section>
-        <h2 class="title-section">Education</h2>
-        <div>
-          {data.content.education.map((study_experience) => (
-            <div class="experience-item">
-              <h3 class="text-xl font-semibold">{study_experience.degree}</h3>
-              <p class="font-medium">{study_experience.institution}</p>
-              <p class="text-gray">{study_experience.year}</p>
-            </div>
-          ))}
+        <div class="experience-item">
+          <div class="experience-header">
+            <h3 class="experience-role">Signalor</h3>
+          </div>
+          <div class="space-y-small">
+            <p class="text-gray">
+              I have noticed that most (practically all) of my intellectually rigorous, high agency friend have the intuitive thought about a world where everyone is a founder (albeit many of them aren't one). Most of them would dismiss it with various reasons, but why they felt it to begin with, is revealing.
+            </p>
+            <p class="text-gray">
+              Founding a company, as it might be cliche to the pg essay readers, is one of the most rewarding thing a person can do in their life. Out of altruistic intentions, many would wish this on the rest of the population.
+            </p>
+            <p class="text-gray">
+              I dont hide this, Signalor was founded from the wrong heuristic, me and matthieu we just wanted to build, however that doesn't mean I don't believe in this venture. The people always come before the idea, and what we did the past year deems nothing but success for Signalor in the future.
+            </p>
+          </div>
         </div>
       </section>
     </div>
   </ContentPage>
 </BaseLayout>
+
+<style>
+  /* Links in the reflections are dark, like the words around them; only the
+     resume link keeps the browser's link colour. Hover inverts, as elsewhere. */
+  .dark {
+    color: #000;
+    transition: background 0.12s, color 0.12s;
+  }
+  .dark:hover {
+    background: #000;
+    color: #fff;
+  }
+</style>
