@@ -18,12 +18,12 @@ One `.md` file in `astro/src/data/thoughts/`. The build validates frontmatter an
 ---
 slug: my-new-article        # unique, lowercase-kebab-case → alexgaoth.com/thoughts/my-new-article
 title: My New Article
-date: 2026-05-15            # exact YYYY-MM-DD
+date: "2026-05-15"          # quoted YYYY-MM-DD — an unquoted date fails the schema
 excerpt: One clear sentence describing the article.
 image: /resources/my-image.jpg   # root-relative, file exists in astro/public/resources/
 tags: [History, Writing]    # non-empty
 # optional:
-modified: 2026-06-01        # bump ONLY on meaningful edits (drives sitemap lastmod)
+modified: "2026-06-01"      # quoted; bump ONLY on meaningful edits (drives sitemap lastmod)
 related: [another-slug]     # hand-picked related articles; same-tag articles fill in otherwise
 ---
 
@@ -35,7 +35,6 @@ Opening paragraph. Normal + GitHub-flavored markdown.
 - Sitemap, RSS, and llms.txt update automatically on push. The Buttondown subscriber email is
   currently **paused** — flip `if: false` to `if: true` in `.github/workflows/notify-new-thought.yml`
   to resume it.
-- The homepage WRITING panel shows a hand-picked trio: update `WRITINGS` in `astro/src/data/homeRailData.js` if the new piece should appear there.
 
 ## Poem or ci
 
@@ -46,15 +45,20 @@ Then append the piece to the matching plain-text export `astro/public/poetry.txt
 ## Project
 
 - Card on /projects: add to `projects.content` in `astro/src/data/content.js`
-  (name, tech, description, image/images, liveDemo/github/pypi links).
-  GitHub-only projects (repo link, no liveDemo) may omit the image: the card
+  (name, tech, description, image/images, liveDemo/github/pypi links, `post` for an X post).
+  Array order is page order. A project with a repo may omit the image: the card
   shows the repo's GitHub social card, linked to the repo (`lib/projectImage.js`).
-- Standalone page at /projects/<slug> (optional, for projects worth indexing): in `astro/src/lib/projectPages.js`
-  add the slug to `FEATURED_SLUGS` and write 1–5 paragraphs in `PROSE`. The slug is the name lowercased with
-  non-alphanumerics → `-`. The page and sitemap entry appear automatically.
-- Homepage BUILT panel: automatic — the build log derives from `projects.content`, newest first, and shows the
-  top X that fit (panel slices to 8). Optionally hand-tighten year/name/stack/status per slug in `SHIP_FACTS`
-  (`astro/src/data/homeRailData.js`); a project without an entry gets derived defaults and the build year.
+- Pictures are 1200 × 630 (the Open Graph size), named `<project>-og.png`. Every card's
+  picture frame is fixed at that ratio, so any other shape is cropped to fill it, centred.
+  Where that crop would cut something (a tall map, a screenshot with content at its edges),
+  export a 1200 × 630 version that extends the picture's own edge colour instead — as
+  `weighted-map-driving-time-og.jpg` and `dont-hallucinate-og.png` do.
+- Group (several cards folded into one card that opens a subpage at /projects/<slug>): give each
+  member card `group: "<slug>"` and add the group's slug, name, tech, description and optional image
+  to `projects.groups`. The card sits where its first member sits; the page and sitemap entry appear
+  automatically. Never reuse a retired slug — `astro/vercel.json` redirects five old project-page URLs.
+- Homepage slideshow ("here are some things i have built"): hand-picked, the `shows` list at the top of
+  `astro/src/pages/index.astro` (name, 1200 × 630 picture, link). A new project appears there only if added.
 
 ## Quote
 
@@ -79,8 +83,9 @@ Put the `.glb` (and optional looping `.mp3`) in `astro/public/regents/`, then ad
 
 ## Resume / career facts
 
-- `astro/src/data/content.js` → `resume` (the /resume page).
-- `astro/src/data/homeRailData.js` → `EXPERIENCE` / `EDUCATION` / `TROPHIES` (the homepage panel — hand-tightened wording, edit separately).
+- /resume is "Me at Work": Alex's own words on each job, hand-written in `astro/src/pages/resume.astro`,
+  plus a link to `resume.pdf`, which is the record. `content.js` → `resume` keeps only `education` and
+  `achievements`, which /about reads.
 - `astro/src/data/profileData.js` → the socials, aliases and mirrors named in /about's prose.
   /about itself is four hand-written paragraphs in `about.astro` — edit them there, and keep them
   prose (see DESIGN.md). Anything that changes month to month goes in `public/profile.json` (/now).
@@ -96,11 +101,26 @@ Create `astro/src/pages/<name>.astro` wrapped in `BaseLayout` (title, descriptio
 real `<a href>` links, and content in source HTML. Add the route to `STATIC_ROUTES` in `astro/src/pages/sitemap.xml.js`
 and link it from at least one existing page. Interactive parts go in `astro/src/islands/` behind `client:load`/`client:only`.
 
-## Homepage animation
+## Homepage
 
-Parked. `master` has no WebGL layer on `/` — the homepage is the static ledger
-plus the DOM choreography in `index.astro`. Five concepts were built and none
-kept; they live on the `home-3d` and `home-one-stroke` branches, along with the
-scaffolding a sixth would reuse (the immutable three-acts-then-four-cards
-spine, the scene registry, the build guard). See README section 2 before
-starting another one.
+`/` is the title, four short sections in Alex's words each held beside a view of a quaternion
+Julia set (ray-marched live, `astro/src/lib/qjulia/`), then the directory cards and the footer.
+What to edit for what:
+
+- Words, the slideshow, section lengths: `astro/src/pages/index.astro` (sections, the `shows`
+  list, the `.fx-gap` heights and the live section heights in its style).
+- Notes (a faint arrow and one caption on a view): the hidden `.fx-notes` list in the same file,
+  one `<li>` per view, by shot id; `data-dx`/`data-dy` place the caption, in viewport heights.
+- Intro length and the title's rise: `INTRO_VH` / `RISE` / `FADE` in the page's choreography script;
+  how long the title holds still while its "o" becomes the ball: `TITLE_HOLD_VH` in
+  `astro/src/lib/homeScroll.js` (the fractal layer reads it too).
+- The views themselves and the camera's path between them: `scripts/home-shots/make-home.mjs`,
+  then `node scripts/home-shots/make-home.mjs` from the repo root rewrites
+  `astro/src/lib/qjulia/homeShots.js` — generated, never edit it by hand: the generator routes
+  every move clear of the solid.
+- How long holds and moves last, the ball's size and place in the titles' "o", the notes' look:
+  the constants at the top of `astro/src/lib/qjulia/home.js`; the letter ↔ ball animations are
+  the `.title-o` CSS in `index.astro`.
+
+Check on a desktop-width window: mobile, reduced motion and no-WebGL2 get the words as one plain
+column, which must stay complete on its own.

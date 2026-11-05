@@ -57,7 +57,10 @@ const allStructuredData = [...baseStructuredData, ...structuredData];
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="/logo.jpg" />
+    <!-- The logo: the quaternion Julia set, far and small (shot 61 of the
+         reel). /logo.jpg stays the headshot used as the default share image. -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/icon.png" type="image/png" sizes="192x192" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
 
@@ -104,7 +107,7 @@ const allStructuredData = [...baseStructuredData, ...structuredData];
       <script type="application/ld+json" set:html={JSON.stringify(item)} />
     ))}
 
-    <link rel="apple-touch-icon" href="/logo.jpg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <!-- Google tag (gtag.js) -->
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-M3BEDKHCBK"></script>

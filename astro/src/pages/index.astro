@@ -1,21 +1,12 @@
 ---
-// Static port of the CRA MainPage: same content (title, BUILT → WRITING →
-// EXPERIENCE rail, directory cards, footer strips) rendered as source HTML.
-// The scroll-parallax choreography stays client-side-only in the CRA app and
-// can return later as an island; content and links must not depend on it.
+// The homepage: the title, four short sections of text each held beside a
+// view of a quaternion Julia set, then the directory cards and the footer.
+// The fractal (lib/qjulia/) is chrome over complete static HTML: without it
+// (mobile, reduced motion, no WebGL2) the sections read as one plain column.
+// Its camera journey is scripts/home-shots/make-home.mjs (see README).
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { SITE, APP_ROUTES } from "../config/site.js";
 import { content } from "../data/content.js";
-import {
-    SHIPS,
-    TROPHIES,
-    WRITINGS,
-    DOORS,
-    EXPERIENCE,
-    EDUCATION,
-    DOMAINS,
-    TONGUES,
-} from "../data/homeRailData.js";
 
 const CARD_DESCRIPTIONS = {
     resume: "My professional experience and skills",
@@ -24,19 +15,37 @@ const CARD_DESCRIPTIONS = {
     quotes: "The good and the bad",
 };
 
-const shipHref = (ship) =>
-    ship.anchor
-        ? `${APP_ROUTES.projects}#project-${ship.anchor}`
-        : APP_ROUTES.projects;
-
-// SHIPS is the full ranked list (newest first); the panel shows the top X
-// that fit the build log. Mobile trims further via .ship-mobile-hidden.
-const HOME_SHIP_COUNT = 8;
-const homeShips = SHIPS.slice(0, HOME_SHIP_COUNT);
-
-// Hero shows the featured ship by default; hovering a build-log row swaps it
-// (client enhancement only — the static default must stay complete).
-const featured = homeShips[0];
+// The slideshow, images only, in Alex's order: the reverse-engineering list,
+// the map, the rest, and don't-hallucinate last. Every picture sits in the
+// same 1200 × 630 frame as the project cards, and is exported at that size
+// (the GitHub card, 1200 × 600, loses 2% at its sides).
+const shows = [
+    {
+        name: "awesome-reverse-engineered",
+        img: "https://opengraph.githubassets.com/1/alexgaoth/awesome-reverse-engineered",
+        href: "/projects#project-awesome-reverse-engineered",
+    },
+    {
+        name: "weighted_map",
+        img: "/resources/weighted-map-driving-time-og.jpg",
+        href: "/projects/maps#project-weighted-map",
+    },
+    {
+        name: "signalor.app",
+        img: "/resources/signalor-home.png",
+        href: "/projects#project-signalor",
+    },
+    {
+        name: "oats",
+        img: "/resources/oats-og.png",
+        href: "/projects#project-oats",
+    },
+    {
+        name: "dont-hallucinate",
+        img: "/resources/dont-hallucinate-og.png",
+        href: "/projects#project-dont-hallucinate",
+    },
+];
 ---
 
 <BaseLayout
@@ -46,19 +55,36 @@ const featured = homeShips[0];
     path={APP_ROUTES.home}
 >
     <div class="page-container" style="background-color:#fff">
+        <canvas id="qj" class="fx-canvas" aria-hidden="true"></canvas>
+        <div class="fx-note" aria-hidden="true">
+            <svg class="fx-note-arrow"><path class="fx-note-halo"></path><path class="fx-note-line"></path></svg>
+            <p class="fx-note-text"></p>
+        </div>
         <div
             class="content-wrapper"
             style="padding-top:2.5rem;padding-bottom:3rem"
         >
-            <!-- Intro: empty scroll distance for the fixed-title rise (pre-migration
-           parallax). The FX script fixes the title over it; without JS the
-           spacer stays collapsed and the header reads statically. -->
+            <script is:inline>
+                // Desktop with motion: keep the intro title out of sight until
+                // its font has loaded (two seconds at most), so it never shows
+                // in a fallback face before Space Grotesk arrives.
+                (() => {
+                    if (innerWidth < 768 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+                    const root = document.documentElement;
+                    const show = () => root.classList.remove("fx-font-wait");
+                    root.classList.add("fx-font-wait");
+                    document.fonts.load('700 60px "Space Grotesk"', "alex gaoth's directory").then(show, show);
+                    setTimeout(show, 2000);
+                })();
+            </script>
             <div class="intro-spacer">
                 <header
                     class="title-section-parallax"
                     style="position:relative"
                 >
-                    <h1 class="title-main">alex gaoth's directory</h1>
+                    <h1 class="title-main">
+                        alex ga<span class="title-o"><span class="title-o-glyph">o</span></span>th's directory
+                    </h1>
                     <div class="title-sub" style="padding-top:0.4rem">
                         <p>
                             I am alex gao, the additional 'th' is here so you
@@ -72,268 +98,100 @@ const featured = homeShips[0];
                 </header>
             </div>
 
-            <!-- ── 01 BUILT ── -->
-            <section class="rail-panel">
-                <span class="rail-eyebrow">// what i have</span>
-                <h2 class="rail-title">
-                    BUILT<span style="color:#ccc">.</span>
-                </h2>
-                <p class="rail-sub">
-                    the true answers is uncountable many things but few of value
-                </p>
+            <div class="fx-gap g0" aria-hidden="true"></div>
 
-                <div class="built-grid">
-                    <!-- Hero — desktop only. Image swaps to match whichever row is hovered. -->
-                    <a
-                        href={shipHref(featured)}
-                        class="built-hero"
-                        id="built-hero"
-                    >
-                        <span class="built-hero-media">
+            <section class="fx-section" data-text="hi">
+                <div class="fx-text">
+                    <p class="fx-lead">hi i am alex</p>
+                    <p class="fx-line">so great that you're here</p>
+                    <p class="fx-line">
+                        explore this quaternion julia fractal with me
+                    </p>
+                </div>
+            </section>
+
+            <div class="fx-gap g1" aria-hidden="true"></div>
+
+            <section class="fx-section" data-text="built">
+                <div class="fx-text">
+                    <p class="fx-lead">i really really enjoy building things</p>
+                    <p class="fx-line">here are some things i have built</p>
+                    <div class="fx-show">
+                        <a class="fx-show-frame" href={shows[0].href}>
                             {
-                                homeShips.map((ship, i) => (
+                                shows.map((ship, i) => (
                                     <img
                                         src={ship.img}
                                         alt={ship.name}
-                                        class:list={[
-                                            "built-hero-img",
-                                            { active: i === 0 },
-                                        ]}
-                                        data-ship={ship.name}
+                                        data-href={ship.href}
+                                        class:list={["fx-show-img", { on: i === 0 }]}
                                         loading={i === 0 ? "eager" : "lazy"}
                                     />
                                 ))
                             }
-                            <span
-                                class="built-hero-live"
-                                id="built-hero-live"
-                                hidden={featured.status !== "live"}
-                            >
-                                <span
-                                    class="now-dot rail-pulse"
-                                    style="background:#0f6"></span>
-                                LIVE
-                            </span>
-                        </span>
-                        <span class="built-hero-body">
-                            <span class="built-hero-head">
-                                <span
-                                    class="built-hero-name"
-                                    id="built-hero-name">{featured.name}</span
-                                >
-                                <span class="rail-eyebrow" id="built-hero-year"
-                                    >{featured.year}</span
-                                >
-                            </span>
-                            <span class="built-hero-desc" id="built-hero-desc"
-                                >{featured.desc ?? ""}</span
-                            >
-                            <span
-                                class="built-hero-chips"
-                                id="built-hero-chips"
-                            >
-                                {
-                                    featured.tech
-                                        .split(" · ")
-                                        .map((t) => (
-                                            <span class="built-chip">{t}</span>
-                                        ))
-                                }
-                            </span>
-                        </span>
-                    </a>
-
-                    <!-- Build log -->
-                    <div class="built-log">
-                        <div class="built-log-head">
-                            <span class="rail-eyebrow" style="color:#666"
-                                >// build log</span
-                            >
-                            <span class="rail-eyebrow" style="color:#bbb"
-                                >desc ↓</span
-                            >
-                        </div>
-                        <div class="built-log-cols">
-                            <span>year</span>
-                            <span>name · stack</span>
-                            <span>status</span>
-                        </div>
-                        <ul class="ship-list" id="built-log-list">
-                            {
-                                homeShips.map((ship, i) => (
-                                    <li
-                                        class:list={[
-                                            {
-                                                "ship-desktop-hidden": i === 0,
-                                                "ship-mobile-hidden": i >= 5,
-                                            },
-                                        ]}
-                                    >
-                                        <a
-                                            href={shipHref(ship)}
-                                            class="ship-row"
-                                            data-name={ship.name}
-                                            data-year={ship.year}
-                                            data-desc={ship.desc ?? ""}
-                                            data-tech={ship.tech}
-                                            data-status={ship.status}
-                                            data-href={shipHref(ship)}
-                                        >
-                                            <span class="ship-year">
-                                                {ship.year}
-                                            </span>
-                                            <span class="ship-main">
-                                                <span class="ship-name">
-                                                    {ship.name}
-                                                </span>
-                                                <span class="ship-tech">
-                                                    {ship.tech}
-                                                </span>
-                                            </span>
-                                            <span class="ship-status">
-                                                {ship.status}
-                                            </span>
-                                        </a>
-                                    </li>
-                                ))
-                            }
-                        </ul>
+                        </a>
                     </div>
                 </div>
-                <footer class="rail-footer">
-                    <span class="rail-eyebrow"
-                        >see them all · github.com/alexgaoth</span
-                    >
-                    <a href={APP_ROUTES.projects} class="rail-footer-link"
-                        >/projects →</a
-                    >
-                </footer>
             </section>
 
-            <!-- ── 02 WRITING ── -->
-            <section class="rail-panel">
-                <span class="rail-eyebrow">// some of my</span>
-                <h2 class="rail-title">
-                    WRITING<span style="color:rgba(0,0,0,0.18)">.</span>
-                </h2>
-                <p class="rail-sub">
-                    i like to think, and make others think. To write is to
-                    think. To write well is to think clearly.
-                </p>
+            <div class="fx-gap g2" aria-hidden="true"></div>
 
-                <span class="rail-eyebrow">// recent thoughts</span>
-                <div class="writing-cards">
-                    {
-                        WRITINGS.map((w) => (
-                            <a
-                                href={`${APP_ROUTES.thoughts}/${w.slug}`}
-                                class="writing-card"
-                            >
-                                <span class="writing-pull">{w.pull}</span>
-                                <span class="writing-title">{w.title}</span>
-                                <span class="writing-meta">
-                                    {w.date} · {w.tag} · {w.read}
-                                </span>
-                            </a>
-                        ))
-                    }
+            <section class="fx-section low" data-text="fractal">
+                <div class="fx-text">
+                    <p class="fx-lead">this is a high dimensional julia set fractal</p>
+                    <p class="fx-line">
+                        read more about it <a
+                            class="fx-inline"
+                            href="https://paulbourke.net/fractals/quatjulia/">here</a
+                        >
+                    </p>
                 </div>
-
-                <span class="rail-eyebrow">// the personal side</span>
-                <div class="door-rows">
-                    {
-                        DOORS.map((d) => (
-                            <a href={d.to} class="door-row">
-                                <span class="door-glyph">{d.glyph}</span>
-                                <span class="door-label">{d.label}</span>
-                                <span class="door-note">{d.note}</span>
-                                <span class="door-arrow">→</span>
-                            </a>
-                        ))
-                    }
-                </div>
-
-                <footer class="rail-footer">
-                    <span class="rail-eyebrow"
-                        >the long version is in /thoughts</span
-                    >
-                    <a href={APP_ROUTES.thoughts} class="rail-footer-link"
-                        >/thoughts →</a
-                    >
-                </footer>
             </section>
 
-            <!-- ── 03 EXPERIENCE ── -->
-            <section class="rail-panel">
-                <span class="rail-eyebrow">// brief summary of my</span>
-                <h2 class="rail-title">
-                    EXPERIENCE<span style="color:#ccc">.</span>
-                </h2>
-                <p class="rail-sub">ls -a | head -n 2</p>
+            <div class="fx-gap g3" aria-hidden="true"></div>
 
-                <div class="exp-grid">
-                    <div>
-                        <span class="rail-eyebrow">// work</span>
-                        {
-                            EXPERIENCE.map((e) => (
-                                <div class="exp-row">
-                                    <span class="exp-role">{e.role}</span>
-                                    <span class="exp-org">
-                                        {e.org} · {e.period}
-                                    </span>
-                                    <span class="exp-desc">{e.desc}</span>
-                                </div>
-                            ))
-                        }
-                        <span class="rail-eyebrow">// education</span>
-                        {
-                            EDUCATION.map((e) => (
-                                <div class="exp-row">
-                                    <span class="exp-role">{e.school}</span>
-                                    <span class="exp-desc">{e.detail}</span>
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <div>
-                        <span class="rail-eyebrow">// trophies</span>
-                        {
-                            TROPHIES.map((t) => (
-                                <div class="exp-row">
-                                    <span class="exp-role">
-                                        {t.stamp} — {t.label}
-                                    </span>
-                                    <span class="exp-desc">{t.year}</span>
-                                </div>
-                            ))
-                        }
-                        <div class="inline-list">
-                            <span class="rail-eyebrow">// i work in</span>
-                            <span class="exp-desc">{DOMAINS.join(" · ")}</span>
-                        </div>
-                        <div class="inline-list">
-                            <span class="rail-eyebrow">// tongues</span>
-                            <span class="exp-desc">{TONGUES.join(" · ")}</span>
-                        </div>
-                    </div>
+            <section class="fx-section right" data-text="writing">
+                <div class="fx-text">
+                    <p class="fx-lead">i like to think and make others think</p>
+                    <p class="fx-line">
+                        so i write, to write well is to think clearly
+                    </p>
+                    <p class="fx-line">
+                        i enjoy imagining all people thinking rationally <a
+                            class="fx-inline"
+                            href="https://sublationism.com">here</a
+                        >
+                    </p>
                 </div>
-
-                <a href={APP_ROUTES.now} class="now-strip">
-                    <span class="now-dot rail-pulse"></span>
-                    <span class="now-strip-label">me - rn</span>
-                    <span>→</span>
-                </a>
-
-                <footer class="rail-footer">
-                    <span class="rail-eyebrow">full record in /resume</span>
-                    <a href={APP_ROUTES.resume} class="rail-footer-link"
-                        >/resume →</a
-                    >
-                </footer>
             </section>
+
+            <div class="fx-gap g4" aria-hidden="true"></div>
+
+            <section class="fx-section right" data-text="doing">
+                <div class="fx-text">
+                    <p class="fx-lead">i believe in just doing things</p>
+                    <p class="fx-line">
+                        that yielded with a great range of interesting stories,
+                        experience
+                    </p>
+                    <p class="fx-line">explore the rest of the site for my takes</p>
+                    <p class="fx-line">i strongly recommend</p>
+                </div>
+            </section>
+
+            <div class="fx-gap g5" aria-hidden="true"></div>
+
+            <!-- What each view shows, for the faint arrows the fractal layer
+           draws while that view holds. dx/dy place the caption, in viewport
+           heights from the view's subject. -->
+            <ol class="fx-notes" hidden>
+                <li data-shot="egg" data-dx="-0.3" data-dy="0.36">a 3d slice of a 4d set, tilted toward the fourth dimension</li>
+                <li data-shot="face" data-dx="0.4" data-dy="0.3">cut open: the face is the flat 2d julia set</li>
+                <li data-shot="cliff" data-dx="0.4" data-dy="-0.28">the edge of the 2d set, as a cliff in 3d</li>
+            </ol>
 
             <!-- Return stage: empty scroll distance the directory scrolls into
-           view through (pre-migration return). -->
+           view through. -->
             <div class="return-spacer"></div>
 
             <!-- ── Directory: second title + cards, entrance driven by the return -->
@@ -341,7 +199,9 @@ const featured = homeShips[0];
                 <div class="cards-section-parallax" style="position:relative">
                     <div class="cards-title">
                         <div class="return-reveal-line">
-                            <h2 class="title-main">alex gaoth's directory</h2>
+                            <h2 class="title-main">
+                                alex ga<span class="title-o"><span class="title-o-glyph">o</span></span>th's directory
+                            </h2>
                         </div>
                         <div class="return-reveal-line">
                             <div class="title-sub" style="padding-top:0.4rem">
@@ -437,32 +297,312 @@ const featured = homeShips[0];
 </BaseLayout>
 
 <style>
-    .rail-panel {
-        position: relative; /* anchors the scroll-driven wash canvas */
-        /* seam size, shared with the FX canvas via var(--rail-gap). Desktop is
-       viewport-relative: when a new section's transition plays (~55% up the
-       screen), the outgoing one has at most ~a quarter of the viewport left.
-       Mobile reads as a continuous ledger (DESIGN.md), so the gap stays small. */
-        --rail-gap: clamp(3rem, 8vw, 5rem);
-        margin: var(--rail-gap) 0;
+    /* ── the fractal: one fixed canvas behind the page ── */
+    .fx-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0;
+        /* shown and hidden only while a title's "o" is a solid dot over the
+           ball (see .via-dot below) */
+        transition: opacity 0.1s linear 0.23s;
+    }
+    .fx-canvas.live {
+        opacity: 1;
+    }
+    .content-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+    /* a faint arrow and a short caption naming what a view shows */
+    .fx-note {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0;
+    }
+    .fx-note-arrow {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+    .fx-note-halo,
+    .fx-note-line {
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .fx-note-halo {
+        stroke: #fff;
+        stroke-width: 3;
+        stroke-opacity: 0.6;
+    }
+    .fx-note-line {
+        stroke: #8c8c8c;
+        stroke-width: 1;
+    }
+    .fx-note-text {
+        position: absolute;
+        margin: 0;
+        max-width: 17rem;
+        padding: 2px 6px;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.8);
+        font: 10.5px/1.5 "Space Mono", monospace;
+        letter-spacing: 0.02em;
+        color: #8a8a8a;
+    }
+
+    /* Both "o"s and the ball are one object. When the ball is shown or
+       hidden at the same moment (.via-dot: the first nudge of scroll, and the
+       second title), the letter condenses into the ball's exact footprint
+       (the fractal layer measures it) while its hole closes in, so the "o"
+       becomes a solid dot; the ball is put in underneath it, and the dot
+       fades to reveal it. Hiding runs the same in reverse, and the canvas's
+       own fade fits inside the hold where the dot is solid (.fx-canvas). When
+       the ball is already on screen (the first title, rising away and coming
+       back), the ring alone condenses and fades, or comes back the same way. */
+    .title-o-glyph {
+        position: relative;
+        display: inline-block;
+        transform-origin: var(--o-origin, 50% 50%);
+    }
+    /* the hole's closing ring: a disc in the letter's colour, centred on its
+       ink, whose inset shadow starts hidden under the stroke */
+    .title-o-glyph::before {
+        content: "";
+        position: absolute;
+        left: calc(var(--o-ox, 0px) - var(--o-fill, 0px));
+        top: calc(var(--o-oy, 0px) - var(--o-fill, 0px));
+        width: calc(2 * var(--o-fill, 0px));
+        height: calc(2 * var(--o-fill, 0px));
+        border-radius: 50%;
+        z-index: -1;
+    }
+    .title-o.as-ball .title-o-glyph {
+        animation: o-settle 0.6s ease-in-out forwards;
+    }
+    .title-o.out-of-ball .title-o-glyph {
+        animation: o-release 0.6s ease-in-out forwards;
+    }
+    .title-o.as-ball.via-dot .title-o-glyph {
+        animation: o-reveal 0.75s ease-in-out forwards;
+    }
+    .title-o.as-ball.via-dot .title-o-glyph::before {
+        animation: o-close 0.75s ease-in-out forwards;
+    }
+    .title-o.out-of-ball.via-dot .title-o-glyph {
+        animation: o-conceal 0.65s ease-in-out forwards;
+    }
+    .title-o.out-of-ball.via-dot .title-o-glyph::before {
+        animation: o-open 0.65s ease-in-out forwards;
+    }
+    @keyframes o-settle {
+        0% {
+            transform: none;
+            opacity: 1;
+        }
+        30% {
+            opacity: 1;
+        }
+        55% {
+            transform: translateX(var(--o-dx, 0px)) scale(var(--o-scale, 1));
+        }
+        100% {
+            transform: translateX(var(--o-dx, 0px)) scale(var(--o-scale, 1));
+            opacity: 0;
+        }
+    }
+    @keyframes o-release {
+        0% {
+            transform: translateX(var(--o-dx, 0px)) scale(var(--o-scale, 1));
+            opacity: 0;
+        }
+        45% {
+            transform: translateX(var(--o-dx, 0px)) scale(var(--o-scale, 1));
+        }
+        70% {
+            opacity: 1;
+        }
+        100% {
+            transform: none;
+            opacity: 1;
+        }
+    }
+    @keyframes o-reveal {
+        0% {
+            transform: none;
+            opacity: 1;
+        }
+        30% {
+            transform: translateX(var(--o-dx, 0px)) scale(var(--o-scale, 1));
+        }
+        44% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(var(--o-dx, 0px)) scale(var(--o-scale, 1));
+            opacity: 0;
+        }
+    }
+    @keyframes o-close {
+        0% {
+            box-shadow: inset 0 0 0 var(--o-open, 0px) currentColor;
+        }
+        30%,
+        100% {
+            box-shadow: inset 0 0 0 var(--o-fill, 0px) currentColor;
+        }
+    }
+    @keyframes o-conceal {
+        0% {
+            transform: translateX(var(--o-dx, 0px)) scale(var(--o-scale, 1));
+            opacity: 0;
+        }
+        32% {
+            opacity: 1;
+        }
+        51% {
+            transform: translateX(var(--o-dx, 0px)) scale(var(--o-scale, 1));
+        }
+        100% {
+            transform: none;
+            opacity: 1;
+        }
+    }
+    @keyframes o-open {
+        0%,
+        51% {
+            box-shadow: inset 0 0 0 var(--o-fill, 0px) currentColor;
+        }
+        100% {
+            box-shadow: inset 0 0 0 var(--o-open, 0px) currentColor;
+        }
+    }
+    /* The intro title waits for its own font, so it never flashes in a
+       fallback face first (set before first paint, desktop with motion only). */
+    .intro-spacer .title-main {
+        transition: opacity 0.4s ease-in-out 0.08s;
+    }
+    :global(html.fx-font-wait) .intro-spacer .title-main {
+        opacity: 0;
+    }
+
+    /* ── four sections of text ── */
+    .fx-section {
+        display: flex;
+        padding: 2.5rem 0;
         font-family: "Space Mono", monospace;
+    }
+    .fx-section.right {
+        justify-content: flex-end;
+    }
+    .fx-text {
+        width: min(30rem, 100%);
         display: flex;
         flex-direction: column;
-        gap: 0.7rem;
+        align-items: flex-start;
+        gap: 0.55rem;
+    }
+    .fx-lead {
+        margin: 0 0 0.35rem;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: clamp(2rem, 3.8vw, 3.4rem);
+        letter-spacing: -0.035em;
+        line-height: 0.95;
+        color: #000;
+        text-wrap: balance;
+    }
+    .fx-line {
+        margin: 0;
+        font-size: clamp(0.82rem, 1vw, 0.98rem);
+        line-height: 1.55;
+        color: #444;
+    }
+    .fx-inline {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+        transition: background 0.12s, color 0.12s;
+    }
+    .fx-inline:hover {
+        background: #000;
+        color: #fff;
+    }
+
+    /* the slideshow of builds: one image at a time */
+    .fx-show {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        margin-top: 0.35rem;
+    }
+    .fx-show-frame {
+        position: relative;
+        display: block;
+        width: 100%;
+        aspect-ratio: 1200 / 630;
+        border: 1px solid #000;
+        background: #f4f1ea;
+        overflow: hidden;
+    }
+    .fx-show-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.25s;
+    }
+    .fx-show-img.on {
+        opacity: 1;
+    }
+
+    /* Live, on desktop: each section becomes a long hold whose words stay
+       put (sticky) while the fractal holds a view beside them; the gaps are
+       the scroll the fractal travels through between sections. */
+    .fx-gap {
+        display: none;
     }
     @media (min-width: 768px) {
-        .rail-panel {
-            --rail-gap: min(30vh, 20rem);
-            min-height: 100vh;
+        :global(html.fx-live) .fx-section {
+            height: 200vh;
+            padding: 0;
+            align-items: flex-start;
         }
-        .rail-panel .rail-footer {
-            margin-top: auto;
+        :global(html.fx-live) .fx-section[data-text="built"] {
+            height: 280vh;
         }
+        :global(html.fx-live) .fx-text {
+            position: sticky;
+            top: 28vh;
+        }
+        /* the fan fills the frame but for its lower left */
+        :global(html.fx-live) .fx-section.low .fx-text {
+            top: 60vh;
+        }
+        :global(html.fx-live) .fx-gap {
+            display: block;
+        }
+        .g0 { height: 60vh; }
+        .g1 { height: 100vh; }
+        .g2 { height: 100vh; }
+        .g3 { height: 520vh; }
+        .g4 { height: 100vh; }
+        .g5 { height: 60vh; }
     }
-    /* the rail follows the intro spacer closely, as pre-migration */
-    .rail-panel:first-of-type {
-        --rail-gap: clamp(2rem, 5vh, 4rem);
-    }
+
+    /* ── kept from the homepage: intro, return stage, chrome ── */
     .intro-spacer {
         position: relative;
     }
@@ -477,7 +617,6 @@ const featured = homeShips[0];
     .cards-section-parallax > .grid-2col {
         will-change: transform, opacity;
     }
-    /* ── fixed parallax chrome (all shown/driven by the FX script only) ── */
     .progress-track {
         position: fixed;
         left: clamp(1.2rem, 3vw, 2.8rem);
@@ -514,415 +653,16 @@ const featured = homeShips[0];
         color: #000;
         opacity: 0.38;
     }
-    .rail-eyebrow {
-        font-size: 11px;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: #888;
-    }
-    .rail-title {
-        /* floats above the wash cover so the split-flap board is visible for the
-       whole transition */
-        position: relative;
-        z-index: 4;
-        font-family: "Space Grotesk", sans-serif;
-        font-weight: 600;
-        font-size: clamp(1.8rem, 4.8vw, 3.8rem);
-        letter-spacing: -0.035em;
-        line-height: 0.95;
-        margin: 0;
-        color: #000;
-    }
-    .rail-sub {
-        font-size: clamp(0.68rem, 0.82vw, 0.82rem);
-        color: #888;
-        margin: 0 0 0.4rem;
-        letter-spacing: 0.02em;
-        max-width: 70ch;
-        line-height: 1.5;
-    }
-    .rail-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        padding-top: 0.45rem;
-        border-top: 1px solid rgba(0, 0, 0, 0.08);
-    }
-    .rail-footer-link {
-        font-size: 11px;
-        color: #000;
-        letter-spacing: 0.04em;
-        text-decoration: none;
-        opacity: 0.85;
-    }
-    /* Side by side, the tracked note wrapped straight through the route link.
-       Stack them, and let the link carry a real tap target. */
-    @media (max-width: 767px) {
-        .rail-footer {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 2px;
-        }
-        .rail-footer-link {
-            display: block;
-            font-size: 12px;
-            padding: 10px 0 3px;
-        }
-    }
-    .built-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: clamp(0.8rem, 1.8vw, 1.6rem);
-        align-items: flex-start;
-    }
-    .built-hero {
-        display: none;
-    }
-    .ship-mobile-hidden {
-        display: none;
-    }
-    @media (min-width: 768px) {
-        .built-grid {
-            grid-template-columns: 1.35fr 1fr;
-        }
-        .built-hero {
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #000;
-            text-decoration: none;
-            color: inherit;
-            overflow: hidden;
-        }
-        .ship-desktop-hidden {
-            display: none;
-        }
-        .ship-mobile-hidden {
-            display: list-item;
-        }
-    }
-    .built-hero-media {
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        background: #f4f1ea;
-        position: relative;
-        overflow: hidden;
-        flex-shrink: 0;
-    }
-    .built-hero-img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-        opacity: 0;
-        transition: opacity 0.15s;
-    }
-    .built-hero-img.active {
-        opacity: 1;
-    }
-    .built-hero-live {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: #000;
-        color: #fff;
-        padding: 3px 8px;
-        font-size: 9px;
-        letter-spacing: 0.22em;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .built-hero-live[hidden] {
-        display: none;
-    }
-    .built-hero-body {
-        display: flex;
-        flex-direction: column;
-        border-top: 1px solid #000;
-        background: #fff;
-        padding: 10px 14px 12px;
-    }
-    .built-hero-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 12px;
-        margin-bottom: 4px;
-    }
-    .built-hero-name {
-        font-family: "Space Grotesk", sans-serif;
-        font-size: clamp(0.92rem, 1.3vw, 1.2rem);
-        letter-spacing: -0.015em;
-        font-weight: 600;
-    }
-    .built-hero-desc {
-        font-size: 11.5px;
-        margin: 0 0 8px;
-        line-height: 1.5;
-        color: #555;
-    }
-    .built-hero-desc:empty {
-        margin: 0;
-    }
-    .built-hero-chips {
-        display: flex;
-        gap: 5px;
-        flex-wrap: wrap;
-    }
-    .built-chip {
-        background: #000;
-        color: #fff;
-        padding: 2px 7px;
-        font-size: 9.5px;
-        letter-spacing: 0.06em;
-    }
-    .built-log {
-        display: flex;
-        flex-direction: column;
-    }
-    .built-log-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-bottom: 5px;
-    }
-    .built-log-cols {
-        display: grid;
-        grid-template-columns: 44px 1fr auto;
-        gap: 10px;
-        padding: 4px 6px;
-        border-top: 1px solid #000;
-        border-bottom: 1px solid #000;
-        font-size: 9px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        font-weight: 500;
-    }
-    .ship-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-    .ship-row {
-        display: grid;
-        grid-template-columns: 44px 1fr auto;
-        gap: 10px;
-        padding: 8px 6px;
-        border-bottom: 1px solid #eee;
-        align-items: center;
-        text-decoration: none;
-        color: #000;
-        transition:
-            background 0.12s,
-            color 0.12s;
-    }
-    .ship-row:hover {
-        background: #000;
-        color: #fff;
-    }
-    .ship-year {
-        font-size: 10.5px;
-        font-weight: 600;
-        color: #999;
-    }
-    .ship-row:hover .ship-year,
-    .ship-row:hover .ship-tech {
-        color: rgba(255, 255, 255, 0.6);
-    }
-    .ship-main {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-    }
-    .ship-name {
-        font-size: 12.5px;
-        font-weight: 500;
-    }
-    .ship-tech {
-        font-size: 9.5px;
-        color: #888;
-        letter-spacing: 0.02em;
-    }
-    .ship-status {
-        font-size: 8.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        border: 1px solid currentColor;
-        padding: 2px 5px;
-        white-space: nowrap;
-    }
-    .writing-cards {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-    .writing-card {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-        padding: 10px 8px;
-        border: 1px solid rgba(0, 0, 0, 0.12);
-        text-decoration: none;
-        color: #000;
-        transition:
-            background 0.12s,
-            color 0.12s;
-    }
-    .writing-card:hover {
-        background: #000;
-        color: #fff;
-    }
-    .writing-pull {
-        font-size: 11px;
-        color: #888;
-        font-style: italic;
-    }
-    .writing-card:hover .writing-pull,
-    .writing-card:hover .writing-meta {
-        color: rgba(255, 255, 255, 0.6);
-    }
-    .writing-title {
-        font-size: 13px;
-        font-weight: 600;
-    }
-    .writing-meta {
-        font-size: 10px;
-        color: #888;
-        letter-spacing: 0.06em;
-    }
-    .door-rows {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-    .door-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 8px;
-        border: 1px solid #000;
-        text-decoration: none;
-        color: #000;
-        transition:
-            background 0.12s,
-            color 0.12s;
-    }
-    .door-row:hover {
-        background: #000;
-        color: #fff;
-    }
-    .door-glyph {
-        font-size: 20px;
-    }
-    .door-label {
-        font-size: 12px;
-        font-weight: 600;
-    }
-    .door-note {
-        font-size: 10px;
-        color: #888;
-        flex: 1;
-    }
-    .door-row:hover .door-note {
-        color: rgba(255, 255, 255, 0.6);
-    }
-    .exp-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.2rem;
-    }
-    @media (min-width: 768px) {
-        .exp-grid {
-            grid-template-columns: 1fr 1fr;
-        }
-    }
-    .exp-row {
-        display: flex;
-        flex-direction: column;
-        padding: 8px 6px;
-        border-bottom: 1px solid #eee;
-    }
-    .exp-role {
-        font-size: 12.5px;
-        font-weight: 600;
-    }
-    .exp-org {
-        font-size: 10.5px;
-        color: #888;
-    }
-    .exp-desc {
-        font-size: 10.5px;
-        color: #666;
-    }
-    .inline-list {
-        display: flex;
-        flex-direction: column;
-        padding: 8px 6px;
-    }
-    .now-strip {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 10px;
-        border: 1px solid #000;
-        color: #000;
-        text-decoration: none;
-        transition:
-            background 0.12s,
-            color 0.12s;
-        margin-top: 0.6rem;
-    }
-    .now-strip:hover {
-        background: #000;
-        color: #fff;
-    }
-    .now-dot {
-        display: inline-block;
-        width: 6px;
-        height: 6px;
-        background: #0a7;
-        border-radius: 50%;
-        flex-shrink: 0;
-    }
-    .now-strip:hover .now-dot {
-        background: #0f6;
-    }
-    .now-strip-label {
-        font-size: 11px;
-        letter-spacing: 0.04em;
-        flex: 1;
-    }
     .cards-title .title-main {
         margin-top: 0;
     }
-
     .card-arrow {
         display: none;
     }
-
-    /* ── mobile rhythm ────────────────────────────────────────────────────
-       One scale for the whole page, because mixing them is what made it read
-       as packed here and empty there:
-         13px  inside a row      20px  between blocks in a panel
-         48px  between sections
-       The panels already obeyed it. The tail did not: it was four 2px-bordered
-       cards 9px apart, then four strips whose top+bottom borders doubled every
-       hairline, then centred legal text — three languages in 900px. Below,
-       all eight destinations become one hairline-ruled index in the same row
-       language as the build log above it, and the footer joins the left edge
-       everything else sits on. */
     @media (max-width: 767px) {
-        /* the second title only exists to be revealed by the >=768px
-           choreography; on mobile it is a verbatim repeat of the header */
         .cards-title {
             display: none;
         }
-        .rail-panel:first-of-type {
-            --rail-gap: 48px;
-        }
-
         .cards-section-parallax > .grid-2col {
             gap: 0;
             border-top: 1px solid #000;
@@ -937,8 +677,6 @@ const featured = homeShips[0];
             border-bottom: 1px solid #eee;
             padding: 13px 2px;
         }
-        /* four 172px previews were 688px of scroll saying nothing the titles
-           don't; the links all stay */
         :global(.cards-section-parallax > .grid-2col > .card .card-image) {
             display: none;
         }
@@ -964,71 +702,56 @@ const featured = homeShips[0];
 </style>
 
 <script>
-    // Hover a build-log row → the hero swaps to that project; leave the log →
-    // hero falls back to the featured ship. Enhancement only: without JS the
-    // hero statically shows the featured ship.
-    const hero = document.getElementById("built-hero");
-    const list = document.getElementById("built-log-list");
-    if (hero && list) {
-        const nameEl = document.getElementById("built-hero-name");
-        const yearEl = document.getElementById("built-hero-year");
-        const descEl = document.getElementById("built-hero-desc");
-        const chipsEl = document.getElementById("built-hero-chips");
-        const liveEl = document.getElementById("built-hero-live");
-        const imgs = hero.querySelectorAll(".built-hero-img");
-
-        const featured = {
-            name: nameEl.textContent,
-            year: yearEl.textContent,
-            desc: descEl.textContent,
-            tech: [...chipsEl.children].map((c) => c.textContent).join(" · "),
-            status: liveEl.hidden ? "" : "live",
-            href: hero.getAttribute("href"),
+    // The builds slideshow: while its section holds, scrolling turns the
+    // images over, and the frame links to whichever is showing. Without JS it
+    // shows the first.
+    const show = document.querySelector(".fx-show");
+    if (show) {
+        const imgs = [...show.querySelectorAll(".fx-show-img")];
+        const frame = show.querySelector(".fx-show-frame");
+        const section = show.closest(".fx-section");
+        let current = 0;
+        const set = (i) => {
+            if (i === current) return;
+            current = i;
+            imgs.forEach((img, k) => img.classList.toggle("on", k === i));
+            frame.setAttribute("href", imgs[i].dataset.href);
         };
-
-        const show = (ship) => {
-            nameEl.textContent = ship.name;
-            yearEl.textContent = ship.year;
-            descEl.textContent = ship.desc;
-            chipsEl.replaceChildren(
-                ...ship.tech.split(" · ").map((t) => {
-                    const chip = document.createElement("span");
-                    chip.className = "built-chip";
-                    chip.textContent = t;
-                    return chip;
-                }),
-            );
-            liveEl.hidden = ship.status !== "live";
-            hero.setAttribute("href", ship.href);
-            imgs.forEach((img) =>
-                img.classList.toggle("active", img.dataset.ship === ship.name),
-            );
+        const follow = () => {
+            if (!document.documentElement.classList.contains("fx-live")) return;
+            const vh = innerHeight;
+            const text = section.querySelector(".fx-text");
+            const top = section.getBoundingClientRect().top + scrollY;
+            const a = top - 0.28 * vh;
+            const b = top + section.offsetHeight - text.offsetHeight - 0.28 * vh;
+            set(Math.min(imgs.length - 1, Math.max(0, Math.floor(((scrollY - a) / (b - a)) * imgs.length))));
         };
-
-        list.querySelectorAll(".ship-row").forEach((row) => {
-            row.addEventListener("mouseenter", () => show(row.dataset));
-        });
-        list.addEventListener("mouseleave", () => show(featured));
+        addEventListener("scroll", () => requestAnimationFrame(follow), { passive: true });
     }
 </script>
 
+<script>
+    // The fractal: desktop only, loaded after the page, never on mobile or
+    // under reduced motion (motionEnabled), and it adds nothing to the HTML.
+    import { motionEnabled } from "../lib/homeScroll.js";
+    if (motionEnabled()) import("../lib/qjulia/home.js").then((m) => m.run());
+</script>
 
 <script>
     // DOM choreography for the intro and return stages: the fixed title rise,
-    // the directory reveal, the progress track and the scroll hint. The rail
-    // panels themselves get no transition — the visual layer that drew them is
-    // parked (see README), and this script paints nothing.
-    //
-    // Scroll state comes from lib/homeScroll.js, so a visual layer added later
-    // reads the same numbers. Enhancement only: the static HTML is complete, and
-    // on mobile or under prefers-reduced-motion none of this runs at all —
-    // the page then reads as one continuous ledger, per DESIGN.md.
+    // the directory reveal, the progress track and the scroll hint.
     import {
         motionEnabled,
         subscribe,
-        INTRO_VH,
         RETURN_VH,
+        TITLE_HOLD_VH,
     } from "../lib/homeScroll.js";
+
+    // The intro runs long, so the subtitle about "th" stays up while the ball
+    // comes out of the title.
+    const INTRO_VH = 3.0; // viewport heights of intro scroll
+    const RISE = 0.3; // share of it the title takes to rise to the top
+    const FADE = 0.75; // share after which title and subtitle fade
 
     if (motionEnabled()) {
         const introSpacer = document.querySelector(".intro-spacer");
@@ -1051,31 +774,32 @@ const featured = homeShips[0];
         let titleH = 0;
 
         if (introTitle) {
-            // The parallax: the title leaves the flow and floats fixed over the
-            // intro spacer — the page scrolls underneath while the title rises
-            // on its own slower track.
             introTitle.style.cssText =
                 "position:fixed;left:50%;transform:translateX(-50%);z-index:10;" +
                 "max-width:1152px;width:calc(100% - 64px);";
         }
 
-        // The fixed title rises from vertical centre to the top over the first
-        // 55% of the intro scroll (quintic ease-out), pins there, and fades out
-        // over the last 30%; the subtitle fades in over the last fifth of the
-        // rise. All pure functions of the shared scroll state.
-        const introFx = (state, vh) => {
+        const introFx = (vh) => {
             if (!introTitle) return;
-            const eased = 1 - Math.pow(1 - state.rise, 5);
+            const introH = vh * INTRO_VH;
+            // the title holds still for the first nudge, while its "o"
+            // turns into the ball (TITLE_HOLD_VH), then rises
+            const rise = Math.min(
+                1,
+                Math.max(0, (scrollY - vh * TITLE_HOLD_VH) / (introH * RISE)),
+            );
+            const intro = Math.min(1, Math.max(0, scrollY / introH));
+            const eased = 1 - Math.pow(1 - rise, 5);
             const startTop = (vh - titleH) * 0.5;
             introTitle.style.top =
                 (startTop + (80 - startTop) * eased).toFixed(1) + "px";
-            const op = Math.max(0, 1 - Math.max(0, (state.intro - 0.7) / 0.3));
+            const op = Math.max(0, 1 - Math.max(0, (intro - FADE) / (1 - FADE)));
             introTitle.style.opacity = op.toFixed(3);
             introTitle.style.pointerEvents = op > 0 ? "auto" : "none";
             if (introSub) {
                 introSub.style.opacity = Math.max(
                     0,
-                    (state.rise - 0.8) / 0.2,
+                    (rise - 0.8) / 0.2,
                 ).toFixed(3);
             }
         };
@@ -1087,8 +811,6 @@ const featured = homeShips[0];
             el.style.transform = `translateY(${((1 - eased) * 105).toFixed(1)}%)`;
         };
 
-        // Return stage: the second directory heading rises through its own
-        // bottom clip line, followed by the subtitle and the cards.
         const returnFx = (state) => {
             const rp = state.ret;
             revealFromGround(
@@ -1110,7 +832,7 @@ const featured = homeShips[0];
         subscribe(
             (state) => {
                 const vh = innerHeight;
-                introFx(state, vh);
+                introFx(vh);
                 returnFx(state);
                 if (track && fill) {
                     const trackedEnd = state.returnRect.bottom + scrollY;
@@ -1133,8 +855,6 @@ const featured = homeShips[0];
             },
         );
 
-        // Scroll hint: appears after 5s idle, hidden the moment scrolling
-        // resumes (the one timer-based piece — it's a hint, not choreography).
         const hint = document.querySelector(".scroll-hint");
         if (hint) {
             let hintT;

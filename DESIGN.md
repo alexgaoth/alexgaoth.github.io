@@ -1,8 +1,10 @@
 # DESIGN.md — alexgaoth.com style guide
 
 Working reference for building or rebuilding pages so they feel like one site.
-The canonical expression of this language is the home page panel rail
-(`astro/src/pages/index.astro`, BUILT → WRITING → EXPERIENCE). When in doubt, copy it.
+Its first full expression was the home page panel rail (BUILT → WRITING →
+EXPERIENCE), retired on 2026-11-04 for the fractal homepage; the atoms and
+patterns below come from it and remain the vocabulary of the content pages
+(`/writing`, `/thoughts`, `/projects`, `/now`). When in doubt, copy those.
 
 ## The site in one line
 
@@ -37,8 +39,8 @@ Defined as CSS vars in `global.css`:
 - `--muted: #888` (secondary text), `#999`/`#bbb`/`#ccc` for progressively dimmer meta.
 - `--subtle: rgba(0,0,0,0.18)` (strong hairline), `--hairline: rgba(0,0,0,0.08)` (faint rule).
 - **Cream accent**: `rgb(235,225,200)` — one warm wash per page at most, painted as a
-  gradient into a section (see WRITING panel) so it scrolls in spatially. Not for chrome.
-- Green only as a live-pulse dot (`#0f6` / `#0a7` with the `rail-pulse` keyframe).
+  gradient into a section so it scrolls in spatially. Not for chrome.
+- Green only as a live-pulse dot (`#0f6` / `#0a7`, pulsing opacity and scale).
 - No other color. No shadows in the panel language (soft shadows exist only on
   legacy card components). No border-radius, ever.
 
@@ -104,7 +106,7 @@ Defined as CSS vars in `global.css`:
 ## Mobile (<768px)
 
 One breakpoint: `window.innerWidth < 768`. App-level pages track it in state
-(`isMobile`, passed down from MainPage or checked locally); prefer plain CSS
+(`isMobile`, checked locally); prefer plain CSS
 (`repeat(auto-fit, minmax(...))`, `clamp()`, collapsing grids) where it suffices.
 The mobile rule in one line: **simplify layout, never content — cut columns and
 rows, keep every fact.**
@@ -113,18 +115,15 @@ rows, keep every fact.**
   footer rail pinned at the viewport bottom; on mobile they collapse to natural
   height (`min-height: auto`) so content → footer rail → next panel reads as one
   continuous ledger. No dead half-screens between compact content and a far-away
-  footer. MainPage measures the rail's real height (ResizeObserver) for its
-  scroll math — never reintroduce a `winH * 3` assumption.
+  footer. Scroll math measures real heights — never assume `winH * 3`.
 - **One column.** The `1.35fr 1fr` split collapses and the secondary/meta column
-  is dropped entirely if it crowds (BUILT drops the hero card, EXPERIENCE drops
-  trophies/domains/tongues). Cut, don't cram.
-- **Fewer rows, not smaller type.** Cap logs at ~5 entries on mobile (BUILT hides
-  rows past 5 via `.ship-mobile-hidden`); the footer rail ("see them all ·
-  /projects →") carries the rest.
+  is dropped entirely if it crowds. Cut, don't cram.
+- **Fewer rows, not smaller type.** Cap logs at ~5 entries on mobile; the footer
+  rail ("see them all · /projects →") carries the rest.
 - **Tap, not hover.** Hover-invert has no mobile equivalent, so anything tappable
   must read as tappable at rest: full-width, bordered or ruled, trailing `→`.
-  Information that only appears on hover (the BUILT hero image swap) is
-  desktop-only by definition — never gate content behind it on mobile.
+  Information that only appears on hover is desktop-only by definition —
+  never gate content behind it on mobile.
   Vertical padding on tappable rows goes up on mobile (~10–12px v. 6–9px) so
   targets clear roughly 40px.
 - **Type floors.** Mono text never below ~10px on mobile; mega titles bottom out
@@ -140,7 +139,7 @@ rows, keep every fact.**
   9px apart, then four strips whose top+bottom borders doubled every hairline,
   then centred legal text — three languages in 900px. On mobile all eight
   destinations are one hairline-ruled index (13px padding, single bottom rule,
-  right-aligned `→`) in the same row language as the build log. Bordered boxes
+  right-aligned `→`), one row language. Bordered boxes
   still mark a specific thing you enter (a thought, a door, /now); ruled rows
   mark a list of places to go. Don't mix the two inside one block.
 - **Cream wash**: gradient stops are percentages of section height — keep the
@@ -149,14 +148,19 @@ rows, keep every fact.**
 
 ## Site structure / roles
 
-- `/` (main page) — the professional, serious layer: BUILT / WRITING / EXPERIENCE panels.
+- `/` (main page) — the title, then four short lowercase sections in Alex's own
+  words, each held beside a view of a quaternion Julia set: champagne/pearl tones
+  (`#d1bca3` sampled from the render) on paper white, never neon or dark-space
+  glow. Faint grey notes (a short arrow, one caption) name a few views. Then the
+  directory cards and the footer. Mobile and reduced motion get the words as one
+  plain column. See README section 2.
 - `/resume`, `/projects`, `/thoughts`, `/quotes` — content pages under
   `NavigationBar` (via `ContentPage` layout), same ink-on-paper language.
 - `/about` — the one deliberate exception on the professional side: a
   researcher's homepage (system sans, default browser link blue, no nav bar,
   no islands, no motion). **Prose only — no lists, no year/role grid, no
-  tables.** The moment it tabulates it becomes a second /resume, and /resume
-  is the one that stays in sync with `content.js`; here the facts sit inside
+  tables.** The moment it tabulates it becomes a second resume, and the
+  record is `resume.pdf`, linked from /resume; here the facts sit inside
   sentences and the links sit inside the facts. Lowercase, first person, no
   credential voice. Its whole stylesheet lives in `about.astro` and exists
   mostly to undo the global reset. Nothing else may borrow this look.
