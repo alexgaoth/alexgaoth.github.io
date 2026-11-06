@@ -74,55 +74,35 @@ const profileStructuredData = [
 
     <hr />
 
+    <p>i'm alex gao. you might have known me as alexgaoth.</p>
+
     <p>
-      i'm alex gao — tianhao on paper, alexgaoth everywhere else. the 'th' is my
-      chinese first name, and it's there so you can find me easier. i study math
-      and computer science at <a href="https://ucsd.edu">uc san diego</a>, after
-      two years at st paul's in london doing double maths, physics and computer
-      science, where i also picked up golds at the british informatics olympiad
-      and the british mathematical olympiad.
+      i am currently on leave from <a href="https://ucsd.edu">ucsd</a>, working at
+      <a href="https://hypercubic.ai">hypercubic.ai</a>.
     </p>
 
     <p>
-      most of what i do is build. i cofounded
-      <a href="https://signalor.app">signalor</a> with matthieu fuller and have
-      been its cto since 2025 — it reads what the internet says about a brand
-      and turns that into something an investor can act on. this summer i was a
-      software and devops intern at ibm in san jose, on the aiops team behind
-      watsonx assistant for z; before that i wrote crawlers for esg and bond
-      data at climind, remotely from london while i was still sitting a-levels.
-      there are smaller things too: a
-      <a href="https://intro.alexgaoth.com/JuliaSetFractal/">3d julia set simulator</a>
-      i made at fifteen because i was in love with pure maths, a
-      <a href="https://pypi.org/project/dont-hallucinate/">tool</a> that catches
-      coding agents when they fail and tells them off, a tracker for ucsd's
-      crime log.
+      i really enjoy building things. one of them turned into a company,
+      <a href="https://signalor.app">signalor</a>. the rest live on
+      <a href={APP_ROUTES.projects}>/projects</a>.
     </p>
 
     <p>
-      the other half is writing. i like to think, and make others think — mostly
-      history and philosophy: what happened at
-      <a href={`${APP_ROUTES.thoughts}/winning-the-battle-of-manzikert`}>manzikert</a>
-      versus what everyone later decided happened, lacan's
-      <a href={`${APP_ROUTES.thoughts}/submitting-to-the-symbolic-order`}>symbolic order</a>,
-      whether china could invent a nation and defend it at the same time. the
-      longer project is <a href="https://sublationism.com">sublationism</a> — the
-      ideology i used to call gaoism, now a manifesto with its own site and a
-      formal reading in lean. i keep chinese poetry and ci as well, most of it
-      written around fifteen, abroad, with too much free time.
+      i also like to think, and make others think, so i write. mostly about history
+      and philosophy, sometimes poetry. you'll find it on
+      <a href={APP_ROUTES.thoughts}>/thoughts</a> and <a href={APP_ROUTES.writing}>/writing</a>.
     </p>
 
     <p>
-      everything i've built is at <a href={APP_ROUTES.projects}>/projects</a>,
-      with source on <a href="https://github.com/alexgaoth">github</a>. the
-      essays are at <a href={APP_ROUTES.thoughts}>/thoughts</a> and the verse at
-      <a href={APP_ROUTES.writing}>/writing</a>. the plain record — every job,
-      every date — is at <a href={APP_ROUTES.resume}>/resume</a>, and whatever
-      i'm actually doing this month is at <a href={APP_ROUTES.now}>/now</a>.
-      otherwise: <a href={`mailto:${profileData.email}`}>{profileData.email}</a>,
-      and alexgaoth on {socials.map((sc, i) => (
+      i believe in just doing things. <a href={APP_ROUTES.resume}>/resume</a> has the
+      record, and <a href={APP_ROUTES.now}>/now</a> has what i'm up to.
+    </p>
+
+    <p>
+      email me at <a href={`mailto:${profileData.email}`}>{profileData.email}</a>, or
+      find me as alexgaoth on {socials.map((sc, i) => (
         <><a href={sc.href} rel="me">{sc.word}</a>{i < socials.length - 2 ? ', ' : i === socials.length - 2 ? ' and ' : ''}</>
-      ))} — same handle everywhere, which was the whole point.
+      ))}.
     </p>
 
     <p class="home"><a href={APP_ROUTES.home}>&larr; alexgaoth.com</a></p>

@@ -13,8 +13,8 @@ intro doorway (`intro.alexgaoth.com`), which canonicalizes away.
 *Shipped as:* a researcher's homepage, **outside** the ink/mono system — the
 one deliberate exception on the professional side (DESIGN.md records it).
 System sans, default browser link colours, no nav bar, no islands, ~40 lines
-of CSS in the page itself. Four paragraphs of prose — who, what he builds,
-what he writes, where the rest is — with the links inside the sentences. No
+of CSS in the page itself. Short paragraphs of short, direct sentences — who, what he
+studies, builds and writes, where the rest is — with the links inside the sentences. No
 lists: the record is `resume.pdf`, linked from /resume. The intro site's tldr is folded in; the intro site has no unique
 content left.
 

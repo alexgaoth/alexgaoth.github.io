@@ -87,7 +87,7 @@ Put the `.glb` (and optional looping `.mp3`) in `astro/public/regents/`, then ad
   plus a link to `resume.pdf`, which is the record. `content.js` → `resume` keeps only `education` and
   `achievements`, which /about reads.
 - `astro/src/data/profileData.js` → the socials, aliases and mirrors named in /about's prose.
-  /about itself is four hand-written paragraphs in `about.astro` — edit them there, and keep them
+  /about itself is short hand-written paragraphs in `about.astro` — edit them there, and keep them
   prose (see DESIGN.md). Anything that changes month to month goes in `public/profile.json` (/now).
 - Replace `resume.pdf` in **both** `astro/public/` (served at alexgaoth.com/resume.pdf) and the repo root (intro site).
 - Also regenerate `astro/public/resources/resume.jpg` — the homepage directory card shows it, so it silently goes stale:
@@ -112,7 +112,7 @@ What to edit for what:
 - Notes (a short arrow and one caption on a view): the hidden `.fx-notes` list in the same file,
   one `<li>` per view, by shot id; `data-dx`/`data-dy` place the caption, in viewport heights from
   the view's subject — keep it in the frame's empty paper, since the caption has no box.
-- The formula in the bottom-right corner: `.fx-formula` in the same file.
+- The set's equation: the `.fx-math` line in the fractal section of the same file.
 - Intro length and the title's rise: `INTRO_VH` / `RISE` / `FADE` in the page's choreography script;
   how long the title holds still while its "o" becomes the ball: `TITLE_HOLD_VH` in
   `astro/src/lib/homeScroll.js` (the fractal layer reads it too).
