@@ -63,9 +63,6 @@ const shows = [
             </svg>
             <p class="fx-note-text"></p>
         </div>
-        <p class="fx-formula" aria-hidden="true">
-            q<sub>n+1</sub> = q<sub>n</sub><sup>2</sup> + c<br />q ∈ ℍ · c = −0.2 + 0.8i · k = 0
-        </p>
         <div
             class="content-wrapper"
             style="padding-top:2.5rem;padding-bottom:3rem"
@@ -165,7 +162,10 @@ const shows = [
             <section class="fx-section low" data-text="fractal">
                 <div class="fx-text">
                     <p class="fx-lead">including this</p>
-                    <p class="fx-line">a quaternion julia set fractal</p>
+                    <p class="fx-line">a quaternion julia set fractal:</p>
+                    <p class="fx-line fx-math">
+                        q<sub>n+1</sub> = q<sub>n</sub><sup>2</sup> + c<br />q ∈ ℍ, c = −0.2 + 0.8i, k = 0
+                    </p>
                     <p class="fx-line">
                         read more about it
                         <a
@@ -397,36 +397,6 @@ const shows = [
         line-height: 1.55;
         color: #555;
     }
-    /* the set's definition, small in the corner while the fractal shows */
-    .fx-formula {
-        display: none;
-        position: fixed;
-        right: clamp(1.2rem, 2.4vw, 2.4rem);
-        bottom: 1.1rem;
-        z-index: 2;
-        margin: 0;
-        font-size: 11px;
-        line-height: 1.7;
-        letter-spacing: 0.02em;
-        color: #8a8a8a;
-        /* a soft paper halo, so it still reads where the fractal fills the corner */
-        text-shadow:
-            0 0 2px #fff,
-            0 0 4px #fff,
-            0 0 9px #fff;
-        text-align: right;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.4s;
-    }
-    :global(html.fx-live) .fx-formula {
-        display: block;
-    }
-    .fx-formula sub,
-    .fx-formula sup {
-        font-size: 0.72em;
-        line-height: 0;
-    }
 
     /* Both "o"s and the ball are one object. When the ball is shown or
        hidden at the same moment (.via-dot: the first nudge of scroll, and the
@@ -594,6 +564,17 @@ const shows = [
         font-size: clamp(0.82rem, 1vw, 0.98rem);
         line-height: 1.55;
         color: #444;
+    }
+    /* the set's definition, in the lines' own font; a mono space is a whole
+       character wide, so the spaces are drawn in */
+    .fx-math {
+        margin: 0.35rem 0;
+        word-spacing: -0.35em;
+    }
+    .fx-math sub,
+    .fx-math sup {
+        font-size: 0.72em;
+        line-height: 0;
     }
     .fx-inline {
         color: inherit;

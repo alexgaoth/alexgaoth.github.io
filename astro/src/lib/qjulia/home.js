@@ -26,7 +26,6 @@ const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 const root = document.documentElement;
 const canvas = document.getElementById('qj');
 const note = document.querySelector('.fx-note');
-const formula = document.querySelector('.fx-formula');
 const docTop = (el) => el.getBoundingClientRect().top + scrollY;
 
 // Where a letter's ink sits on screen: centre and radius, from the font's own
@@ -325,7 +324,6 @@ function syncPage(p) {
   setBall(A.o1.el, show && y <= A.release, flip);
   setBall(A.o2.el, !landed, flip);
   canvas.style.opacity = show ? '' : '0';
-  formula.style.opacity = show ? '1' : '0';
   for (const t of A.texts) t.el.style.opacity = presence(y, t).toFixed(3);
   let on = null, most = 0;
   for (const n of A.notes) { const o = presence(y, n); if (o > most) { most = o; on = n; } }
