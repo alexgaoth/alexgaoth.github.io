@@ -26,6 +26,8 @@ const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 const root = document.documentElement;
 const canvas = document.getElementById('qj');
 const note = document.querySelector('.fx-note');
+const scrim = document.querySelector('.fx-scrim');
+const scrimLow = document.querySelector('.fx-scrim-low');
 const docTop = (el) => el.getBoundingClientRect().top + scrollY;
 
 // Where a letter's ink sits on screen: centre and radius, from the font's own
@@ -129,6 +131,10 @@ const blend = (a, b, t) => {
 };
 
 const debug = new URLSearchParams(location.search).has('debug');
+// A phone in portrait (run({ phone: true })): the words pin near the top and
+// every view is framed in the space below them; notes sit centred near the
+// bottom; no speed bumps (holding a touch fling back fights the browser).
+let phone = false;
 const WAKE = 0.005;  // viewport heights of scroll that turn the first "o" into the ball
 let shown = false;   // whether the canvas is showing the ball
 let A = null;        // anchors, in document px, measured from the page
@@ -169,7 +175,9 @@ function measure() {
     texts.push(win);
     windows[sec.dataset.text] = win;
     const r = text.getBoundingClientRect(), gutter = 0.03 * vw;
-    spaces[sec.dataset.text] = sec.classList.contains('right') ? [gutter, r.left - gutter] : [r.right + gutter, vw - gutter];
+    spaces[sec.dataset.text] = phone
+      ? [stickyTop + text.offsetHeight + 0.04 * vh, 0.95 * vh] // below the pinned words
+      : sec.classList.contains('right') ? [gutter, r.left - gutter] : [r.right + gutter, vw - gutter];
   }
   const spacer = docTop(document.querySelector('.return-spacer'));
   A = {
@@ -192,6 +200,18 @@ function measure() {
   // and pulled back if that space is too narrow for its shape.
   const place = (shot) => {
     const st = structuredClone(shot.st);
+    if (phone) {
+      // centred across the screen; a view with words is centred in the space
+      // below them, pulled back if a compact shape would not fit it
+      const sp = shot.text && spaces[shot.text];
+      const yc = sp ? (sp[0] + sp[1]) / 2 : vh / 2;
+      st.offset = [0, (vh / 2 - yc) / (vh / 2)];
+      if (shot.fit && sp) {
+        const tan = Math.tan((st.fov * Math.PI) / 360);
+        st.dist = Math.max(st.dist, (shot.fit * vh) / 2 / (tan * 0.42 * Math.min(vw, sp[1] - sp[0])), shot.fit / (0.82 * tan));
+      }
+      return st;
+    }
     if (shot.layout) {
       const [x0, x1] = spaces[shot.text];
       st.offset = [((x0 + x1) / 2 - vw / 2) / (vh / 2), (st.offset || [0, 0])[1]];
@@ -257,8 +277,9 @@ function measure() {
     if (!li || !w) return;
     const [ox, oy] = placed[i].offset || [0, 0];
     const tx = vw / 2 + (ox * vh) / 2, ty = vh / 2 - (oy * vh) / 2;
-    const cx = clamp(tx + parseFloat(li.dataset.dx) * vh, 0.04 * vw, 0.96 * vw);
-    const cy = clamp(ty + parseFloat(li.dataset.dy) * vh, 0.06 * vh, 0.94 * vh);
+    const cx = phone ? vw / 2 : clamp(tx + parseFloat(li.dataset.dx) * vh, 0.04 * vw, 0.96 * vw);
+    // (on a phone, high enough that a bottom toolbar never covers it)
+    const cy = phone ? 0.8 * vh : clamp(ty + parseFloat(li.dataset.dy) * vh, 0.06 * vh, 0.94 * vh);
     A.notes.push({ text: li.textContent.trim(), a: w.a, b: w.b, c: w.c, d: w.d, tx, ty, cx, cy });
   });
   A.noteOn = null;
@@ -293,16 +314,24 @@ const presence = (y, w) => (y < w.b ? smooth(clamp01((y - w.a) / (w.b - w.a))) :
 // subject; it never reaches into the shape. The caption sits on the far side
 // of the pointer.
 function drawNote(n) {
-  const dx = n.tx - n.cx, dy = n.ty - n.cy, len = Math.hypot(dx, dy) || 1;
+  const text = note.querySelector('.fx-note-text');
+  let ax = n.cx, ay = n.cy; // where the arrow starts from
+  if (phone) {
+    // centred under the view; the arrow leaves from just above the caption
+    text.textContent = n.text;
+    Object.assign(text.style, { left: `${n.cx}px`, right: 'auto', top: `${n.cy}px`, textAlign: 'center', transform: 'translate(-50%, -50%)' });
+    ay = n.cy - text.offsetHeight / 2;
+  }
+  const dx = n.tx - ax, dy = n.ty - ay, len = Math.hypot(dx, dy) || 1;
   const ux = dx / len, uy = dy / len;
   const reach = Math.min(clamp(0.055 * A.vh, 36, 60), len * 0.5);
-  const sx = n.cx + ux * 6, sy = n.cy + uy * 6, ex = sx + ux * reach, ey = sy + uy * reach;
+  const sx = ax + ux * 6, sy = ay + uy * 6, ex = sx + ux * reach, ey = sy + uy * reach;
   const hx = ux * 6, hy = uy * 6;
   const d = `M${sx.toFixed(1)} ${sy.toFixed(1)} L${ex.toFixed(1)} ${ey.toFixed(1)} `
     + `M${(ex - hx - hy * 0.6).toFixed(1)} ${(ey - hy + hx * 0.6).toFixed(1)} L${ex.toFixed(1)} ${ey.toFixed(1)} `
     + `L${(ex - hx + hy * 0.6).toFixed(1)} ${(ey - hy - hx * 0.6).toFixed(1)}`;
   for (const path of note.querySelectorAll('path')) path.setAttribute('d', d);
-  const text = note.querySelector('.fx-note-text');
+  if (phone) return;
   text.textContent = n.text;
   const toLeft = n.tx < n.cx;
   text.style.left = toLeft ? `${n.cx + 10}px` : 'auto';
@@ -324,12 +353,17 @@ function syncPage(p) {
   setBall(A.o1.el, show && y <= A.release, flip);
   setBall(A.o2.el, !landed, flip);
   canvas.style.opacity = show ? '' : '0';
-  for (const t of A.texts) t.el.style.opacity = presence(y, t).toFixed(3);
+  let words = 0;
+  for (const t of A.texts) { const o = presence(y, t); words = Math.max(words, o); t.el.style.opacity = o.toFixed(3); }
+  // a phone's paper fade behind the pinned words, there while words are
+  if (phone) scrim.style.opacity = words.toFixed(3);
   let on = null, most = 0;
   for (const n of A.notes) { const o = presence(y, n); if (o > most) { most = o; on = n; } }
   if (on && on !== A.noteOn) drawNote(on);
   A.noteOn = on;
   note.style.opacity = (most * NOTE_ALPHA).toFixed(3);
+  // and a paper fade from the bottom under a phone's centred caption
+  if (phone) scrimLow.style.opacity = most.toFixed(3);
 }
 
 // Speed bumps. Most visitors fly through a first pass, and three moments only
@@ -385,22 +419,32 @@ function bumpCheck() {
   }
 }
 
-export async function run() {
+export async function run({ phone: onPhone = false } = {}) {
+  phone = onPhone;
   await document.fonts.ready;
   canvas.style.opacity = '0'; // out of sight until syncPage says otherwise
-  const stage = await start({ scene: SCENE, path: (p) => camera(p), onFrame: (p) => { if (A) syncPage(p); }, glide: false });
+  // A phone renders lighter: refined at no more than 1.25 device pixels per
+  // CSS pixel and with fewer samples, which spares its GPU and battery.
+  const light = phone ? { anyScreen: true, dprCap: 1.25, restSamples: 10 } : {};
+  const stage = await start({ scene: SCENE, path: (p) => camera(p), onFrame: (p) => { if (A) syncPage(p); }, glide: false, ...light });
   if (!stage) return; // the page stays as it is: text, no fractal
   // Live: the sections open up into long holds, and the second title's "o"
   // gives way to the ball. Measured after, since the layout has just changed.
   root.classList.add('fx-live');
+  // on a phone the page's choreography starts on fx-live; let it lay out first
+  if (phone) await null;
   measure();
   syncPage(scrollY / Math.max(1, root.scrollHeight - innerHeight));
   lastY = scrollY;
   for (const [name, , to] of bumpSpans()) if (scrollY > to) bumpSeen[name] = true;
   // ?nobumps turns them off, for checking the pacing (and for tools that jump
   // the scroll around, which would otherwise be held like a fast visitor)
-  if (!new URLSearchParams(location.search).has('nobumps')) addEventListener('scroll', bumpCheck, { passive: true });
-  const relayout = () => {
+  if (!phone && !new URLSearchParams(location.search).has('nobumps')) addEventListener('scroll', bumpCheck, { passive: true });
+  let lastW = innerWidth;
+  const relayout = (e) => {
+    // a phone's address bar coming and going resizes the window, not the layout
+    if (phone && e && e.type === 'resize' && innerWidth === lastW) return;
+    lastW = innerWidth;
     const live = !window.qjStats.mode.startsWith('poster');
     root.classList.toggle('fx-live', live);
     if (live) measure();

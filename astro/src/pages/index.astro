@@ -56,6 +56,8 @@ const shows = [
 >
     <div class="page-container" style="background-color:#fff">
         <canvas id="qj" class="fx-canvas" aria-hidden="true"></canvas>
+        <div class="fx-scrim" aria-hidden="true"></div>
+        <div class="fx-scrim-low" aria-hidden="true"></div>
         <div class="fx-note" aria-hidden="true">
             <svg class="fx-note-arrow">
                 <path class="fx-note-halo"></path>
@@ -68,13 +70,18 @@ const shows = [
             style="padding-top:2.5rem;padding-bottom:3rem"
         >
             <script is:inline>
-                // Desktop with motion: keep the intro title out of sight until
+                // With motion (desktop, or a phone that gets the fractal; see
+                // lib/homeScroll.js): keep the intro title out of sight until
                 // its font has loaded (two seconds at most), so it never shows
                 // in a fallback face before Space Grotesk arrives.
                 (() => {
+                    if (matchMedia("(prefers-reduced-motion: reduce)").matches)
+                        return;
+                    const net = navigator.connection;
                     if (
-                        innerWidth < 768 ||
-                        matchMedia("(prefers-reduced-motion: reduce)").matches
+                        innerWidth < 768 &&
+                        ((net && net.saveData) ||
+                            (navigator.deviceMemory && navigator.deviceMemory < 4))
                     )
                         return;
                     const root = document.documentElement;
@@ -665,6 +672,102 @@ const shows = [
         }
     }
 
+    /* Live on a phone: the same long holds, in portrait. The words pin near
+       the top, each view is framed in the space below them (the fractal layer
+       places it), and a paper fade behind the words keeps them legible where a
+       view fills the frame. The canvas is the large viewport's height, so the
+       address bar coming and going moves nothing. */
+    .fx-scrim,
+    .fx-scrim-low {
+        display: none;
+    }
+    @media (max-width: 767px) {
+        :global(html.fx-live) .fx-canvas {
+            height: 100vh;
+            height: 100lvh;
+        }
+        :global(html.fx-live) .fx-scrim {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64vh;
+            height: 64lvh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            background: linear-gradient(
+                #fff 0%,
+                #fff 50%,
+                rgba(255, 255, 255, 0.8) 70%,
+                rgba(255, 255, 255, 0) 100%
+            );
+        }
+        /* the same, from the bottom, under a note's centred caption */
+        :global(html.fx-live) .fx-scrim-low {
+            display: block;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 58vh;
+            top: 58lvh;
+            height: 42vh;
+            height: 42lvh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            background: linear-gradient(
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.85) 30%,
+                #fff 55%
+            );
+        }
+        :global(html.fx-live) .fx-section {
+            height: 170vh;
+            padding: 0;
+            align-items: flex-start;
+        }
+        :global(html.fx-live) .fx-section[data-text="built"] {
+            height: 240vh;
+        }
+        :global(html.fx-live) .fx-text {
+            position: sticky;
+            top: 9vh;
+        }
+        :global(html.fx-live) .fx-gap {
+            display: block;
+        }
+        .g0 {
+            height: 50vh;
+        }
+        .g1 {
+            height: 80vh;
+        }
+        .g2 {
+            height: 80vh;
+        }
+        .g3 {
+            height: 420vh;
+        }
+        .g4 {
+            height: 80vh;
+        }
+        .g5 {
+            height: 50vh;
+        }
+        /* the ball lands in the second title's "o", so it shows above the list */
+        :global(html.fx-live) .cards-title {
+            display: block;
+        }
+        :global(html.fx-live) .progress-track {
+            display: none !important;
+        }
+        .fx-note-text {
+            max-width: 84vw;
+        }
+    }
+
     /* ── kept from the homepage: intro, return stage, chrome ── */
     .intro-spacer {
         position: relative;
@@ -784,12 +887,11 @@ const shows = [
         };
         const follow = () => {
             if (!document.documentElement.classList.contains("fx-live")) return;
-            const vh = innerHeight;
             const text = section.querySelector(".fx-text");
+            const pin = parseFloat(getComputedStyle(text).top) || 0;
             const top = section.getBoundingClientRect().top + scrollY;
-            const a = top - 0.28 * vh;
-            const b =
-                top + section.offsetHeight - text.offsetHeight - 0.28 * vh;
+            const a = top - pin;
+            const b = top + section.offsetHeight - text.offsetHeight - pin;
             set(
                 Math.min(
                     imgs.length - 1,
@@ -807,10 +909,13 @@ const shows = [
 </script>
 
 <script>
-    // The fractal: desktop only, loaded after the page, never on mobile or
-    // under reduced motion (motionEnabled), and it adds nothing to the HTML.
-    import { motionEnabled } from "../lib/homeScroll.js";
+    // The fractal: loaded after the page, never under reduced motion or data
+    // saving, and it adds nothing to the HTML. A phone gets its own lighter,
+    // portrait layout of it (phoneMotionEnabled).
+    import { motionEnabled, phoneMotionEnabled } from "../lib/homeScroll.js";
     if (motionEnabled()) import("../lib/qjulia/home.js").then((m) => m.run());
+    else if (phoneMotionEnabled())
+        import("../lib/qjulia/home.js").then((m) => m.run({ phone: true }));
 </script>
 
 <script>
@@ -818,6 +923,7 @@ const shows = [
     // the directory reveal, the progress track and the scroll hint.
     import {
         motionEnabled,
+        phoneMotionEnabled,
         subscribe,
         RETURN_VH,
         TITLE_HOLD_VH,
@@ -829,7 +935,11 @@ const shows = [
     const RISE = 0.3; // share of it the title takes to rise to the top
     const FADE = 0.75; // share after which title and subtitle fade
 
-    if (motionEnabled()) {
+    // phone: the canvas is sized to the large viewport (100lvh), so measuring
+    // against it keeps everything still while the address bar comes and goes
+    const choreograph = (phone) => {
+        const canvas = document.getElementById("qj");
+        const viewH = () => (phone && canvas.clientHeight) || innerHeight;
         const introSpacer = document.querySelector(".intro-spacer");
         const introTitle = document.querySelector(
             ".intro-spacer .title-section-parallax",
@@ -910,7 +1020,7 @@ const shows = [
 
         subscribe(
             (state) => {
-                const vh = innerHeight;
+                const vh = viewH();
                 introFx(vh);
                 returnFx(state);
                 if (track && fill) {
@@ -922,7 +1032,7 @@ const shows = [
             },
             {
                 onResize: () => {
-                    const vh = innerHeight;
+                    const vh = viewH();
                     if (introSpacer)
                         introSpacer.style.height =
                             Math.round(vh * INTRO_VH) + "px";
@@ -947,5 +1057,17 @@ const shows = [
             addEventListener("scroll", armHint, { passive: true });
             armHint();
         }
+    };
+
+    if (motionEnabled()) choreograph(false);
+    else if (phoneMotionEnabled()) {
+        // only once the phone's fractal is live; otherwise the plain column stays
+        const root = document.documentElement;
+        const live = new MutationObserver(() => {
+            if (!root.classList.contains("fx-live")) return;
+            live.disconnect();
+            choreograph(true);
+        });
+        live.observe(root, { attributes: true, attributeFilter: ["class"] });
     }
 </script>

@@ -24,6 +24,22 @@ export function motionEnabled() {
   return window.innerWidth >= MOBILE_BREAKPOINT;
 }
 
+/**
+ * A phone that can take the fractal: narrow, the visitor has not asked for
+ * less motion or for data saving, and the device does not report under 4 GB
+ * of memory. The renderer still has to start (WebGL2, a real GPU) and keep
+ * up, or the page stays the plain column.
+ */
+export function phoneMotionEnabled() {
+  if (typeof window === 'undefined') return false;
+  if (window.innerWidth >= MOBILE_BREAKPOINT) return false;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  const net = navigator.connection;
+  if (net && net.saveData) return false;
+  if (navigator.deviceMemory && navigator.deviceMemory < 4) return false;
+  return true;
+}
+
 /** Grabs the elements the scroll math measures against. */
 export function readStage() {
   return {

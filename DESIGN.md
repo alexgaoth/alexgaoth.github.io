@@ -152,8 +152,10 @@ rows, keep every fact.**
   words, each held beside a view of a quaternion Julia set: champagne/pearl tones
   (`#d1bca3` sampled from the render) on paper white, never neon or dark-space
   glow. Faint grey notes (a short arrow, one caption) name a few views. Then the
-  directory cards and the footer. Mobile and reduced motion get the words as one
-  plain column. See README section 2.
+  directory cards and the footer. Phones get a lighter portrait version (words
+  pinned at the top on a paper fade, each view below them, captions centred near
+  the bottom); reduced motion and data saver get the words as one plain column.
+  See README section 2.
 - `/resume`, `/projects`, `/thoughts`, `/quotes` — content pages under
   `NavigationBar` (via `ContentPage` layout), same ink-on-paper language.
 - `/about` — the one deliberate exception on the professional side: a

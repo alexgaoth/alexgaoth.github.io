@@ -30,9 +30,9 @@ function stayOnPoster(reason) {
 // follows the scroll exactly, for pages whose DOM must stay in step with the
 // view. anyScreen: run on narrow and portrait screens too. stillsOk: the page
 // handles reduced motion itself (by cutting between still views), so run
-// anyway. Resolves to { snap() }, which cuts straight to the scroll position
-// instead of gliding.
-export async function start({ scene, path, onFrame, glide = true, anyScreen = false, stillsOk = false }) {
+// anyway. dprCap and restSamples lighten the refined image (phones). Resolves
+// to { snap() }, which cuts straight to the scroll position instead of gliding.
+export async function start({ scene, path, onFrame, glide = true, anyScreen = false, stillsOk = false, dprCap = DPR_CAP, restSamples = REST_SAMPLES }) {
   const allowed = () => anyScreen || liveAllowed();
   if (!stillsOk && matchMedia('(prefers-reduced-motion: reduce)').matches) return stayOnPoster('reduced-motion');
   if (!allowed()) return stayOnPoster(innerWidth < MOBILE ? 'narrow' : 'portrait');
@@ -65,10 +65,16 @@ export async function start({ scene, path, onFrame, glide = true, anyScreen = fa
   // The canvas's own box, not the window: a classic scrollbar takes its width
   // out of the canvas but not out of innerWidth, which would squeeze the
   // image and shift it off the page's layout.
+  let sized = '';
   const resize = () => {
-    const dpr = Math.min(devicePixelRatio || 1, DPR_CAP);
-    r.setSize(Math.round(canvas.clientWidth * dpr), Math.round(canvas.clientHeight * dpr));
+    const dpr = Math.min(devicePixelRatio || 1, dprCap);
+    const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+    // a phone's address bar coming and going resizes the window, not the canvas
+    if (`${w}x${h}` === sized) return false;
+    sized = `${w}x${h}`;
+    r.setSize(w, h);
     drawnAt = NaN;
+    return true;
   };
   resize();
 
@@ -157,7 +163,7 @@ export async function start({ scene, path, onFrame, glide = true, anyScreen = fa
       // When the full-resolution image is fully on screen.
       if (mix >= 1 && !stats.sharpAt) stats.sharpAt = now;
       stats.mode = 'rest';
-      if (r.sampleIndex >= REST_SAMPLES && mix >= 1) {
+      if (r.sampleIndex >= restSamples && mix >= 1) {
         resting = false;
         stats.mode = 'idle';
         stats.restMs = Math.round(now - stats.restStart);
@@ -178,7 +184,7 @@ export async function start({ scene, path, onFrame, glide = true, anyScreen = fa
     // Turned to portrait or squeezed narrow: hand back to the still.
     paused = !allowed();
     if (paused) { canvas.classList.remove('live'); stats.mode = 'poster:portrait'; return; }
-    resize(); restDirty = true; wake();
+    if (resize()) { restDirty = true; wake(); }
   });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
   wake();

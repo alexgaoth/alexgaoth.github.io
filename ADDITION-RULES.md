@@ -126,5 +126,10 @@ What to edit for what:
 - Speed bumps — how long a fast first pass is held at the first "o", at "cut open" and at the
   landing: `BUMPS` in `home.js` (`bumpSpans` says where). `/?nobumps` shows the page without them.
 
-Check on a desktop-width window: mobile, reduced motion and no-WebGL2 get the words as one plain
-column, which must stay complete on its own.
+- Phones (under 768px) have their own portrait layout: the `@media (max-width: 767px)` live block in
+  `index.astro` (section lengths, the words' pinned top, the two paper fades) and the `phone`
+  branches in `home.js` (views framed below the words, notes centred near the bottom). Desktop never
+  reads either.
+
+Check on a desktop-width window and on an emulated phone (390 × 844). Reduced motion, data saver and
+no-WebGL2 get the words as one plain column, which must stay complete on its own.

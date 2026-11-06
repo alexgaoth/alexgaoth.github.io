@@ -50,9 +50,12 @@ handscroll, one stroke 一笔) and their scaffolding stay on the `home-3d` and
 Constraints that hold:
 - Static HTML stays complete in source — chrome over content, never the content
   itself. Text stays in the DOM; never text-as-texture.
-- Desktop only: about 2 KB of eager JS, the renderer behind a dynamic import,
-  zero payload on mobile and under `prefers-reduced-motion`, where the
-  sections read as one plain column.
+- About 2 KB of eager JS, the renderer behind a dynamic import. Phones (under
+  768px) that can take it get a lighter portrait layout (`phoneMotionEnabled`
+  in `homeScroll.js`, the `phone` branches in `home.js`): words pinned at the
+  top on a paper fade, each view framed below, no speed bumps, refinement
+  capped at 1.25 device pixels and 10 samples. Reduced motion, data saver, a
+  phone reporting under 4 GB and no WebGL2 get the sections as one plain column.
 - No URL changes (ADDITION-RULES golden rule 1).
 - Procedural geometry only on `/` — it is the most-crawled route.
 

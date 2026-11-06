@@ -23,8 +23,9 @@ orientation and the owner's priorities.
 - `@react-three/drei` and `simplex-noise` look unused but are required by
   `RegentsScene.jsx` and `ArtBackground.jsx` — don't prune them from
   `astro/package.json`.
-- The homepage's fractal and choreography run only at ≥768px viewport width
-  without `prefers-reduced-motion`. To verify them visually without the Chrome
+- The homepage's fractal runs at ≥768px, and in a lighter portrait layout on
+  phones below it (not under reduced motion or data saver); check phones with
+  puppeteer's `isMobile`/`hasTouch` viewport. To verify it visually without the Chrome
   extension: `npm run preview`, then drive headless Chrome (puppeteer-core,
   `/usr/bin/google-chrome-stable`, `--headless=new --use-gl=angle --use-angle=gl
   --ignore-gpu-blocklist` — WebGL2 needs the GPU) and screenshot while
