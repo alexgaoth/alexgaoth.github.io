@@ -7,160 +7,208 @@
 // this page starts tabulating it becomes a second /resume, and /resume already
 // exists and is the one that stays in sync with content.js. Everything here is
 // paragraphs with the links sitting inside the sentences.
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { APP_ROUTES, SITE, buildAppUrl } from '../config/site.js';
-import { profileData } from '../data/profileData.js';
-import { content } from '../data/content.js';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { APP_ROUTES, SITE, buildAppUrl } from "../config/site.js";
+import { profileData } from "../data/profileData.js";
+import { content } from "../data/content.js";
 
 const { education, achievements } = content.resume.content;
 
 // Bare hostnames — the point of the line is that three hosts are one person,
 // so the scheme and the trailing slash are noise.
 const mirrors = profileData.mirrors.map((m) => ({
-  href: m.href,
-  host: m.href.replace(/^https:\/\//, '').replace(/\/$/, ''),
+    href: m.href,
+    host: m.href.replace(/^https:\/\//, "").replace(/\/$/, ""),
 }));
 
 // The socials, named in a sentence rather than listed. 'x / twitter' is the
 // data's label for one thing; prose only wants the first half of it.
 const socials = profileData.links.map((l) => ({
-  href: l.href,
-  word: l.label.split(' / ')[0],
+    href: l.href,
+    word: l.label.split(" / ")[0],
 }));
 
 const profileStructuredData = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'ProfilePage',
-    name: `${SITE.name} (${SITE.handle})`,
-    url: buildAppUrl(APP_ROUTES.about),
-    mainEntity: {
-      '@type': 'Person',
-      name: SITE.name,
-      alternateName: profileData.aliases,
-      url: SITE.rootUrl,
-      // /about is the canonical identity page — everything
-      // below mirrors facts visible on this page, nothing more.
-      sameAs: [...SITE.socialProfiles, SITE.personalUrl],
-      email: `mailto:${profileData.email}`,
-      description: SITE.description,
-      jobTitle: 'Student Builder',
-      affiliation: [
-        { '@type': 'CollegeOrUniversity', name: 'UC San Diego' },
-      ],
-      alumniOf: education.map((e) => ({
-        '@type': 'EducationalOrganization',
-        name: e.institution,
-      })),
-      award: achievements.map((a) => `${a.title}, ${a.organization} (${a.year})`),
-      knowsAbout: ['software', 'writing', 'mathematical thinking'],
-      knowsLanguage: ['English', 'Chinese', 'Tamil'],
-      mainEntityOfPage: buildAppUrl(APP_ROUTES.about),
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        name: `${SITE.name} (${SITE.handle})`,
+        url: buildAppUrl(APP_ROUTES.about),
+        mainEntity: {
+            "@type": "Person",
+            name: SITE.name,
+            alternateName: profileData.aliases,
+            url: SITE.rootUrl,
+            // /about is the canonical identity page — everything
+            // below mirrors facts visible on this page, nothing more.
+            sameAs: [...SITE.socialProfiles, SITE.personalUrl],
+            email: `mailto:${profileData.email}`,
+            worksFor: {
+                "@type": "Organization",
+                name: "Hypercubic",
+                url: "https://hypercubic.ai",
+            },
+            affiliation: [
+                { "@type": "CollegeOrUniversity", name: "UC San Diego" },
+            ],
+            alumniOf: education.map((e) => ({
+                "@type": "EducationalOrganization",
+                name: e.institution,
+            })),
+            award: achievements.map(
+                (a) => `${a.title}, ${a.organization} (${a.year})`,
+            ),
+            knowsAbout: ["software", "writing", "mathematical thinking"],
+            knowsLanguage: ["English", "Chinese", "Tamil"],
+            mainEntityOfPage: buildAppUrl(APP_ROUTES.about),
+        },
     },
-  },
 ];
 ---
 
 <BaseLayout
-  title="Alex Gao (alexgaoth)"
-  description="Alex Gao (alexgaoth) — math and computer science at UC San Diego, CTO of Signalor. What he builds, what he writes, and where to find the rest."
-  keywords={[...profileData.searchableQueries, 'about', 'profile', 'Tianhao Gao']}
-  path={APP_ROUTES.about}
-  structuredData={profileStructuredData}
+    title="About — Alex Gao (alexgaoth)"
+    description="alex gao (alexgaoth) — about."
+    keywords={[
+        ...profileData.searchableQueries,
+        "about",
+        "profile",
+        "Tianhao Gao",
+    ]}
+    path={APP_ROUTES.about}
+    structuredData={profileStructuredData}
 >
-  <main class="acad">
-    <h1>Alex Gao</h1>
-    <p class="onpaper">tianhao gao &middot; alexgaoth</p>
+    <main class="acad">
+        <!-- the page's one heading, set as plain text like the lines below -->
+        <h1 class="lede">i'm alex gao. you might have known me as alexgaoth.</h1>
 
-    <hr />
+        <p>
+            currently on leave from <a href="https://ucsd.edu">ucsd</a>, working
+            at
+            <a href="https://hypercubic.ai">hypercubic.ai</a> where i make
+            really efficient COBOL compilers.
+        </p>
 
-    <p>i'm alex gao. you might have known me as alexgaoth.</p>
+        <p>
+            i previously worked at ibm, bloomberg, and climind. Read about what
+            i think of them at <a href={APP_ROUTES.resume}>/resume</a>.
+        </p>
 
-    <p>
-      i am currently on leave from <a href="https://ucsd.edu">ucsd</a>, working at
-      <a href="https://hypercubic.ai">hypercubic.ai</a>.
-    </p>
+        <p>
+            i really enjoy building things. one of them is a startup now:
+            <a href="https://signalor.app">signalor.app</a>. Check them out at
+            <a href={APP_ROUTES.projects}>/projects</a>.
+        </p>
 
-    <p>
-      i really enjoy building things. one of them turned into a company,
-      <a href="https://signalor.app">signalor</a>. the rest live on
-      <a href={APP_ROUTES.projects}>/projects</a>.
-    </p>
+        <p>
+            i also like to think, and make others think, so i write. In my best
+            effort to omit long rants in this page, I would like to say I find
+            the process of sublation incredibly strong, and have attempted to
+            apply it to our society and its future, it's called{" "}
+            <a href="https://sublationism.com">sublationism</a>.
+        </p>
 
-    <p>
-      i also like to think, and make others think, so i write. mostly about history
-      and philosophy, sometimes poetry. you'll find it on
-      <a href={APP_ROUTES.thoughts}>/thoughts</a> and <a href={APP_ROUTES.writing}>/writing</a>.
-    </p>
+        <p>i believe in just doing things.</p>
 
-    <p>
-      i believe in just doing things. <a href={APP_ROUTES.resume}>/resume</a> has the
-      record, and <a href={APP_ROUTES.now}>/now</a> has what i'm up to.
-    </p>
+        <p>
+            if you read this page and you want to know more, check out
+            <a href="https://intro.alexgaoth.com">intro.alexgaoth.com</a> if we
+            haven't met, or straight to{" "}
+            <a href={APP_ROUTES.home}>alexgaoth.com</a>.
+        </p>
 
-    <p>
-      email me at <a href={`mailto:${profileData.email}`}>{profileData.email}</a>, or
-      find me as alexgaoth on {socials.map((sc, i) => (
-        <><a href={sc.href} rel="me">{sc.word}</a>{i < socials.length - 2 ? ', ' : i === socials.length - 2 ? ' and ' : ''}</>
-      ))}.
-    </p>
+        <p>
+            email me at{" "}
+            <a href={`mailto:${profileData.email}`}>{profileData.email}</a>.
+            imessage me at{" "}
+            <a href="sms:alexgaoth@icloud.com">alexgaoth@icloud.com</a>.
+        </p>
 
-    <p class="home"><a href={APP_ROUTES.home}>&larr; alexgaoth.com</a></p>
+        <p>
+            i'm still alexgaoth on{" "}
+            {socials.map((sc, i) => (
+                <>
+                    <a href={sc.href} rel="me">
+                        {sc.word}
+                    </a>
+                    {i < socials.length - 2
+                        ? ", "
+                        : i === socials.length - 2
+                          ? " and "
+                          : ""}
+                </>
+            ))}
+            .
+        </p>
 
-    <hr />
+        <p class="home">
+            <a href={APP_ROUTES.home}>&larr; alexgaoth.com</a>
+        </p>
 
-    {/* kept verbatim for findability — see profileData.js */}
-    <p class="fine">
-      also indexed as {profileData.aliases.join(', ')}. mirrors: {mirrors.map((m, i) => (
-        <><a href={m.href}>{m.host}</a>{i < mirrors.length - 1 ? ', ' : '.'}</>
-      ))}
-    </p>
-  </main>
+        <hr />
+
+        {/* kept verbatim for findability — see profileData.js */}
+        <p class="fine">
+            also indexed as {profileData.aliases.join(", ")}. mirrors:{" "}
+            {mirrors.map((m, i) => (
+                <>
+                    <a href={m.href}>{m.host}</a>
+                    {i < mirrors.length - 1 ? ", " : "."}
+                </>
+            ))}
+        </p>
+    </main>
 </BaseLayout>
 
 <style>
-  /* The site-wide reset in global.css zeroes every margin, so the browser
-     defaults this page wants have to be asked for back. That is the whole
-     stylesheet — no colours on links, no borders, no grid. */
-  .acad {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.7;
-    color: #222;
-    max-width: 38rem;
-    margin: 0 auto;
-    padding: 2.5rem 1.1rem 4rem;
-  }
+    /* The site-wide reset in global.css zeroes every margin, so the browser
+       defaults this page wants have to be asked for back. That is the whole
+       stylesheet — no colours on links, no borders, no grid. */
+    .acad {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.7;
+        color: #222;
+        max-width: 38rem;
+        margin: 0 auto;
+        padding: 2.5rem 1.1rem 4rem;
+    }
 
-  .acad h1 {
-    font-size: 1.6rem;
-    font-weight: bold;
-    margin: 0;
-  }
+    .acad h1 {
+        font-size: 1.6rem;
+        font-weight: bold;
+        margin: 0;
+    }
 
-  .acad p {
-    margin: 0 0 1.15em;
-  }
+    .acad h1.lede {
+        font-size: inherit;
+        font-weight: inherit;
+        margin: 0 0 1.15em;
+    }
 
-  .acad hr {
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1.3rem 0;
-  }
+    .acad p {
+        margin: 0 0 1.15em;
+    }
 
-  .onpaper {
-    color: #666;
-    font-size: 13px;
-    margin: 0.15rem 0 0;
-  }
+    .acad hr {
+        border: 0;
+        border-top: 1px solid #ccc;
+        margin: 1.3rem 0;
+    }
 
-  .home {
-    margin-bottom: 0;
-  }
+    .onpaper {
+        color: #666;
+        font-size: 13px;
+        margin: 0.15rem 0 0;
+    }
 
-  .fine {
-    font-size: 13px;
-    color: #555;
-    margin-bottom: 0;
-  }
+    .home {
+        margin-bottom: 0;
+    }
+
+    .fine {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 0;
+    }
 </style>
