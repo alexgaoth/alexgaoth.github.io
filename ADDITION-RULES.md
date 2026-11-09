@@ -83,7 +83,7 @@ Put the `.glb` (and optional looping `.mp3`) in `astro/public/regents/`, then ad
 
 ## Resume / career facts
 
-- /resume is "Me at Work": Alex's own words on each job, hand-written in `astro/src/pages/resume.astro`,
+- /resume is "At Work": Alex's own words on each job, hand-written in `astro/src/pages/resume.astro`,
   plus a link to `resume.pdf`, which is the record. `content.js` → `resume` keeps only `education` and
   `achievements`, which /about reads.
 - `astro/src/data/profileData.js` → the socials, aliases and mirrors named in /about's prose.
