@@ -19,7 +19,7 @@ const { group } = Astro.props;
 
 <BaseLayout
   title={`${group.name} — Alex Gao`}
-  description={group.description}
+  description={`alex gao (alexgaoth) — ${group.name.toLowerCase()}.`}
   keywords={['Alex Gao', 'alexgaoth', group.name, ...group.tech.split(',').map((t) => t.trim())]}
   path={`${APP_ROUTES.projects}/${group.slug}`}
   imagePath={group.image}
