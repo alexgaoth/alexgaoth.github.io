@@ -17,6 +17,7 @@ const BEAT_VH = 0.8;      // a beat (a view with no words) holds this many viewp
 const MOVE_MIN_VH = 0.4;  // and the moves around it never get less than this
 const VIA_TIME = 0.35;    // extra time a move gets for each via point it passes
 const NOTE_ALPHA = 1;     // how strong the notes are at their fullest
+const PHONE_FILL = 0.56;  // a phone: a compact shape's radius against the free space's smaller side
 // Speed bumps: how long each of three moments must be on screen before the
 // scroll may pass it (ms). See bumpCheck.
 const BUMPS = { o: 900, face: 1400, land: 800 };
@@ -27,7 +28,6 @@ const root = document.documentElement;
 const canvas = document.getElementById('qj');
 const note = document.querySelector('.fx-note');
 const scrim = document.querySelector('.fx-scrim');
-const scrimLow = document.querySelector('.fx-scrim-low');
 const docTop = (el) => el.getBoundingClientRect().top + scrollY;
 
 // Where a letter's ink sits on screen: centre and radius, from the font's own
@@ -172,6 +172,8 @@ function measure() {
     const stick = top - stickyTop;
     const unstick = top + sec.offsetHeight - text.offsetHeight - stickyTop;
     const win = { el: text, a: stick - 0.35 * vh, b: stick - 0.1 * vh, c: unstick, d: unstick + 0.2 * vh };
+    // a phone's paper fade reaches just past these words once they are pinned
+    win.fade = stickyTop + text.offsetHeight + 0.07 * vh;
     texts.push(win);
     windows[sec.dataset.text] = win;
     const r = text.getBoundingClientRect(), gutter = 0.03 * vw;
@@ -208,7 +210,7 @@ function measure() {
       st.offset = [0, (vh / 2 - yc) / (vh / 2)];
       if (shot.fit && sp) {
         const tan = Math.tan((st.fov * Math.PI) / 360);
-        st.dist = Math.max(st.dist, (shot.fit * vh) / 2 / (tan * 0.42 * Math.min(vw, sp[1] - sp[0])), shot.fit / (0.82 * tan));
+        st.dist = Math.max(st.dist, (shot.fit * vh) / 2 / (tan * PHONE_FILL * Math.min(vw, sp[1] - sp[0])), shot.fit / (0.82 * tan));
       }
       return st;
     }
@@ -353,17 +355,19 @@ function syncPage(p) {
   setBall(A.o1.el, show && y <= A.release, flip);
   setBall(A.o2.el, !landed, flip);
   canvas.style.opacity = show ? '' : '0';
-  let words = 0;
-  for (const t of A.texts) { const o = presence(y, t); words = Math.max(words, o); t.el.style.opacity = o.toFixed(3); }
-  // a phone's paper fade behind the pinned words, there while words are
-  if (phone) scrim.style.opacity = words.toFixed(3);
+  let words = 0, under = null;
+  for (const t of A.texts) { const o = presence(y, t); if (o > words) { words = o; under = t; } t.el.style.opacity = o.toFixed(3); }
+  // a phone's paper fade behind the pinned words, there while words are, and
+  // ending just below them so the view underneath stays clear
+  if (phone) {
+    scrim.style.opacity = words.toFixed(3);
+    if (under) scrim.style.height = `${Math.round(under.fade)}px`;
+  }
   let on = null, most = 0;
   for (const n of A.notes) { const o = presence(y, n); if (o > most) { most = o; on = n; } }
   if (on && on !== A.noteOn) drawNote(on);
   A.noteOn = on;
   note.style.opacity = (most * NOTE_ALPHA).toFixed(3);
-  // and a paper fade from the bottom under a phone's centred caption
-  if (phone) scrimLow.style.opacity = most.toFixed(3);
 }
 
 // Speed bumps. Most visitors fly through a first pass, and three moments only
@@ -419,6 +423,18 @@ function bumpCheck() {
   }
 }
 
+// Coming back to the page (the inline script at its top held the browser's
+// own restore back and hid the page): put the visitor where they were, now
+// that the layout is at its full length, and show the page again.
+function restore() {
+  if (!root.classList.contains('fx-restoring')) return;
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('home:scroll'));
+    if (saved && saved.y > 0) scrollTo({ top: saved.y, behavior: 'instant' });
+  } catch {}
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('fx-restoring')));
+}
+
 export async function run({ phone: onPhone = false } = {}) {
   phone = onPhone;
   await document.fonts.ready;
@@ -427,13 +443,14 @@ export async function run({ phone: onPhone = false } = {}) {
   // CSS pixel and with fewer samples, which spares its GPU and battery.
   const light = phone ? { anyScreen: true, dprCap: 1.25, restSamples: 10 } : {};
   const stage = await start({ scene: SCENE, path: (p) => camera(p), onFrame: (p) => { if (A) syncPage(p); }, glide: false, ...light });
-  if (!stage) return; // the page stays as it is: text, no fractal
+  if (!stage) { restore(); return; } // the page stays as it is: text, no fractal
   // Live: the sections open up into long holds, and the second title's "o"
   // gives way to the ball. Measured after, since the layout has just changed.
   root.classList.add('fx-live');
   // on a phone the page's choreography starts on fx-live; let it lay out first
   if (phone) await null;
   measure();
+  restore();
   syncPage(scrollY / Math.max(1, root.scrollHeight - innerHeight));
   lastY = scrollY;
   for (const [name, , to] of bumpSpans()) if (scrollY > to) bumpSeen[name] = true;

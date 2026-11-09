@@ -57,7 +57,6 @@ const shows = [
     <div class="page-container" style="background-color:#fff">
         <canvas id="qj" class="fx-canvas" aria-hidden="true"></canvas>
         <div class="fx-scrim" aria-hidden="true"></div>
-        <div class="fx-scrim-low" aria-hidden="true"></div>
         <div class="fx-note" aria-hidden="true">
             <svg class="fx-note-arrow">
                 <path class="fx-note-halo"></path>
@@ -70,6 +69,48 @@ const shows = [
             style="padding-top:2.5rem;padding-bottom:3rem"
         >
             <script is:inline>
+                // Coming back (back, forward or reload) to the fractal page:
+                // its layout only reaches full length once the fractal is
+                // live, so the browser would restore the scroll too early,
+                // against the short static page. Hold that back and keep the
+                // page out of sight; lib/qjulia/home.js puts the visitor back
+                // where they were (saved on leaving, below). Three seconds at
+                // most.
+                (() => {
+                    const nav = performance.getEntriesByType("navigation")[0];
+                    if (
+                        !nav ||
+                        (nav.type !== "back_forward" && nav.type !== "reload")
+                    )
+                        return;
+                    let saved = null;
+                    try {
+                        saved = JSON.parse(
+                            sessionStorage.getItem("home:scroll"),
+                        );
+                    } catch {}
+                    if (!saved || saved.w !== innerWidth || !(saved.y > 0))
+                        return;
+                    if (matchMedia("(prefers-reduced-motion: reduce)").matches)
+                        return;
+                    const net = navigator.connection;
+                    if (
+                        innerWidth < 768 &&
+                        ((net && net.saveData) ||
+                            (navigator.deviceMemory &&
+                                navigator.deviceMemory < 4))
+                    )
+                        return;
+                    history.scrollRestoration = "manual";
+                    const root = document.documentElement;
+                    root.classList.add("fx-restoring");
+                    setTimeout(
+                        () => root.classList.remove("fx-restoring"),
+                        3000,
+                    );
+                })();
+            </script>
+            <script is:inline>
                 // With motion (desktop, or a phone that gets the fractal; see
                 // lib/homeScroll.js): keep the intro title out of sight until
                 // its font has loaded (two seconds at most), so it never shows
@@ -81,7 +122,8 @@ const shows = [
                     if (
                         innerWidth < 768 &&
                         ((net && net.saveData) ||
-                            (navigator.deviceMemory && navigator.deviceMemory < 4))
+                            (navigator.deviceMemory &&
+                                navigator.deviceMemory < 4))
                     )
                         return;
                     const root = document.documentElement;
@@ -171,7 +213,8 @@ const shows = [
                     <p class="fx-lead">including this</p>
                     <p class="fx-line">a quaternion julia set fractal:</p>
                     <p class="fx-line fx-math">
-                        q<sub>n+1</sub> = q<sub>n</sub><sup>2</sup> + c<br />q ∈ ℍ, c = −0.2 + 0.8i, k = 0
+                        q<sub>n+1</sub> = q<sub>n</sub>
+                        <sup>2</sup> + c<br />q ∈ ℍ, c = −0.2 + 0.8i, k = 0
                     </p>
                     <p class="fx-line">
                         read more about it
@@ -195,8 +238,8 @@ const shows = [
                     </p>
 
                     <p class="fx-line">
-                        i attempt to theorize a society where everyone thinking
-                        rationally{" "}
+                        i attempt to theorize a society where a society where we
+                        dont get killed off by ai
                         <a class="fx-inline" href="https://sublationism.com">
                             here
                         </a>
@@ -211,10 +254,11 @@ const shows = [
                     <p class="fx-lead">i believe in just doing things</p>
                     <p class="fx-line">
                         it yielded me with a great deal of interesting stories,
-                        experience
+                        experience, where i show and tell in the rest of this
+                        site.
                     </p>
                     <p class="fx-line">
-                        i strongly recommend explore the rest of the site
+                        i strongly recommend you to have a look around.
                     </p>
                 </div>
             </section>
@@ -536,6 +580,9 @@ const shows = [
     .intro-spacer .title-main {
         transition: opacity 0.4s ease-in-out 0.08s;
     }
+    :global(html.fx-restoring) .page-container {
+        visibility: hidden;
+    }
     :global(html.fx-font-wait) .intro-spacer .title-main {
         opacity: 0;
     }
@@ -677,8 +724,7 @@ const shows = [
        places it), and a paper fade behind the words keeps them legible where a
        view fills the frame. The canvas is the large viewport's height, so the
        address bar coming and going moves nothing. */
-    .fx-scrim,
-    .fx-scrim-low {
+    .fx-scrim {
         display: none;
     }
     @media (max-width: 767px) {
@@ -692,35 +738,16 @@ const shows = [
             top: 0;
             left: 0;
             right: 0;
-            height: 64vh;
-            height: 64lvh;
+            height: 50vh;
             z-index: 0;
             pointer-events: none;
             opacity: 0;
+            /* solid behind the words, fading out in the last 3.5rem; the
+               fractal layer sets the height to end just below them */
             background: linear-gradient(
-                #fff 0%,
-                #fff 50%,
-                rgba(255, 255, 255, 0.8) 70%,
+                #fff 0,
+                #fff calc(100% - 3.5rem),
                 rgba(255, 255, 255, 0) 100%
-            );
-        }
-        /* the same, from the bottom, under a note's centred caption */
-        :global(html.fx-live) .fx-scrim-low {
-            display: block;
-            position: fixed;
-            left: 0;
-            right: 0;
-            top: 58vh;
-            top: 58lvh;
-            height: 42vh;
-            height: 42lvh;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0;
-            background: linear-gradient(
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.85) 30%,
-                #fff 55%
             );
         }
         :global(html.fx-live) .fx-section {
@@ -763,8 +790,20 @@ const shows = [
         :global(html.fx-live) .progress-track {
             display: none !important;
         }
+        /* a note's caption sits on the view itself: a thin paper outline
+           around the letters keeps it legible */
         .fx-note-text {
             max-width: 84vw;
+            color: #333;
+            text-shadow:
+                0 0 2px #fff,
+                0 0 3px #fff,
+                0 0 6px #fff,
+                0 0 10px rgba(255, 255, 255, 0.9);
+        }
+        /* the slideshow stays small, so the shape below it has the room */
+        :global(html.fx-live) .fx-show {
+            width: 60%;
         }
     }
 
@@ -913,6 +952,16 @@ const shows = [
     // saving, and it adds nothing to the HTML. A phone gets its own lighter,
     // portrait layout of it (phoneMotionEnabled).
     import { motionEnabled, phoneMotionEnabled } from "../lib/homeScroll.js";
+    // where the visitor was, for coming back to it (see the inline script at
+    // the top of the page)
+    addEventListener("pagehide", () => {
+        try {
+            sessionStorage.setItem(
+                "home:scroll",
+                JSON.stringify({ y: Math.round(scrollY), w: innerWidth }),
+            );
+        } catch {}
+    });
     if (motionEnabled()) import("../lib/qjulia/home.js").then((m) => m.run());
     else if (phoneMotionEnabled())
         import("../lib/qjulia/home.js").then((m) => m.run({ phone: true }));
