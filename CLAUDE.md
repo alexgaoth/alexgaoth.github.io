@@ -11,6 +11,8 @@ orientation and the owner's priorities.
 - Build + validate: `cd astro && npm run build` — fails on bad thought
   frontmatter. If it fails resolving `sharp`, run `npm install --no-save sharp`
   in `astro/`: a fresh `npm install` on this machine leaves it out.
+- `npm run preview` (port 4321) serves `astro/dist` — rebuild to see source edits;
+  `npx astro dev` reloads them live.
 - Crawler-view audit, from the repo root (inside `astro/` it dies with "Invalid URL"):
   `node scripts/audit-raw-html.mjs astro/dist index.html:/ about.html:/about`.
   Standing FAILs, all accepted: /art + /gallery (400-char text floor), /poetry + /ci (link count).
@@ -39,6 +41,9 @@ orientation and the owner's priorities.
   class rules in `components.css` — a component's media overrides belong in
   that component. `components.css` also still carries React-era rules for
   elements the Astro port never renders — grep the markup before trusting one.
+- `/` restores its own scroll on back/reload (`fx-restoring` + sessionStorage
+  `home:scroll`): the page only reaches full length once the fractal is live,
+  so the browser's restore lands short. Re-test returns after layout changes.
 - Static HTML must stay complete without JS: canvas layers are chrome over
   content — text lives in the DOM, never as texture.
 - Project cards without their own image load GitHub's social card live from
