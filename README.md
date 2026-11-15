@@ -85,7 +85,8 @@ for how to add content of any kind.
   resume.pdf                Intro-site copy of the resume
   .nojekyll                 REQUIRED — GH Pages must not run Jekyll over /astro
   scripts/                  audit-raw-html.mjs (SEO audit), send-thought-notification.py,
-                            home-shots/ (generates the homepage fractal's journey)
+                            home-shots/ (generates the homepage fractal's journey),
+                            seo/gsc.mjs (Search Console snapshot for the weekly SEO routine)
   workers/gallery-list/     Cloudflare Worker listing the gallery R2 bucket
   .github/workflows/        Buttondown email on new thought
 
