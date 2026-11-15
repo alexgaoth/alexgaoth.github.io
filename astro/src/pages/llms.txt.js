@@ -25,7 +25,6 @@ export async function GET() {
 - [Thoughts](${buildAbsoluteUrl('/thoughts')}): essays ([RSS](${buildAbsoluteUrl('/rss.xml')}))
 - [Writing](${buildAbsoluteUrl('/writing')}): all writing — essays, poetry, ci
 - [Quotes](${buildAbsoluteUrl('/quotes')}): collected quotes
-- [Now](${buildAbsoluteUrl('/now')}): what alex is doing right now
 - [Poetry 诗](${buildAbsoluteUrl('/poetry')}): Chinese poetry (plain text: ${buildAbsoluteUrl('/poetry.txt')})
 - [Ci 词](${buildAbsoluteUrl('/ci')}): ci to Song-dynasty tunes (plain text: ${buildAbsoluteUrl('/ci.txt')})
 

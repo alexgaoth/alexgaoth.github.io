@@ -7,8 +7,6 @@ image: "/resources/yatsen.jpg"
 tags: ["chinese", "nationalism", "colonialism"]
 ---
 
-# Chinese Nationalization Modernization is Actually Quite Interesting
-
 The story of Chinese modernization presents one of history's most fascinating paradoxes: how do you simultaneously invent and defend a national identity? Chinese intellectuals of the late 19th and early 20th centuries found themselves in this exact predicament, forced to conceptualize China as a modern nation-state while desperately protecting it from foreign encroachment.
 
 ## The Double Bind of Modernization

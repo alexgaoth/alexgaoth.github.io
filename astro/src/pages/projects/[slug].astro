@@ -24,7 +24,7 @@ const { group } = Astro.props;
   path={`${APP_ROUTES.projects}/${group.slug}`}
   imagePath={group.image}
 >
-  <NavigationBar backHref={APP_ROUTES.projects} backLabel="Back" />
+  <NavigationBar backHref={APP_ROUTES.projects} />
   <div class="page-container">
     <div class="content-wrapper-narrow">
       <h1 class="title-page">{group.name}</h1>

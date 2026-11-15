@@ -18,6 +18,9 @@ const MOVE_MIN_VH = 0.4;  // and the moves around it never get less than this
 const VIA_TIME = 0.35;    // extra time a move gets for each via point it passes
 const NOTE_ALPHA = 1;     // how strong the notes are at their fullest
 const PHONE_FILL = 0.56;  // a phone: a compact shape's radius against the free space's smaller side
+// a phone: views drawn closer than that, by section; the built shape runs up
+// under the words' paper fade, as the other sections' views do
+const PHONE_ZOOM = { built: 1.7 };
 // Speed bumps: how long each of three moments must be on screen before the
 // scroll may pass it (ms). See bumpCheck.
 const BUMPS = { o: 900, face: 1400, land: 800 };
@@ -212,6 +215,7 @@ function measure() {
         const tan = Math.tan((st.fov * Math.PI) / 360);
         st.dist = Math.max(st.dist, (shot.fit * vh) / 2 / (tan * PHONE_FILL * Math.min(vw, sp[1] - sp[0])), shot.fit / (0.82 * tan));
       }
+      if (shot.text && PHONE_ZOOM[shot.text]) st.dist /= PHONE_ZOOM[shot.text];
       return st;
     }
     if (shot.layout) {

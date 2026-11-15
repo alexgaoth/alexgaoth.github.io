@@ -23,9 +23,7 @@ const entries = await getThoughts();
     <div class="content-wrapper-narrow">
       <h1 class="title-page">writing</h1>
       <p class="writing-intro">
-        i like to think, and make others think. the essays are where a thought
-        went deep enough to be worth writing down; the poetry and ci are older —
-        most of it written around fifteen, abroad, with too much free time.
+        i like to think, and make others think.
       </p>
 
       <section class="writing-section">
@@ -53,12 +51,10 @@ const entries = await getThoughts();
         <ul class="writing-list">
           <li class="writing-row">
             <a href={APP_ROUTES.poetry} class="writing-row-title">诗 — poetry</a>
-            <span class="writing-row-excerpt">chinese verse, with context and commentary</span>
             <span class="writing-row-meta">中文 · <a href={APP_ROUTES.poetryEn} class="writing-inline-link">english version</a> · plain text at <a href="/poetry.txt" class="writing-inline-link">/poetry.txt</a></span>
           </li>
           <li class="writing-row">
             <a href={APP_ROUTES.ci} class="writing-row-title">词 — ci</a>
-            <span class="writing-row-excerpt">written to song-dynasty tunes</span>
             <span class="writing-row-meta">中文 · <a href={APP_ROUTES.ciEn} class="writing-inline-link">english version</a> · plain text at <a href="/ci.txt" class="writing-inline-link">/ci.txt</a></span>
           </li>
         </ul>
@@ -67,8 +63,7 @@ const entries = await getThoughts();
       <section class="writing-section">
         <span class="writing-eyebrow">// adjacent</span>
         <p class="writing-note">
-          <a href="/quotes">/quotes</a> — the good and the bad, collected ·
-          <a href="/now">/now</a> — what i'm writing right now ·
+          <a href="/quotes">/quotes</a> ·
           <a href="https://sublationism.com">sublationism.com</a> — the manifesto, formerly gaoism
         </p>
       </section>
@@ -79,7 +74,7 @@ const entries = await getThoughts();
 <style>
   .writing-intro {
     font-family: 'Space Mono', monospace;
-    font-size: 0.78rem;
+    font-size: 14px;
     color: #555;
     line-height: 1.7;
     max-width: 62ch;
@@ -88,9 +83,7 @@ const entries = await getThoughts();
   .writing-section { margin-bottom: 2.2rem; }
   .writing-eyebrow {
     font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
+    font-size: 12px;
     color: #888;
   }
   .writing-list { list-style: none; margin: 0.6rem 0 0; padding: 0; }
@@ -106,11 +99,11 @@ const entries = await getThoughts();
     transition: background 0.12s, color 0.12s;
   }
   .writing-row:hover { background: #000; color: #fff; }
-  .writing-row-title { font-size: 13px; font-weight: 600; color: #000; text-decoration: none; }
+  .writing-row-title { font-size: 14px; font-weight: 600; color: #000; text-decoration: none; }
   .writing-row:hover .writing-row-title { color: #fff; }
   a.writing-row-title:hover { text-decoration: underline; }
   .writing-row-excerpt {
-    font-size: 11px;
+    font-size: 12px;
     color: #666;
     line-height: 1.5;
     display: -webkit-box;
@@ -118,13 +111,13 @@ const entries = await getThoughts();
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .writing-row-meta { font-size: 10px; color: #888; letter-spacing: 0.06em; }
+  .writing-row-meta { font-size: 12px; color: #888; letter-spacing: 0.06em; }
   .writing-row:hover .writing-row-excerpt,
   .writing-row:hover .writing-row-meta { color: rgba(255, 255, 255, 0.6); }
   .writing-inline-link { color: inherit; }
   .writing-note {
     font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
+    font-size: 12px;
     color: #888;
     margin-top: 0.8rem;
   }

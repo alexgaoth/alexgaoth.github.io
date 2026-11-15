@@ -27,10 +27,6 @@ const articles = entries.map((entry) => entry.data);
         <div class="content-wrapper-narrow">
           <h1 class="title-page">Thoughts</h1>
 
-          <p class="writing-hub-strip">
-            essays live here — poetry and ci live in <a href="/writing">/writing</a>
-          </p>
-
           <div class="space-y-medium">
             {entries.map((entry) => (
               <ThoughtCard thought={entry.data} readTime={calculateReadTime(entry.body)} />
@@ -41,13 +37,3 @@ const articles = entries.map((entry) => entry.data);
     </div>
   </div>
 </BaseLayout>
-
-<style>
-  .writing-hub-strip {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
-    color: #888;
-    margin-bottom: 1.4rem;
-  }
-  .writing-hub-strip a { color: #000; }
-</style>

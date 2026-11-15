@@ -176,10 +176,6 @@ body {
   margin-top: 0.35rem;
 }
 
-.mainpage-footer {
-  transform: translateX(0.65rem);
-}
-
 .mainpage-footer-strip {
   transition:
     background 0.3s ease,
@@ -187,10 +183,11 @@ body {
     padding 0.3s ease;
 }
 
-/* was three inline style="margin-top:0.5rem" attributes, which no media query
-   could reach */
+/* one rule between rows: each strip draws top and bottom, so the next one
+   drops its top instead of doubling it */
 .mainpage-footer-strip + .mainpage-footer-strip {
-  margin-top: 0.5rem;
+  margin-top: 0;
+  border-top: 0;
 }
 
 .mainpage-footer-strip .art-strip-arrow {
@@ -203,10 +200,24 @@ body {
   }
 }
 
+/* Page title: Grotesk, lowercase, no dot, 32px (28px on phones) on every
+   page, the size settled on /resume. */
 .title-page {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  line-height: 2.5rem;
+  text-transform: lowercase;
+  /* the tight line-height leaves no air under the fixed nav bar */
+  margin: 1.25rem 0 1rem;
+}
+
+@media (max-width: 767px) {
+  .title-page {
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+  }
 }
 
 .title-section {
@@ -224,8 +235,12 @@ body {
 }
 
 .title-article {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 600;
+  line-height: 2rem;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
   margin-bottom: 1rem;
 }
 
@@ -246,6 +261,12 @@ body {
 .grid-1col {
   display: grid;
   gap: 2rem;
+}
+
+/* a grid item otherwise grows to its widest unbreakable content and pushes
+   the page sideways on phones */
+.grid-1col > * {
+  min-width: 0;
 }
 
 /* Spacing */
@@ -407,12 +428,10 @@ body {
 }
 
 /* On mobile the strips are the second half of the directory index, so they
-   drop the nudge (no desktop card grid to line up with), lose the doubled
-   hairline every top+bottom border pair was drawing, and take the same row
-   rhythm as the cards above them. See the mobile block in index.astro. */
+   take the same hairline row rhythm as the cards above them. See the mobile
+   block in index.astro. */
 @media (max-width: 767px) {
   .mainpage-footer {
-    transform: none;
     margin-top: 0;
   }
 

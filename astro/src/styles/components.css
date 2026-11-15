@@ -43,7 +43,7 @@
   opacity: 0.2;
   padding: 0.3rem 0;
   transition: opacity 0.25s ease;
-  text-transform: uppercase;
+  text-transform: none;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -429,7 +429,8 @@
   white-space: nowrap;
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.is-current {
   background-color: black;
   color: white;
 }
@@ -440,6 +441,7 @@
   border: 1px solid black;
   background: white;
   color: black;
+  text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 0.875rem;
@@ -685,25 +687,6 @@
   .page-container.bookshelf-page {
     padding-top: 0;
   }
-}
-
-/* Buttons */
-.btn-back {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border: 1px solid black;
-  background: white;
-  color: black;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 2rem;
-}
-
-.btn-back:hover {
-  background-color: black;
-  color: white;
 }
 
 /* Cards */
@@ -1280,6 +1263,7 @@ a.tag-white:hover {
 /* Date badges */
 .date-badge {
   font-size: 0.875rem;
+  white-space: nowrap;
   background-color: black;
   color: white;
   padding: 0.25rem 0.75rem;
@@ -1468,6 +1452,7 @@ a.tag-white:hover {
 /* Project Links */
 .project-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1rem;
 }
@@ -1541,6 +1526,7 @@ a.tag-white:hover {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  white-space: nowrap;
   font-size: 0.875rem;
   color: #666;
 }
@@ -2275,11 +2261,14 @@ a.tag-white:hover {
 }
 
 .article-page-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 2.5rem;
+  letter-spacing: -0.03em;
+  text-transform: lowercase;
   margin-bottom: 1rem;
-  color: #1a1a1a;
+  color: #000;
 }
 
 .article-page-meta {
@@ -2506,7 +2495,8 @@ a.tag-white:hover {
 
 @media (max-width: 768px) {
   .article-page-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
+    line-height: 2.25rem;
   }
 
   .article-page-wrapper {

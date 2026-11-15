@@ -4,12 +4,33 @@ Working reference for building or rebuilding pages so they feel like one site.
 Its first full expression was the home page panel rail (BUILT → WRITING →
 EXPERIENCE), retired on 2026-11-04 for the fractal homepage; the atoms and
 patterns below come from it and remain the vocabulary of the content pages
-(`/writing`, `/thoughts`, `/projects`, `/now`). When in doubt, copy those.
+(`/writing`, `/thoughts`, `/projects`, `/quotes`). When in doubt, copy those.
+
+## Principles
+
+1. **Simple spacing.** A few steps, used everywhere: 8, 16, 24, 32, 48px. No
+   one-off values.
+2. **Non-AI-generated feel.** His words and his look. No copy that explains
+   the page, no ornament for its own sake, nothing that reads as a template.
+3. **Easy to navigate and understand.** The same nav bar on every page with the
+   current page inverted; a page's title says what it is.
+
+Under those:
+
+- **Uniform looks.** One page title (`.title-page`), one hover (invert), one
+  nav, the same type size for the same job on every page.
+- **Keep the site's look; change only what was asked.** The boxes, the
+  inverted hovers, the thoughts cards and the homepage directory *are* the
+  site. When one page settles something (the type and spacing on /resume),
+  carry over that one thing, never that page's layout to pages built
+  differently.
+- **Less clunky, not different.** Polish means fewer sizes, fewer one-off
+  values and less noise inside this design, not a new design.
 
 ## The site in one line
 
 Black ink on white paper, mono type, log files and ledgers — a serious,
-professional surface with doors into the personal side (art, poetry, now).
+professional surface with doors into the personal side (art, poetry, gallery).
 
 ## Typography
 
@@ -17,19 +38,20 @@ Two faces, loaded in `src/styles/global.css`:
 
 - **Space Mono** — the body. Everything defaults to it (`body { font-family: 'Space Mono' }`).
   Used for meta, labels, log rows, paragraphs, links, footers.
-- **Space Grotesk** — display only. Mega titles, card headings, trophy stamps.
-  Weight 600, tight tracking (`letter-spacing: -0.035em`), tight leading (`line-height: 0.95`).
+- **Space Grotesk** — display only: page titles, essay and thought-card titles,
+  card headings, trophy stamps. Weight 600, tight tracking, lowercase.
 
 Recurring atoms (copy these, don't invent new ones):
 
-- **Eyebrow** — mono, 10–11px, `letter-spacing: 0.22em`, uppercase, `#888`.
-  Written as a code comment: `// what i have`, `// present`, `// build log`.
-  Sits above titles and above every sub-block.
-- **Mega title** — Grotesk 600, `clamp(1.8rem, 4.8vw, 3.8rem)`, one word, uppercase,
-  **with a trailing dot in a muted color** (`#ccc` or `rgba(0,0,0,0.18)`): `BUILT.` `WRITING.` `EXPERIENCE.`
+- **Eyebrow** — mono, 12px, `#888`, lowercase, no letter-spacing. Written as a
+  code comment: `// essays`, `// related`, `// archive`. Sits above a sub-block.
+- **Page title** (`.title-page`, global.css) — Grotesk 600, 32px / 40px, tracking
+  -0.03em, lowercase, no dot (28px on phones). The same on every page.
 - **Sub line** — mono, ~0.7–0.82rem, `#888`, one lowercase sentence under the title,
   max-width ~70ch. Dry, a little wry: "the true answers is uncountable many things but few of value".
-- Body/log text runs small: 9–12.5px in panels, 0.875–1rem in article pages.
+- **Two text sizes on content pages:** 14px for text and row titles, 12px for
+  meta, excerpts in lists, notes and eyebrows. No 10, 11 or 13px one-offs.
+  (Essay bodies read at 1.05rem.)
 
 ## Color
 
@@ -49,8 +71,15 @@ Defined as CSS vars in `global.css`:
 - **Hover = invert.** Rows and cards flip to black background / white text
   (`background:#000; color:#fff`, transition 0.12–0.2s). Borders flip too.
   This is the single hover convention; don't add underlines, scales, or color shifts.
+- No coloured hovers: nothing turns champagne, brown or any other colour.
 - Links styled as text carry `→` arrows; arrows may nudge right on hover (art-strip).
-- Live/now things get the pulsing dot.
+- **Nav**: `NAVIGATION_ITEMS` (config/site.js) is the whole bar, the same items in
+  the same order on every page: At Work, Projects, Thoughts, Quotes, About. The
+  current page's item is inverted, never removed (/writing counts as Thoughts), and
+  each label is that page's own title.
+- **Back link**: top left on every page, lowercase, an arrow plus the path it goes to
+  (`← /`, `← /art`, `← /thoughts`), never "back". Personal-side pages keep their own
+  colours; only the label pattern is shared.
 - **The object is the control** (personal-side pages). Where a page holds a
   physical object, the object itself should answer to play, not just the chrome
   around it: spinning a regent a full 360° summons the next one, exactly like
@@ -91,7 +120,7 @@ Defined as CSS vars in `global.css`:
 
 ## Voice
 
-- **lowercase everywhere** — titles are the exception (uppercase mega words).
+- **lowercase everywhere**, titles included.
 - Spare, human, slightly self-deprecating. Facts over adjectives.
 - Comments-as-labels (`// who`, `// elsewhere`) instead of headings like "Where To Find Me".
 - Prefer deleting a sentence to adding one. Nothing that reads AI-generated.
@@ -156,21 +185,28 @@ rows, keep every fact.**
   pinned at the top on a paper fade, each view below them, captions centred near
   the bottom); reduced motion and data saver get the words as one plain column.
   See README section 2.
-- `/resume`, `/projects`, `/thoughts`, `/quotes` — content pages under
+- `/resume`, `/projects`, `/thoughts`, `/writing`, `/quotes` — content pages under
   `NavigationBar` (via `ContentPage` layout), same ink-on-paper language.
+- `/resume` ("At Work") is his prose about each job, so its text has its own
+  styles (in `resume.astro`): a 2px black rule under the title and its caption,
+  Grotesk headings (24px section, 18px job), mono text at 14px / 24px with
+  captions in `#666`, a faint 1px line between jobs, spacing on the steps above.
+  That layout fits prose pages like it only; don't spread it to cards or lists.
 - `/about` — the one deliberate exception on the professional side: a
   researcher's homepage (system sans, default browser link blue, no nav bar,
-  no islands, no motion). **Prose only — no lists, no year/role grid, no
+  no islands, no motion), with the site's logo (the fractal icon) top left at
+  200px (`/resources/alexgaoth-logo.jpg`, a 400px copy, on white, of the icon's 512px
+  master). **Prose only — no lists, no year/role grid, no
   tables.** The moment it tabulates it becomes a second resume, and the
   record is `resume.pdf`, linked from /resume; here the facts sit inside
   sentences and the links sit inside the facts. Lowercase, first person, no
   credential voice. Its whole stylesheet lives in `about.astro` and exists
   mostly to undo the global reset. Nothing else may borrow this look.
 - Doors to the personal side: `/art` (ink-wash, serif, its own quiet language),
-  `/poetry`, `/ci`, `/regents` (Cormorant Garamond, paper grain), `/now`
-  (warm paper `#efe9d6`, draggable slip/cards, live guest marks), and `/gallery`
+  `/poetry`, `/ci`, `/regents` (Cormorant Garamond, paper grain), and `/gallery`
   (bare photographs, masonry, nearly no copy). These pages may break the mono/ink
-  system deliberately — everything else must not.
+  system deliberately — everything else must not. `/now` (warm paper, draggable
+  cards) is retired and redirects to `/`; see ADDITION-RULES.md.
 - **Literary pages type rule**: never italicize text that can hold Chinese —
   browsers synthesize an oblique on CJK glyphs and it reads as scrawl (and thin
   italic Cormorant is barely better in English). Asides (abstract, context,

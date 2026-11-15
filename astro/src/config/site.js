@@ -36,14 +36,14 @@ export const APP_ROUTES = {
   writing: '/writing',
 };
 
+// Labels match each page's own title. `sections` are other paths the item
+// counts as current for (/writing, the writing hub, is under Thoughts).
 export const NAVIGATION_ITEMS = [
-  { path: APP_ROUTES.resume, label: 'Resume' },
-  { path: APP_ROUTES.projects, label: 'Things I Made' },
-  { path: APP_ROUTES.thoughts, label: 'Thoughts' },
+  { path: APP_ROUTES.resume, label: 'At Work' },
+  { path: APP_ROUTES.projects, label: 'Projects' },
+  { path: APP_ROUTES.thoughts, label: 'Thoughts', sections: [APP_ROUTES.writing] },
   { path: APP_ROUTES.quotes, label: 'Quotes' },
-  { path: APP_ROUTES.poetry, label: '诗' },
-  { path: APP_ROUTES.ci, label: '词' },
-  { path: APP_ROUTES.now, label: 'Now', isNowButton: true },
+  { path: APP_ROUTES.about, label: 'About' },
 ];
 
 export function buildAppUrl(path = APP_ROUTES.home) {

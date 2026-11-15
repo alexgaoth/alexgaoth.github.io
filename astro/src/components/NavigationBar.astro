@@ -1,14 +1,17 @@
 ---
 // Static port of the old React component NavigationBar.jsx.
-// Real <a href> links (crawlable), current page filtered out. The animated
-// NavNowButton is rendered as a plain link until the /now island lands.
+// Real <a href> links (crawlable). Every page shows the same items in the
+// same order; the current one is inverted, never removed, so nothing moves.
 import { APP_ROUTES, NAVIGATION_ITEMS } from '../config/site.js';
 
 // Pages one level below a section pass backHref/backLabel so the top-left
-// button returns to the section instead of home.
-const { backHref = APP_ROUTES.home, backLabel = 'Home' } = Astro.props;
+// button returns to the section instead of home. The label is the path.
+const { backHref = APP_ROUTES.home, backLabel = backHref } = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
-const otherPages = NAVIGATION_ITEMS.filter((page) => page.path !== currentPath);
+const isCurrent = (page) =>
+  [page.path, ...(page.sections || [])].some(
+    (path) => currentPath === path || currentPath.startsWith(`${path}/`)
+  );
 ---
 
 <nav class="navigation-bar">
@@ -20,12 +23,14 @@ const otherPages = NAVIGATION_ITEMS.filter((page) => page.path !== currentPath);
   </div>
 
   <div class="nav-links">
-    {otherPages.map((page) =>
-      page.isNowButton ? (
-        <a href={page.path} class="nav-now-button">{page.label}</a>
-      ) : (
-        <a href={page.path} class="nav-link">{page.label}</a>
-      )
-    )}
+    {NAVIGATION_ITEMS.map((page) => (
+      <a
+        href={page.path}
+        class={`${page.isNowButton ? 'nav-now-button' : 'nav-link'}${isCurrent(page) ? ' is-current' : ''}`}
+        aria-current={isCurrent(page) ? 'page' : undefined}
+      >
+        {page.label}
+      </a>
+    ))}
   </div>
 </nav>

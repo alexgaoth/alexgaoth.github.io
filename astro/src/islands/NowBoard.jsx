@@ -44,7 +44,7 @@ function LayoutProvider({ defaults, children }) {
   );
 
   return (
-    <LayoutCtx.Provider value={{ layout, update, bringToFront, boardRef }}>
+    <LayoutCtx.Provider value={{ layout, setLayout, update, bringToFront, boardRef }}>
       {children}
     </LayoutCtx.Provider>
   );
@@ -95,6 +95,7 @@ function Draggable({ id, width, children }) {
   return (
     <div
       ref={ref}
+      data-card={id}
       onPointerDown={onPointerDown}
       style={{
         position: "absolute",
@@ -435,7 +436,7 @@ function LocationCard() {
       count={`${fmt} ${now.tz}`}
     >
       <div style={{ fontSize: 12, color: NB.fade, lineHeight: 1.6 }}>
-        {`// tracking ${now.tz.toLowerCase()}. on campus most days. dm me if you're nearby.`}
+        {`// tracking ${now.tz.toLowerCase()}. dm me if you're nearby.`}
       </div>
     </Card>
   );
@@ -753,7 +754,7 @@ function PageHeader({ onBack }) {
             padding: 0,
           }}
         >
-          ← alexgaoth.com
+          ← /
         </button>
         <span>now</span>
         <span>
@@ -864,9 +865,10 @@ function generateLayout(W) {
   layout.building = { x: r1x + j(22), y: r1y + j(6), z: 1 };
   layout.consuming = { x: r1x + cw.building + gap + j(22), y: r1y + j(6), z: 2 };
   layout.learning = { x: r1x + cw.building + cw.consuming + gap * 2 + j(22), y: r1y + j(6), z: 3 };
-  layout.quickthoughts = { x: r2x + j(22), y: r2y + j(6), z: 4 };
-  layout.writing = { x: r2x + cw.quickthoughts + gap + j(22), y: r2y + j(6), z: 5 };
-  layout.location = { x: r2x + cw.quickthoughts + gap + j(22), y: r3y + j(6), z: 6 };
+  // writing (04) left of quick thoughts (05), so the numbers read in order
+  layout.writing = { x: r2x + j(22), y: r2y + j(6), z: 5 };
+  layout.quickthoughts = { x: r2x + cw.writing + gap + j(22), y: r2y + j(6), z: 4 };
+  layout.location = { x: r2x + j(22), y: r3y + j(6), z: 6 };
 
   GUEST_IDS.forEach((id, i) => {
     layout[id] = {
@@ -876,7 +878,23 @@ function generateLayout(W) {
     };
   });
 
-  return { layout, cw };
+  return { layout, cw, gap };
+}
+
+// generateLayout spaces rows by guessed card heights; at narrow widths the
+// cards wrap taller and land on the row below. Given real heights, push each
+// row clear of the one above. Only y moves, and only down.
+function clearRows(prev, height, gap) {
+  const next = { ...prev };
+  const bottom = (ids) => Math.max(...ids.map((id) => next[id].y + height(id)));
+  const push = (ids, below) => {
+    const dy = Math.max(0, below + gap - Math.min(...ids.map((id) => next[id].y)));
+    ids.forEach((id) => { next[id] = { ...next[id], y: next[id].y + dy }; });
+  };
+  push(["quickthoughts", "writing", "location", ...GUEST_IDS], bottom(["building", "consuming", "learning"]));
+  push(["location"], bottom(["writing"]));
+  push(GUEST_IDS, bottom(["quickthoughts", "writing", "location"]));
+  return next;
 }
 
 // ── Mobile fallback — simple stacked list, no drag ────────────────
@@ -884,8 +902,8 @@ function MobileView({ logSlips, yourSlip, updateYourSlip, saveState }) {
   return (
     <div style={{ background: NB.paper, padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
       <BuildingCard />
-      <LearningCard />
       <ConsumingCard />
+      <LearningCard />
       <WritingCard />
       <QuickThoughtsCard />
       <LocationCard />
@@ -900,9 +918,23 @@ function MobileView({ logSlips, yourSlip, updateYourSlip, saveState }) {
 }
 
 // ── Board surface ─────────────────────────────────────────────────
-function BoardSurface({ logSlips, yourSlip, updateYourSlip, saveState, cw, ctx, boardPad }) {
+function BoardSurface({ logSlips, yourSlip, updateYourSlip, saveState, cw, gap, ctx, boardPad }) {
   const { boardRef } = ctx;
   const [bh, setBh] = React.useState(1100);
+  const now = React.useContext(NowCtx);
+
+  // Once the cards exist (and again once web fonts settle their wrapping),
+  // move rows apart so no card starts out covering another.
+  React.useLayoutEffect(() => {
+    const settle = () => {
+      const board = boardRef.current;
+      if (!board) return;
+      const height = (id) => board.querySelector(`[data-card="${id}"]`)?.offsetHeight || 0;
+      ctx.setLayout((prev) => clearRows(prev, height, gap));
+    };
+    settle();
+    document.fonts?.ready.then(settle);
+  }, [now]); // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
     const heights = {
@@ -1157,7 +1189,7 @@ function Board({ onBack, now }) {
     }, 800);
   }, []);
 
-  const { isMobile, boardPad, layout, cw } = view;
+  const { isMobile, boardPad, layout, cw, gap } = view;
 
   return (
     <NowCtx.Provider value={now}>
@@ -1179,6 +1211,7 @@ function Board({ onBack, now }) {
                   updateYourSlip={updateYourSlip}
                   saveState={saveState}
                   cw={cw}
+                  gap={gap}
                   ctx={ctx}
                   boardPad={boardPad}
                 />

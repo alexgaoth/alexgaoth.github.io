@@ -6,7 +6,6 @@ import { getProjectGroups } from '../lib/projectPages.js';
 const STATIC_ROUTES = [
   '/',
   '/about',
-  '/now',
   '/resume',
   '/projects',
   '/thoughts',

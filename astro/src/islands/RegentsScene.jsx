@@ -3,8 +3,9 @@
 // with client:only so three.js (~600KB) never enters any shared bundle —
 // preserving the CRA lazy-load pattern.
 import { useState, useRef, useEffect, Component, Suspense } from 'react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
+import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
+import { ContactShadows } from '@react-three/drei';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import * as THREE from 'three';
@@ -15,6 +16,26 @@ import { REGENTS } from '../lib/regentsData.js';
 // 3D helpers
 // ---------------------------------------------------------------------------
 const toAbsolute = (path) => path;
+
+// The light the copper reflects: three.js's studio room, built in code, so
+// nothing downloads (drei's park preset fetched a 1.6 MB map from a
+// third-party host on every visit). Kept dim so the key light models the
+// face the way the park map's sky did.
+function BuiltInLight() {
+  const { gl, scene } = useThree();
+  useEffect(() => {
+    const pmrem = new THREE.PMREMGenerator(gl);
+    const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environment = env;
+    scene.environmentIntensity = 0.45;
+    return () => {
+      if (scene.environment === env) scene.environment = null;
+      env.dispose();
+      pmrem.dispose();
+    };
+  }, [gl, scene]);
+  return null;
+}
 
 function Model({ url, rotationRef }) {
   const gltf = useLoader(GLTFLoader, url, (loader) => {
@@ -144,7 +165,11 @@ const RegentsScene = () => {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
-    const audio = new Audio(toAbsolute(current.audio));
+    // Nothing downloads until the first touch asks the music to play: the
+    // tracks run to 7 MB each.
+    const audio = new Audio();
+    audio.preload = hasInteracted.current ? 'auto' : 'none';
+    audio.src = toAbsolute(current.audio);
     audio.loop = true;
     audio.muted = isMuted;
     audioRef.current = audio;
@@ -263,7 +288,7 @@ const RegentsScene = () => {
     <>
       <div className="regents-page">
         <a href="/art" className="regents-back-btn" aria-label="Back to art">
-          <span style={{ fontSize: '0.85em' }}>←</span> art
+          <span style={{ fontSize: '0.85em' }}>←</span> /art
         </a>
 
         <div className="regents-inner">
@@ -294,8 +319,9 @@ const RegentsScene = () => {
                     style={{ width: '100%', height: '100%', display: 'block' }}
                   >
                     <ambientLight intensity={0.5} />
-                    <directionalLight position={[3, 5, 3]} intensity={1.0} />
-                    <Environment preset="park" />
+                    <directionalLight position={[3, 5, 3]} intensity={1.8} />
+                    <BuiltInLight />
+                    <ContactShadows position={[0, -1.12, 0]} opacity={0.45} scale={4} blur={2.4} far={1.5} resolution={256} />
                     <ModelErrorBoundary key={currentIndex}>
                       <Suspense fallback={<LoadingMesh />}>
                         <Model url={toAbsolute(current.glb)} rotationRef={rotationRef} />

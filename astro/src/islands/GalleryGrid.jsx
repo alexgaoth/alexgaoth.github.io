@@ -5,20 +5,42 @@
 // built with `initialPhotos` (fetched in gallery.astro's frontmatter) the
 // first frames ship as real <img loading="lazy"> tags in the static HTML.
 // On hydration the island fetches the fresh, full list.json and replaces
-// them.
+// them, in a random order that changes every visit.
 import { useCallback, useEffect, useState } from 'react';
 import { LIST_URL, photosFromList } from '../lib/gallery.js';
 
 const MONO = "'Space Mono', monospace";
+
+// Fisher–Yates: a fresh random order on every visit.
+function shuffle(items) {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+// The list worker intermittently throws (Cloudflare 1101 — about 1 request
+// in 5 in Nov 2026), so try a few times before settling for no list.
+async function fetchList(attempts = 3) {
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      const res = await fetch(LIST_URL);
+      if (res.ok) return await res.json();
+    } catch {
+      // network / CORS on the error page — try again
+    }
+  }
+  return null;
+}
 
 function Eyebrow({ children, color = '#888' }) {
   return (
     <span
       style={{
         fontFamily: MONO,
-        fontSize: 10,
-        letterSpacing: '0.22em',
-        textTransform: 'uppercase',
+        fontSize: 12,
         color,
         fontWeight: 400,
       }}
@@ -39,6 +61,10 @@ function Photo({ photo, onOpen }) {
         display: 'block',
         width: '100%',
         height: 'auto',
+        // Placeholder box until the file arrives, then its own ratio. Without
+        // it every unloaded image is 0px tall, all count as in view, and
+        // loading="lazy" fetches the whole bucket at once.
+        aspectRatio: 'auto 3 / 4',
         marginBottom: 10,
         breakInside: 'avoid',
         cursor: 'zoom-in',
@@ -56,24 +82,18 @@ export default function GalleryGrid({ initialPhotos = [] }) {
   useEffect(() => {
     let cancelled = false;
 
-    fetch(LIST_URL)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (cancelled) return;
-        const fresh = photosFromList(data);
-        if (fresh.length > 0) {
-          setPhotos(fresh);
-          setStatus('ready');
-        } else if (initialPhotos.length === 0) {
-          // No build-time photos to fall back on — quiet empty state.
-          setStatus('empty');
-        }
-      })
-      .catch(() => {
-        // Worker route not deployed yet, offline, CORS — keep any build-time
-        // photos rather than blanking the page; otherwise quiet empty state.
-        if (!cancelled && initialPhotos.length === 0) setStatus('empty');
-      });
+    fetchList().then((data) => {
+      if (cancelled) return;
+      const fresh = photosFromList(data);
+      if (fresh.length > 0) {
+        setPhotos(shuffle(fresh));
+        setStatus('ready');
+      } else if (initialPhotos.length === 0) {
+        // Worker down, offline — keep any build-time photos rather than
+        // blanking the page; otherwise quiet empty state.
+        setStatus('empty');
+      }
+    });
 
     return () => { cancelled = true; };
     // initialPhotos is build-time static — run once on mount.

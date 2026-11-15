@@ -7,8 +7,6 @@ image: "/resources/ai_agent.png"
 tags: ["tech", "ML", "DL", "Transformers"]
 ---
 
-# The Future of AI Agents
-
 The current AI landscape is dominated by transformers, and everyone seems convinced this architecture will define artificial intelligence for the foreseeable future. But history suggests otherwise. When a technology becomes subject to incremental refinements under intense competition, it often signals that a paradigm shift is approaching—even if that shift takes decades to fully materialize.
 
 ## The Pattern of Technological Succession

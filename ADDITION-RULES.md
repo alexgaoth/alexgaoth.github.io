@@ -66,6 +66,10 @@ Add to `quotes.content` in `astro/src/data/content.js`: `{ quote, author, descri
 
 ## Now page
 
+**Retired 2026-11-14.** `/now` redirects to `/` (temporary, `astro/vercel.json`) and nothing links to it;
+the page and island stay in the repo. To bring it back: drop that redirect, and re-add `/now` to
+`NAVIGATION_ITEMS` (`config/site.js`), `pages/sitemap.xml.js` and `pages/llms.txt.js`.
+
 Edit `astro/public/profile.json` (from mobile: GitHub web UI → that file → edit). The commit rebuilds the site,
 so both the static shell and the live fetch serve the new data. `NOW_FALLBACK` in `astro/src/data/nowData.js`
 is only the offline fallback — sync it when convenient, not urgently.
@@ -80,6 +84,10 @@ listing worker from `/workers/gallery-list` with `npx wrangler deploy` only if t
 
 Put the `.glb` (and optional looping `.mp3`) in `astro/public/regents/`, then add an entry
 (name, glb, audio, bio) to `astro/src/lib/regentsData.js`. The static shell and the scene both read it.
+The scene draws each file's own material, and three.js flat-shades a mesh with no normals. An image-to-3D export
+needs three things before it goes in: the copper material (base colour `[0.431, 0.294, 0.165]`, metallic 1,
+roughness 0.7), its normals, and simplifying to about 100k triangles with meshopt compression (glTF-Transform).
+A raw 800k-triangle export runs to about 19 MB.
 
 ## Resume / career facts
 

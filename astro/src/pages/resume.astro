@@ -1,137 +1,184 @@
 ---
 // /resume, "At Work": Alex's own words on each place he has worked,
 // hand-written here (source: Me_at_work.md). The record itself is the PDF.
-// Set in the site's ink/mono language (DESIGN.md), like /writing.
-import BaseLayout from '../layouts/BaseLayout.astro';
-import ContentPage from '../components/ContentPage.astro';
-import { APP_ROUTES } from '../config/site.js';
+// Its text styles (the page head's rule, sections, items) live below.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ContentPage from "../components/ContentPage.astro";
+import { APP_ROUTES } from "../config/site.js";
 
-const external = { target: '_blank', rel: 'noopener noreferrer' };
+const external = { target: "_blank", rel: "noopener noreferrer" };
 ---
 
 <BaseLayout
-  title="At Work — Alex Gao"
-  description="alex gao (alexgaoth) — professional work and experience."
-  keywords={['Alex Gao', 'alexgaoth', 'resume', 'Hypercubic', 'IBM', 'Signalor']}
-  path={APP_ROUTES.resume}
+    title="At Work — Alex Gao"
+    description="alex gao (alexgaoth) — professional work and experience."
+    keywords={[
+        "Alex Gao",
+        "alexgaoth",
+        "resume",
+        "Hypercubic",
+        "IBM",
+        "Signalor",
+    ]}
+    path={APP_ROUTES.resume}
 >
-  <ContentPage>
-    <h1 class="title-page">At Work</h1>
-    <p class="work-intro">
-      professional work and experience <a class="dark" href="https://alexgaoth.com/resume.pdf" {...external}>here</a>
-    </p>
+    <ContentPage>
+        <div class="page-head">
+            <h1 class="title-page">At Work</h1>
+            <p class="caption">
+                my resume is{" "}
+                <a
+                    class="text-link"
+                    href="https://alexgaoth.com/resume.pdf"
+                    {...external}
+                >
+                    here
+                </a>
+            </p>
+        </div>
 
-    <section>
-      <span class="work-eyebrow">// experience</span>
-      <p class="work-note">
-        rather than just re-rendering my resume into the DOM, below is what i thought about each experience
-      </p>
+        <section class="section">
+            <h2 class="section-heading">experience</h2>
+            <p class="caption">
+                rather than just re-rendering my resume into the DOM, below
+                is what i thought about each experience
+            </p>
 
-      <article class="work-item">
-        <h2 class="work-place">Hypercubic</h2>
-        <p>
-          Working here match almost exactly to what i imagined. An early stage startup that moving at terminal velocity.
-        </p>
-        <p>
-          Burning tokens at a rate where most dont in a month or many, I was still surprised at the amount of work i get done per day. Other than scoping and architecting the actual work, most of the thinking is a continuous search of bottlenecks.
-        </p>
-        <p>
-          It is the increasing the change of acceleration, what i call on the job, increasing the <a class="dark" href="https://en.wikipedia.org/wiki/Jerk_(physics)" {...external}>jerk</a>
-        </p>
-        <p>
-          I liked our office. The mold allegation might be true or might not be, but I dont really feel it.
-        </p>
-      </article>
+            <article class="item">
+                <h3 class="item-title">Hypercubic</h3>
+                <p>
+                    Working here match almost exactly to what i imagined. An
+                    early stage startup that moving at terminal velocity.
+                </p>
+                <p>
+                    Burning tokens at a rate where most dont in a month or
+                    many, I was still surprised at the amount of work i get
+                    done per day. Other than scoping and architecting the
+                    actual work, most of the thinking is a continuous search
+                    of bottlenecks.
+                </p>
+                <p>
+                    It is the increasing the change of acceleration, what i
+                    call on the job, increasing the{" "}
+                    <a
+                        class="text-link"
+                        href="https://en.wikipedia.org/wiki/Jerk_(physics)"
+                        {...external}
+                    >
+                        jerk
+                    </a>
+                </p>
+                <p>
+                    I liked our office. The mold allegation might be true or
+                    might not be, but I dont really feel it.
+                </p>
+            </article>
 
-      <article class="work-item">
-        <h2 class="work-place">IBM</h2>
-        <p>
-          The campus of <a class="dark" href="https://www.google.com/maps/search/?api=1&query=555+Bailey+Avenue%2C+San+Jose%2C+CA" {...external}>555 Bailey Avenue</a>, and it's surrounding hills, lives in my mind as the definition of what dry California look like.
-        </p>
-        <p>
-          The campus doesn't have free catering (paid ones are unanimously tasteless), so I had to source my own food.
-        </p>
-        <p>
-          so apologies to the 10 group lunch and 5 potlucks I have invaded.
-        </p>
-        <p>
-          People here, especially my team, are very nice.
-        </p>
-      </article>
+            <article class="item">
+                <h3 class="item-title">IBM</h3>
+                <!-- prettier-ignore -->
+                <p>
+                    The campus of <a class="text-link" href="https://www.google.com/maps/search/?api=1&query=555+Bailey+Avenue%2C+San+Jose%2C+CA" {...external}>555 Bailey Avenue</a>, and it's surrounding hills, lives in my mind as the
+                    definition of what dry California look like.
+                </p>
+                <p>
+                    The campus doesn't have free catering (paid ones are
+                    unanimously tasteless), so I had to source my own food.
+                </p>
+                <p>
+                    so apologies to the 10 group lunch and 5 potlucks I have
+                    invaded.
+                </p>
+                <p>People here, especially my team, are very nice.</p>
+            </article>
 
-      <article class="work-item">
-        <h2 class="work-place">Signalor</h2>
-        <p>
-          I have noticed that most (practically all) of my intellectually rigorous, high agency friend have the intuitive thought about a world where everyone is a founder (albeit many of them aren't one). Most of them would dismiss it with various reasons, but why they felt it to begin with, is revealing.
-        </p>
-        <p>
-          Founding a company, as it might be cliche to the pg essay readers, is one of the most rewarding thing a person can do in their life. Out of altruistic intentions, many would wish this on the rest of the population.
-        </p>
-        <p>
-          I dont hide this, Signalor was founded from the wrong heuristic, me and matthieu we just wanted to build, however that doesn't mean I don't believe in this venture. The people always come before the idea, and what we did the past year deems nothing but success for Signalor in the future.
-        </p>
-      </article>
-    </section>
-  </ContentPage>
+            <article class="item">
+                <h3 class="item-title">Signalor</h3>
+                <p>
+                    I have noticed that most (practically all) of my
+                    intellectually rigorous, high agency friend have the
+                    intuitive thought about a world where everyone is a
+                    founder (albeit many of them aren't one). Most of them
+                    would dismiss it with various reasons, but why they felt
+                    it to begin with, is revealing.
+                </p>
+                <p>
+                    Founding a company, as it might be cliche to the pg
+                    essay readers, is one of the most rewarding thing a
+                    person can do in their life. Out of altruistic
+                    intentions, many would wish this on the rest of the
+                    population.
+                </p>
+                <p>
+                    I dont hide this, Signalor was founded from the wrong
+                    heuristic, me and matthieu we just wanted to build,
+                    however that doesn't mean I don't believe in this
+                    venture. The people always come before the idea, and
+                    what we did the past year deems nothing but success for
+                    Signalor in the future.
+                </p>
+            </article>
+        </section>
+    </ContentPage>
 </BaseLayout>
 
 <style>
-  /* The ink/mono language of the content pages (DESIGN.md, as on /writing):
-     a mono intro, a comment-style eyebrow, a solid rule that declares the
-     list, hairlines between places, and links that invert on hover. */
-  .work-intro {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.78rem;
-    line-height: 1.7;
-    color: #555;
-    margin: 0 0 2.2rem;
-  }
-  .work-eyebrow {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #888;
-  }
-  .work-note {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
-    line-height: 1.6;
-    color: #888;
-    margin: 0.6rem 0 0.9rem;
-  }
-  .work-item {
-    padding: 1.4rem 0 1.5rem;
-    border-bottom: 1px solid #eee;
-  }
-  .work-item:first-of-type {
-    border-top: 1px solid #000;
-  }
-  .work-place {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    font-size: 1.35rem;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin: 0 0 0.75rem;
-  }
-  .work-item p {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.84rem;
-    line-height: 1.75;
-    color: #444;
-    margin: 0 0 0.7rem;
-  }
-  .work-item p:last-child {
-    margin-bottom: 0;
-  }
-  /* links sit in the ink of the words around them; hover inverts */
-  .dark {
-    color: #000;
-    transition: background 0.12s, color 0.12s;
-  }
-  .dark:hover {
-    background: #000;
-    color: #fff;
-  }
+    /* /resume's text: Grotesk headings, mono text, a 2px rule under the page
+       head, a faint line between items. Spacing steps: 8, 16, 24, 32, 48. */
+    .page-head {
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #000;
+    }
+    .page-head .title-page {
+        margin-bottom: 0;
+    }
+    .caption {
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+        color: #666;
+    }
+    .section {
+        margin-top: 3rem;
+    }
+    .section-heading,
+    .item-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 600;
+        color: #000;
+        text-transform: lowercase;
+    }
+    .section-heading {
+        font-size: 1.5rem;
+        line-height: 2rem;
+        letter-spacing: -0.025em;
+    }
+    .item {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .item-title {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+        letter-spacing: -0.015em;
+    }
+    .item p {
+        margin-top: 1rem;
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+        color: #222;
+    }
+    .item-title + p {
+        margin-top: 0.5rem;
+    }
+    .text-link {
+        color: inherit;
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+    }
+    .text-link:hover {
+        background: #000;
+        color: #fff;
+    }
 </style>

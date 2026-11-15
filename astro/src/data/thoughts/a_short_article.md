@@ -12,8 +12,6 @@ tags:
   - Knowledge
   - Concept
 ---
-# A short article to describe this website
-
 This section of the website, the thoughts page, is meant to be documentation of the things that I have thought about (and usually went into deeper research for), so I can inspire others like how I was (and still) inspired.[^1]
 
 So a *well done* to you for reading this very sentence, because you have found the only self-referential/critical article on this site.

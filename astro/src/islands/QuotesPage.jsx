@@ -57,7 +57,9 @@ function QuoteWheel({ quotes, onQuoteClick, onSpinComplete }) {
     const position = (index * itemHeight - rotation) % totalHeight;
     const normalizedPosition = ((position % totalHeight) + totalHeight) % totalHeight;
     const centerOffset = Math.abs(normalizedPosition - 50);
-    const distanceFactor = 1 - centerOffset / 50;
+    // 0 at the wheel's edge and beyond (more than five quotes put some past
+    // it; a negative factor made the powers below NaN and stacked them here)
+    const distanceFactor = Math.max(0, 1 - centerOffset / 50);
     const spacingFactor = (normalizedPosition - 50) / itemHeight;
     const opacity = Math.max(0.03, Math.pow(distanceFactor, 3.5) * 0.97 + 0.03);
     const scale = Math.max(0.65, Math.pow(distanceFactor, 1.5) * 0.35 + 0.65);

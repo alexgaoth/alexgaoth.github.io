@@ -3,7 +3,7 @@
 // metadata used by the homepage directory cards.
 export const content = {
   resume: {
-    title: "Resume",
+    title: "At Work",
     content: {
       education: [
         {
@@ -48,7 +48,7 @@ export const content = {
     previewImage: "/resources/resume.jpg"
   },
   projects: {
-    title: "Things That I've Made",
+    title: "Projects",
     content: [
       {
         name: "ferrodoc",

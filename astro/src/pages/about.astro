@@ -79,6 +79,14 @@ const profileStructuredData = [
     structuredData={profileStructuredData}
 >
     <main class="acad">
+        <img
+            src="/resources/alexgaoth-logo.jpg"
+            alt="alexgaoth logo, a quaternion julia set"
+            width="200"
+            height="200"
+            class="logo"
+        />
+
         <!-- the page's one heading, set as plain text like the lines below -->
         <h1 class="lede">i'm alex gao. you might have known me as alexgaoth.</h1>
 
@@ -124,37 +132,27 @@ const profileStructuredData = [
             <a href="sms:alexgaoth@icloud.com">alexgaoth@icloud.com</a>.
         </p>
 
+        <!-- links must touch their words and punctuation: a line break inside or after an <a> shows as a space -->
+        <!-- prettier-ignore -->
         <p>
             i'm still alexgaoth on{" "}
             {socials.map((sc, i) => (
-                <>
-                    <a href={sc.href} rel="me">
-                        {sc.word}
-                    </a>
-                    {i < socials.length - 2
-                        ? ", "
-                        : i === socials.length - 2
-                          ? " and "
-                          : ""}
-                </>
-            ))}
-            .
+                <><a href={sc.href} rel="me">{sc.word}</a>{i < socials.length - 2 ? ", " : i === socials.length - 2 ? " and " : ""}</>
+            ))}.
         </p>
 
         <p class="home">
-            <a href={APP_ROUTES.home}>&larr; alexgaoth.com</a>
+            <a href={APP_ROUTES.home}>&larr; /</a>
         </p>
 
         <hr />
 
         {/* kept verbatim for findability — see profileData.js */}
+        <!-- prettier-ignore -->
         <p class="fine">
             also indexed as {profileData.aliases.join(", ")}. mirrors:{" "}
             {mirrors.map((m, i) => (
-                <>
-                    <a href={m.href}>{m.host}</a>
-                    {i < mirrors.length - 1 ? ", " : "."}
-                </>
+                <><a href={m.href}>{m.host}</a>{i < mirrors.length - 1 ? ", " : "."}</>
             ))}
         </p>
     </main>
@@ -172,6 +170,14 @@ const profileStructuredData = [
         max-width: 38rem;
         margin: 0 auto;
         padding: 2.5rem 1.1rem 4rem;
+    }
+
+    /* the site's logo (the fractal icon, 400px copy), top left, square */
+    .logo {
+        display: block;
+        width: 200px;
+        height: 200px;
+        margin: 0 0 1.5em;
     }
 
     .acad h1 {
