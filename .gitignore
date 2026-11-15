@@ -2,3 +2,10 @@
 .env*.local
 
 CONTEXT.md
+
+# editor, OS and tool leftovers (GitHub Pages serves this whole folder)
+.DS_Store
+/.vs/
+/node_modules/
+/.astro/
+/.hallucinate/
