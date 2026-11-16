@@ -59,7 +59,10 @@ export function computeState(stage, vh = window.innerHeight, y = window.scrollY)
   const returnRect = stage.returnSpacer
     ? stage.returnSpacer.getBoundingClientRect()
     : { top: vh * 9, bottom: vh * 9 };
-  const ret = clamp01((vh * 0.25 - returnRect.top) / (vh * 1.25));
+  // the directory has fully risen a viewport height past the spacer's top, or
+  // at the bottom of the page if that comes first (a phone's short directory)
+  const room = document.documentElement.scrollHeight - window.innerHeight - (returnRect.top + y);
+  const ret = clamp01((vh * 0.25 - returnRect.top) / (vh * 0.25 + Math.min(vh, Math.max(0, room))));
   return {
     ret,
     returnRect,

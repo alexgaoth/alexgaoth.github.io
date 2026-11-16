@@ -69,28 +69,38 @@ const shows = [
             style="padding-top:2.5rem;padding-bottom:3rem"
         >
             <script is:inline>
-                // Coming back (back, forward or reload) to the fractal page:
-                // its layout only reaches full length once the fractal is
-                // live, so the browser would restore the scroll too early,
-                // against the short static page. Hold that back and keep the
-                // page out of sight; lib/qjulia/home.js puts the visitor back
-                // where they were (saved on leaving, below). Three seconds at
-                // most.
+                // Where the fractal page opens. Coming back (back, forward or
+                // reload): where the visitor was (saved on leaving, below).
+                // Otherwise at the directory, past the fractal, for whoever
+                // has already been through it: earlier in this visit, or to
+                // its end in the last two days (noted by lib/qjulia/home.js).
+                // The layout only reaches full length once the fractal is
+                // live, so the browser would scroll too early, against the
+                // short static page. Hold that back and keep the page out of
+                // sight; home.js puts the visitor there. Three seconds at most.
                 (() => {
                     const nav = performance.getEntriesByType("navigation")[0];
-                    if (
-                        !nav ||
-                        (nav.type !== "back_forward" && nav.type !== "reload")
-                    )
-                        return;
+                    if (!nav) return;
                     let saved = null;
+                    let seen = 0;
                     try {
                         saved = JSON.parse(
                             sessionStorage.getItem("home:scroll"),
                         );
                     } catch {}
-                    if (!saved || saved.w !== innerWidth || !(saved.y > 0))
-                        return;
+                    try {
+                        seen = Number(localStorage.getItem("home:seen")) || 0;
+                    } catch {}
+                    const root = document.documentElement;
+                    if (nav.type === "back_forward" || nav.type === "reload") {
+                        if (!saved || saved.w !== innerWidth || !(saved.y > 0))
+                            return;
+                    } else if (
+                        (saved && saved.y > 0) ||
+                        Date.now() - seen < 48 * 3600 * 1000
+                    ) {
+                        root.dataset.open = "directory";
+                    } else return;
                     if (matchMedia("(prefers-reduced-motion: reduce)").matches)
                         return;
                     const net = navigator.connection;
@@ -102,7 +112,6 @@ const shows = [
                     )
                         return;
                     history.scrollRestoration = "manual";
-                    const root = document.documentElement;
                     root.classList.add("fx-restoring");
                     setTimeout(
                         () => root.classList.remove("fx-restoring"),
@@ -1003,6 +1012,7 @@ const shows = [
         const track = document.querySelector(".progress-track");
         const fill = document.querySelector(".progress-fill");
         let titleH = 0;
+        let ret = 0; // the directory's rise, 0 → 1 (lib/homeScroll.js)
 
         if (introTitle) {
             introTitle.style.cssText =
@@ -1068,6 +1078,7 @@ const shows = [
                 const vh = viewH();
                 introFx(vh);
                 returnFx(state);
+                ret = state.ret;
                 if (track && fill) {
                     const trackedEnd = state.returnRect.bottom + scrollY;
                     track.style.display =
@@ -1096,7 +1107,8 @@ const shows = [
                 hint.style.display = "none";
                 clearTimeout(hintT);
                 hintT = setTimeout(() => {
-                    hint.style.display = "flex";
+                    // only while there is fractal left to scroll through
+                    if (ret < 1) hint.style.display = "flex";
                 }, 5000);
             };
             addEventListener("scroll", armHint, { passive: true });

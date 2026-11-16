@@ -41,9 +41,12 @@ orientation and the owner's priorities.
   class rules in `components.css` — a component's media overrides belong in
   that component. `components.css` also still carries React-era rules for
   elements the Astro port never renders — grep the markup before trusting one.
-- `/` restores its own scroll on back/reload (`fx-restoring` + sessionStorage
-  `home:scroll`): the page only reaches full length once the fractal is live,
-  so the browser's restore lands short. Re-test returns after layout changes.
+- `/` sets its own scroll (`fx-restoring`): back/reload return to sessionStorage
+  `home:scroll`; a visitor who scrolled it this session, or reached its end in
+  the last 48h (localStorage `home:seen`), opens at the directory. The page only
+  reaches full length once the fractal is live, so the browser's own restore
+  lands short; re-test both after layout changes. To see the journey from the
+  top, use a fresh browser context.
 - Static HTML must stay complete without JS: canvas layers are chrome over
   content — text lives in the DOM, never as texture.
 - Project cards without their own image load GitHub's social card live from

@@ -427,14 +427,17 @@ function bumpCheck() {
   }
 }
 
-// Coming back to the page (the inline script at its top held the browser's
-// own restore back and hid the page): put the visitor where they were, now
-// that the layout is at its full length, and show the page again.
+// Opening the page somewhere other than the top (the inline script at its
+// top held the browser's own restore back and hid the page): put the visitor
+// where they were, or at the directory once it has fully risen (returnFx in
+// the page), now that the layout is at its full length, and show the page.
 function restore() {
   if (!root.classList.contains('fx-restoring')) return;
   try {
-    const saved = JSON.parse(sessionStorage.getItem('home:scroll'));
-    if (saved && saved.y > 0) scrollTo({ top: saved.y, behavior: 'instant' });
+    const y = root.dataset.open === 'directory'
+      ? Math.ceil(docTop(document.querySelector('.return-spacer')) + canvas.clientHeight)
+      : JSON.parse(sessionStorage.getItem('home:scroll')).y;
+    if (y > 0) scrollTo({ top: y, behavior: 'instant' });
   } catch {}
   requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('fx-restoring')));
 }
@@ -458,6 +461,16 @@ export async function run({ phone: onPhone = false } = {}) {
   syncPage(scrollY / Math.max(1, root.scrollHeight - innerHeight));
   lastY = scrollY;
   for (const [name, , to] of bumpSpans()) if (scrollY > to) bumpSeen[name] = true;
+  // Through to the end: for the next two days the page opens at the
+  // directory (the inline script at its top).
+  if (scrollY < A.land) {
+    const seen = () => {
+      if (scrollY < A.land) return;
+      removeEventListener('scroll', seen);
+      try { localStorage.setItem('home:seen', String(Date.now())); } catch {}
+    };
+    addEventListener('scroll', seen, { passive: true });
+  }
   // ?nobumps turns them off, for checking the pacing (and for tools that jump
   // the scroll around, which would otherwise be held like a fast visitor)
   if (!phone && !new URLSearchParams(location.search).has('nobumps')) addEventListener('scroll', bumpCheck, { passive: true });
