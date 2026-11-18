@@ -53,9 +53,12 @@ orientation and the owner's priorities.
   opengraph.githubassets.com (`lib/projectImage.js`), which answers 429 after a
   burst of fetches from one IP. A broken card in local preview is that, not a bad
   URL — keep the fixed hash `1`; GitHub already re-renders it every ~6h.
-- /gallery serves full-size R2 originals (zone has no Image Transformations), and
-  `workers/gallery-list` throws Cloudflare 1101 on ~1 in 5 requests — a build can
-  ship /gallery with no static photos; read the error with `npx wrangler tail gallery-list`.
+- /gallery serves R2 files as uploaded (zone has no Image Transformations): the
+  bucket was shrunk to ~5 MP JPEGs on 2026-11-17 (originals kept in
+  `~/Documents/gallery-originals-2026-11-17/`); shrink new photos before upload.
+  `wrangler r2 object put/delete` act on a local bucket unless given `--remote`.
+- `workers/gallery-list` retries R2's list, caches it 5 min at the edge, and
+  answers 503 instead of a 1101 on failure; the cause lands in `npx wrangler tail gallery-list`.
 - Verifying a deploy: Vercel's ETag on a static file equals the file's md5 —
   compare against local `md5sum`. This machine's network has intermittently
   reset TLS to alexgaoth.com (site fine globally; seen 2026-08, cleared days
