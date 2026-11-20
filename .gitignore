@@ -9,3 +9,4 @@ CONTEXT.md
 /node_modules/
 /.astro/
 /.hallucinate/
+.wrangler/
